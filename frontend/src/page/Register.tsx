@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 function Register() {
-
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,9 +27,7 @@ function Register() {
     });
     const token = response.data.token;
     localStorage.setItem('token', token);
-
-    // go to dashboard
-    
+    navigate('/dashboard');
   };
 
   return (
