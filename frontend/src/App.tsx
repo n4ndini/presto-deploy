@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import './App.css'
 import Register from './page/Register';
 import Login from './page/Login';
+import Dashboard from './page/Dashboard';
 
 
 function App() {
@@ -22,6 +23,8 @@ function App() {
         <Route path="/" element={<p>Homepage!</p>} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+
       </Routes>
     </>
   )
