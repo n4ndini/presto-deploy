@@ -1,5 +1,4 @@
 import axios from 'axios';
-import type { React } from 'next/dist/server/route-modules/app-page/vendored/rsc/entrypoints';
 import { useState } from 'react';
 
 type RegisterProps = {
@@ -19,6 +18,17 @@ function Register({ successCallback }: RegisterProps) {
   const register = async (e: React.FormEvent) => {
     e.preventDefault(); // enables enter key to be clicked
     setError('');
+
+
+    if (!name || !email || !password || !confirmPassword) {
+      setError('All fields are required');
+      return;
+    }
+
+    if (!email.includes('@')) {
+      setError('Invalid email, must contain an @');
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
@@ -44,7 +54,7 @@ function Register({ successCallback }: RegisterProps) {
   };
 
   return (
-    <>
+    <form onSubmit={register}>
         {/* use component libraries?? */}
         Register<br />
 
@@ -60,8 +70,9 @@ function Register({ successCallback }: RegisterProps) {
         Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} /><br />
         Confirm Password: <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} /><br />
 
-        <button type="button" onClick={register}>Register</button>
-    </>
+        <button type="submit">Register</button>
+
+  </form>
   )
 }
 
