@@ -42,30 +42,30 @@ function App() {
 
   return (
     <>
-    <div>
-      {token ? (
-        <>
-          <Link to="/dashboard">Dashboard</Link>
-          &nbsp; |&nbsp;
-          <span onClick={logout} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
-            Logout
-          </span>
-        </>
-      ) : (
-        <>
-         <Link to="/register">Register</Link>
-         &nbsp; |&nbsp;
-         <Link to="/login">Login</Link>
-        </>
-      )}
-    </div>
-    <div>
-      NavBar
-      <br></br>
-      <Link to="/">Home</Link>
-      <br></br>
-      {/* <Link to="/register">Register</Link> | <Link to="/login">Login</Link> */}
-    </div>
+      <div>
+        {token ? (
+          <>
+            <Link to="/dashboard">Dashboard</Link>
+            &nbsp; |&nbsp;
+            <span onClick={logout} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+              Logout
+            </span>
+          </>
+        ) : (
+          <>
+            <Link to="/register">Register</Link>
+            &nbsp; |&nbsp;
+            <Link to="/login">Login</Link>
+          </>
+        )}
+      </div>
+      <div>
+        NavBar
+        <br></br>
+        <Link to="/">Home</Link>
+        <br></br>
+        {/* <Link to="/register">Register</Link> | <Link to="/login">Login</Link> */}
+      </div>
 
 
       <Routes>

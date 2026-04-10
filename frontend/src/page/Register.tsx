@@ -13,8 +13,8 @@ function Register({ successCallback }: RegisterProps) {
 
   const [error, setError] = useState(''); // implement error messages
 
-//   npm install axios 
-// check local port is right
+  //   npm install axios 
+  // check local port is right
   const register = async (e: React.FormEvent) => {
     e.preventDefault(); // enables enter key to be clicked
     setError('');
@@ -55,24 +55,24 @@ function Register({ successCallback }: RegisterProps) {
 
   return (
     <form onSubmit={register}>
-        {/* use component libraries?? */}
-        Register<br />
+      {/* use component libraries?? */}
+      Register<br />
 
-        {error && (
-          <div>
-            {error}
-            <button onClick={() => setError('')}>Close</button>
-          </div>
-        )}
+      {error && (
+        <div>
+          {error}
+          <button onClick={() => setError('')}>Close</button>
+        </div>
+      )}
 
-        Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
-        Email: <input type="text" value={email} onChange={e => setEmail(e.target.value)} /><br />
-        Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} /><br />
-        Confirm Password: <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} /><br />
+      Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
+      Email: <input type="text" value={email} onChange={e => setEmail(e.target.value)} /><br />
+      Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} /><br />
+      Confirm Password: <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} /><br />
 
-        <button type="submit">Register</button>
+      <button type="submit">Register</button>
 
-  </form>
+    </form>
   )
 }
 
