@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { React } from 'next/dist/server/route-modules/app-page/vendored/rsc/entrypoints';
 import { useState } from 'react';
 
 type RegisterProps = {
@@ -15,20 +16,31 @@ function Register({ successCallback }: RegisterProps) {
 
 //   npm install axios 
 // check local port is right
-  const register = async () => {
+  const register = async (e: React.FormEvent) => {
+    e.preventDefault(); // enables enter key to be clicked
+    setError('');
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
    
-    const response = await axios.post("http://localhost:5005/admin/auth/register", {
-      name,
-      email,
-      password,
-    });
-    const token = response.data.token;
-    successCallback(token);
+    try {
+      const response = await axios.post("http://localhost:5005/admin/auth/register", {
+        name,
+        email,
+        password,
+      });
+      const token = response.data.token;
+      successCallback(token);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const errorMessage = err.response?.data.error || 'Request failed';
+        setError(errorMessage);
+      } else {
+        setError('Registration failed. Please try again.')
+      }
+    }
   };
 
   return (
@@ -37,8 +49,8 @@ function Register({ successCallback }: RegisterProps) {
         Register<br />
         Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
         Email: <input type="text" value={email} onChange={e => setEmail(e.target.value)} /><br />
-        Password: <input type="text" value={password} onChange={e => setPassword(e.target.value)} /><br />
-        Confirm Password: <input type="text" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} /><br />
+        Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} /><br />
+        Confirm Password: <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} /><br />
 
         <button type="button" onClick={register}>Register</button>
     </>

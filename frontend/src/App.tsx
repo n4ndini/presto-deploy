@@ -6,6 +6,7 @@ import Login from './page/Login';
 import Dashboard from './page/Dashboard';
 import { useNavigate } from 'react-router';
 
+// useParams for slides
 
 function App() {
   const [token, setToken] = useState<string | null>(null);
