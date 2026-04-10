@@ -47,6 +47,14 @@ function Register({ successCallback }: RegisterProps) {
     <>
         {/* use component libraries?? */}
         Register<br />
+
+        {error && (
+          <div>
+            {error}
+            <button onClick={() => setError('')}>Close</button>
+          </div>
+        )}
+
         Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
         Email: <input type="text" value={email} onChange={e => setEmail(e.target.value)} /><br />
         Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} /><br />

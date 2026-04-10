@@ -48,7 +48,7 @@ function App() {
       <br></br>
       <Link to="/">Home</Link>
       <br></br>
-      <Link to="/register">Register</Link> | <Link to="/login">Login</Link>
+      {/* <Link to="/register">Register</Link> | <Link to="/login">Login</Link> */}
     </div>
 
 
