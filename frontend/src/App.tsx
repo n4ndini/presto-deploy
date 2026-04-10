@@ -47,7 +47,7 @@ function App() {
         <>
           <Link to="/dashboard">Dashboard</Link>
           &nbsp; |&nbsp;
-          <span onClick={logout} style={{ cursor: 'pointer' }}>
+          <span onClick={logout} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
             Logout
           </span>
         </>
