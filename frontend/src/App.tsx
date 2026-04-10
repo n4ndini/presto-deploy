@@ -19,11 +19,11 @@ function App() {
     }
   }, []);
 
-  function fn(token) {
+  const fn = (token: string): void => {
     localStorage.setItem('token', token);
     setToken(token);
     navigate('/dashboard');
-  }
+  };
 
   return (
     <>
