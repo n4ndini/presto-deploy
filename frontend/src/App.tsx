@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import Register from './page/Register';
 import Login from './page/Login';
 import Dashboard from './page/Dashboard';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 // useParams for slides
 
@@ -26,6 +27,19 @@ function App() {
     navigate('/dashboard');
   };
 
+  async function logout() {
+    const response = await axios.post("http://localhost:5005/admin/auth/logout", {}, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    });
+    if (response.status === 200) {
+      setToken(null);
+      localStorage.removeItem('token');
+      navigate('/');
+    }
+  }
+
   return (
     <>
     <div>
@@ -33,7 +47,9 @@ function App() {
         <>
           <Link to="/dashboard">Dashboard</Link>
           &nbsp; |&nbsp;
-          Logout
+          <span onClick={logout} style={{ cursor: 'pointer' }}>
+            Logout
+          </span>
         </>
       ) : (
         <>
