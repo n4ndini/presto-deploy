@@ -1,6 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import './App.css'  // i dont think we can have this
+// import styles from './App.module.css'
 import Register from './page/Register';
 import Login from './page/Login';
 import Dashboard from './page/Dashboard';
