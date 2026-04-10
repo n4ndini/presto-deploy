@@ -71,7 +71,7 @@ function App() {
       <Routes>
         <Route path="/" element={<p>Homepage!</p>} />
         <Route path="/register" element={<Register successCallback={loginSuccessCallback} />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login successCallback={loginSuccessCallback}/>} />
         <Route path="/dashboard" element={<Dashboard />} />
 
       </Routes>
