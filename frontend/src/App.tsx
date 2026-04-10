@@ -19,7 +19,7 @@ function App() {
     }
   }, []);
 
-  const fn = (token: string): void => {
+  const loginSuccessCallback = (token: string): void => {
     localStorage.setItem('token', token);
     setToken(token);
     navigate('/dashboard');
@@ -53,7 +53,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<p>Homepage!</p>} />
-        <Route path="/register" element={<Register successCallback={fn} />} />
+        <Route path="/register" element={<Register successCallback={loginSuccessCallback} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
 

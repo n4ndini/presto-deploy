@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { useState } from 'react';
 
-function Register({ successCallback }) {
+type RegisterProps = {
+  successCallback : (token: string) => void;
+}
+
+function Register({ successCallback }: RegisterProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
