@@ -12,5 +12,5 @@ export type PresentationType = {
 
 export type SlideType = {
     id: number;
-    // content etc
+    content: string;
 }
