@@ -25,8 +25,14 @@ function Dashboard() {
 
 
   const createPresentation = async () => {
-    // error checking here
+    setError('');
 
+    if (!name || !desc) {
+      setError('Presentations must have a name and description')
+      return;
+    }
+
+    // do we wanna force them to have a thumbnail?
 
 
     // ds structure --> can have an arr of Presentations w
@@ -34,11 +40,41 @@ function Dashboard() {
 
     // have to GET curr store, then return og store + new presentation
     try {
-      await axios.post('http//localhost:5005/')
-    } catch {
+      const res = await axios.get('http//localhost:5005/store', {headers: { Authorization: `Bearer ${token}`, },});
+      const store = res.data.store;
+      const oldPresentations = store.presentations || [];
 
+      const newPresentation: Presentation = {
+        id: oldPresentations.length + 1,
+        name,
+        desc,
+        thumbnail,
+        slides: [{}],
+      };
+
+      await axios.put('http//localhost:5005/store', {
+        ...store, presentations: [...oldPresentations, newPresentation],
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setName('');
+      setDesc('');
+      setThumbnail('');
+      setShowCreatePres(false);
+
+
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const errorMessage = err.response?.data.error || 'Failed to create new presentation';
+        setError(errorMessage);
+      } else {
+        setError('Something failed. Please try again.')
+      }
     }
-  }
+  };
 
   return (
     <>
