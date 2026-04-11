@@ -10,7 +10,7 @@ type Presentation = {
 }
 
 type Store = {
-  presentations?: Presentation[];
+  presentations: Presentation[];
 }
 
 function Dashboard() {
@@ -52,15 +52,18 @@ function Dashboard() {
         slides: [{ id: 1 }],  // default single empty slide
       };
 
+      const updatedStore: Store = {
+        ...store,
+        presentations: [...oldPresentations, newPresentation],
+      };
 
-      await axios.put('http//localhost:5005/store', {
-        ...store, presentations: [...oldPresentations, newPresentation],
-      }, {
+      await axios.put('http://localhost:5005/store', { store: updatedStore },
+       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setPresentations(prev => [...prev, newPresentation]);
+      setPresentations(updatedStore.presentations);
       setName('');
       setDesc('');
       setThumbnail('');
@@ -106,6 +109,9 @@ function Dashboard() {
 
         <div style={{
           display: 'grid',
+          // repeat the column def, auto-fit as many as u can in the container
+          // min width 200px, 1 fr = take up free space equally
+          gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
           gap: '10px',
           marginTop: '20px',
         }}>
