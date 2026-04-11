@@ -2,14 +2,14 @@ import axios from "axios";
 import type { React } from "next/dist/server/route-modules/app-page/vendored/rsc/entrypoints";
 import { useState } from "react";
 
-type Slide = Record<string, string>; // before and after? or content and next? tbd!
+// type Slide = Record<string, string>; // before and after? or content and next? tbd!
 
 type Presentation = {
   id: number,
   name: string,
   desc: string,
   thumbnail: string,
-  slides: Slide[];
+  slides: { id: number }[];
 }
 
 type Store = {
@@ -24,6 +24,7 @@ function Dashboard() {
   const [error, setError] = useState('');
   const token = localStorage.getItem('token');
 
+  const [presentations, setPresentations] = useState<Presentation[]>([]);
 
   const createPresentation = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -51,8 +52,9 @@ function Dashboard() {
         name,
         desc,
         thumbnail,
-        slides: [{}],
+        slides: [{ id: 1 }],  // default single empty slide
       };
+
 
       await axios.put('http//localhost:5005/store', {
         ...store, presentations: [...oldPresentations, newPresentation],
@@ -61,7 +63,7 @@ function Dashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      setPresentations(prev => [...prev, newPresentation]);
       setName('');
       setDesc('');
       setThumbnail('');
