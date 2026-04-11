@@ -1,8 +1,5 @@
 import axios from "axios";
-import type { React } from "next/dist/server/route-modules/app-page/vendored/rsc/entrypoints";
 import { useState } from "react";
-
-// type Slide = Record<string, string>; // before and after? or content and next? tbd!
 
 type Presentation = {
   id: number,
@@ -43,8 +40,8 @@ function Dashboard() {
 
     // have to GET curr store, then return og store + new presentation
     try {
-      const res = await axios.get('http//localhost:5005/store', {headers: { Authorization: `Bearer ${token}`, },});
-      const store = res.data.store;
+      const res = await axios.get('http://localhost:5005/store', {headers: { Authorization: `Bearer ${token}`, },});
+      const store: Store = res.data.store;
       const oldPresentations = store.presentations || [];
 
       const newPresentation: Presentation = {
@@ -102,12 +99,33 @@ function Dashboard() {
               <button type="submit">Create</button>
               <button type="button" onClick={() => setShowCreatePres(false)}>Cancel</button>
             </form>
-
-
           </div>
-
         )}
 
+        <br />
+
+        <div style={{
+          display: 'grid',
+          gap: '10px',
+          marginTop: '20px',
+        }}>
+          {presentations.map(p => (
+            <div key={p.id} style={{
+              border: '1px solid black',
+              aspectRatio: '2 / 1',
+              padding: '6px',
+            }}>
+              {p.thumbnail && (
+                <img src={p.thumbnail} alt="thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
+              )}
+              <h2>{p.name}</h2><br />
+              <p>{p.desc}</p><br />
+              <span>{p.slides.length} slides</span><br />
+
+            </div>
+          ))}
+
+        </div>
         
     </>
   )
