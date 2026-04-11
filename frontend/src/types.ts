@@ -1,4 +1,4 @@
-export type Presentation = {
+export type PresentationType = {
   id: number,
   name: string,
   desc: string,
@@ -7,5 +7,5 @@ export type Presentation = {
 }
 
 export type Store = {
-  presentations: Presentation[];
+  presentations: PresentationType[];
 }

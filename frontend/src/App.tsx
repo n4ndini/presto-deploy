@@ -6,6 +6,7 @@ import Login from './page/Login';
 import Dashboard from './page/Dashboard';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Presentation from './page/Presentation';
 
 // useParams for slides
 
@@ -73,6 +74,7 @@ function App() {
         <Route path="/register" element={<Register successCallback={loginSuccessCallback} />} />
         <Route path="/login" element={<Login successCallback={loginSuccessCallback}/>} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/presentation/:id" element={<Presentation />} />
 
       </Routes>
     </>

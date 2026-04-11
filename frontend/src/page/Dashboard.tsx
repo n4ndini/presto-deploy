@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import type { Presentation, Store } from "../types";
+import type { PresentationType, Store } from "../types";
 
 
 function Dashboard() {
@@ -12,7 +12,7 @@ function Dashboard() {
   const [error, setError] = useState('');
   const token = localStorage.getItem('token');
 
-  const [presentations, setPresentations] = useState<Presentation[]>([]);
+  const [presentations, setPresentations] = useState<PresentationType[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,7 +59,7 @@ function Dashboard() {
       const store: Store = res.data.store;
       const oldPresentations = store.presentations || [];
 
-      const newPresentation: Presentation = {
+      const newPresentation: PresentationType = {
         id: oldPresentations.length + 1,
         name,
         desc,
