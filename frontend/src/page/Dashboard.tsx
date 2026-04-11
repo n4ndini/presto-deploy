@@ -25,7 +25,7 @@ function Dashboard() {
   const token = localStorage.getItem('token');
 
 
-  const createPresentation = async (e: React.FormEvent) => {
+  const createPresentation = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setError('');
 

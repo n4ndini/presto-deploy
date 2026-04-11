@@ -13,7 +13,7 @@ function Login({ successCallback }: LoginProps) {
 
   //   npm install axios 
   // check local port is right
-  const login = async (e: React.FormEvent) => {
+  const login = async (e: React.SyntheticEvent) => {
     e.preventDefault(); // enables enter key to be clicked
     setError('');
 
