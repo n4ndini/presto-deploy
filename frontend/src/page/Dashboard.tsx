@@ -58,11 +58,11 @@ function Dashboard() {
       };
 
       await axios.put('http://localhost:5005/store', { store: updatedStore },
-       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       setPresentations(updatedStore.presentations);
       setName('');
       setDesc('');
@@ -82,57 +82,57 @@ function Dashboard() {
 
   return (
     <>
-        <h1>Dashboard</h1>
-        <button onClick={() => setShowCreatePres(true)}>New Presentation</button>
+      <h1>Dashboard</h1>
+      <button onClick={() => setShowCreatePres(true)}>New Presentation</button>
 
-        {error && (
-          <div>
-            {error}
-            <button onClick={() => setError('')}>Close</button>
-          </div>
-        )}
-
-        {showCreatePres && (
-          <div>
-            <form onSubmit={createPresentation}>
-              Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
-              Description: <input type="text" value={desc} onChange={e => setDesc(e.target.value)} /><br />
-              Thumbnail URL: <input type="text" value={thumbnail} onChange={e => setThumbnail(e.target.value)} /><br />
-              
-              <button type="submit">Create</button>
-              <button type="button" onClick={() => setShowCreatePres(false)}>Cancel</button>
-            </form>
-          </div>
-        )}
-
-        <br />
-
-        <div style={{
-          display: 'grid',
-          // repeat the column def, auto-fit as many as u can in the container
-          // min width 200px, 1 fr = take up free space equally
-          gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
-          gap: '10px',
-          marginTop: '20px',
-        }}>
-          {presentations.map(p => (
-            <div key={p.id} style={{
-              border: '1px solid black',
-              aspectRatio: '2 / 1',
-              padding: '6px',
-            }}>
-              {p.thumbnail && (
-                <img src={p.thumbnail} alt="thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
-              )}
-              <h2>{p.name}</h2><br />
-              <p>{p.desc}</p><br />
-              <span>{p.slides.length} slides</span><br />
-
-            </div>
-          ))}
-
+      {error && (
+        <div>
+          {error}
+          <button onClick={() => setError('')}>Close</button>
         </div>
-        
+      )}
+
+      {showCreatePres && (
+        <div>
+          <form onSubmit={createPresentation}>
+            Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
+            Description: <input type="text" value={desc} onChange={e => setDesc(e.target.value)} /><br />
+            Thumbnail URL: <input type="text" value={thumbnail} onChange={e => setThumbnail(e.target.value)} /><br />
+            
+            <button type="submit">Create</button>
+            <button type="button" onClick={() => setShowCreatePres(false)}>Cancel</button>
+          </form>
+        </div>
+      )}
+
+      <br />
+
+      <div style={{
+        display: 'grid',
+        // repeat the column def, auto-fit as many as u can in the container
+        // min width 200px, 1 fr = take up free space equally
+        gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
+        gap: '10px',
+        marginTop: '20px',
+      }}>
+        {presentations.map(p => (
+          <div key={p.id} style={{
+            border: '1px solid black',
+            aspectRatio: '2 / 1',
+            padding: '6px',
+          }}>
+            {p.thumbnail && (
+              <img src={p.thumbnail} alt="thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
+            )}
+            <h2>{p.name}</h2><br />
+            <p>{p.desc}</p><br />
+            <span>{p.slides.length} slides</span><br />
+
+          </div>
+        ))}
+
+      </div>
+      
     </>
   )
 }
