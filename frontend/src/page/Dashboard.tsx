@@ -1,5 +1,6 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 type Presentation = {
   id: number,
@@ -22,6 +23,30 @@ function Dashboard() {
   const token = localStorage.getItem('token');
 
   const [presentations, setPresentations] = useState<Presentation[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchPresentation = async () => {
+      try {
+        const res = await axios.get('http://localhost:5005/store', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const store: Store = res.data.store;
+        setPresentations(store.presentations || []);
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          const errorMessage = err.response?.data.error || 'Request failed';
+          setError(errorMessage);
+        } else {
+          setError('Login failed. Please try again.')
+        }
+      }
+    };
+    fetchPresentation();
+  }, []);
 
   const createPresentation = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -116,7 +141,7 @@ function Dashboard() {
         marginTop: '20px',
       }}>
         {presentations.map(p => (
-          <div key={p.id} style={{
+          <div key={p.id} onClick={() => navigate(`/presentation/${p.id}`)} style={{
             border: '1px solid black',
             aspectRatio: '2 / 1',
             padding: '6px',
