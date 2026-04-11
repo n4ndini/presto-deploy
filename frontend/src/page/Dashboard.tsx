@@ -80,6 +80,17 @@ function Dashboard() {
     <>
         <h1>Dashboard</h1>
         <button onClick={() => setShowCreatePres(true)}>New Presentation</button>
+
+        {error && (
+          <div>
+            {error}
+            <button onClick={() => setError('')}>Close</button>
+          </div>
+        )}
+
+        Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
+        Description: <input type="text" value={desc} onChange={e => setDesc(e.target.value)} /><br />
+        Thumbnail URL: <input type="text" value={thumbnail} onChange={e => setThumbnail(e.target.value)} /><br />
     </>
   )
 }
