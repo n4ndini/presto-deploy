@@ -40,7 +40,7 @@ function Login({ successCallback }: LoginProps) {
         const errorMessage = err.response?.data.error || 'Request failed';
         setError(errorMessage);
       } else {
-        setError('Registration failed. Please try again.')
+        setError('Login failed. Please try again.')
       }
     }
   };
