@@ -1,3 +1,7 @@
+export type Store = {
+  presentations: PresentationType[];
+}
+
 export type PresentationType = {
   id: number,
   name: string,
@@ -6,6 +10,7 @@ export type PresentationType = {
   slides: { id: number }[];
 }
 
-export type Store = {
-  presentations: PresentationType[];
+export type SlideType = {
+    id: number;
+    // content etc
 }
