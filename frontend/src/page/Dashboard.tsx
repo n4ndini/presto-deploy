@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { React } from "next/dist/server/route-modules/app-page/vendored/rsc/entrypoints";
 import { useState } from "react";
 
 type Slide = Record<string, string>; // before and after? or content and next? tbd!
@@ -24,7 +25,8 @@ function Dashboard() {
   const token = localStorage.getItem('token');
 
 
-  const createPresentation = async () => {
+  const createPresentation = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError('');
 
     if (!name || !desc) {
@@ -88,9 +90,23 @@ function Dashboard() {
           </div>
         )}
 
-        Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
-        Description: <input type="text" value={desc} onChange={e => setDesc(e.target.value)} /><br />
-        Thumbnail URL: <input type="text" value={thumbnail} onChange={e => setThumbnail(e.target.value)} /><br />
+        {showCreatePres && (
+          <div>
+            <form onSubmit={createPresentation}>
+              Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
+              Description: <input type="text" value={desc} onChange={e => setDesc(e.target.value)} /><br />
+              Thumbnail URL: <input type="text" value={thumbnail} onChange={e => setThumbnail(e.target.value)} /><br />
+              
+              <button type="submit">Create</button>
+              <button type="button" onClick={() => setShowCreatePres(false)}>Cancel</button>
+            </form>
+
+
+          </div>
+
+        )}
+
+        
     </>
   )
 }
