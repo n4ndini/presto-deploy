@@ -1,18 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import type { Presentation, Store } from "../types";
 
-type Presentation = {
-  id: number,
-  name: string,
-  desc: string,
-  thumbnail: string,
-  slides: { id: number }[];
-}
-
-type Store = {
-  presentations: Presentation[];
-}
 
 function Dashboard() {
   const [showCreatePres, setShowCreatePres] = useState(false);
