@@ -46,11 +46,11 @@ function Presentation() {
     };
 
     await axios.put('http://localhost:5005/store', { store: updatedStore },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
     navigate("/dashboard");
   };
@@ -70,9 +70,9 @@ function Presentation() {
 
       {showDeletePopup && (
         <div>
-            Are you sure?<br />
-            <button onClick={deletePresentation}>Yes</button>
-            <button onClick={() => setShowDeletePopup(false)}>No</button>
+          Are you sure?<br />
+          <button onClick={deletePresentation}>Yes</button>
+          <button onClick={() => setShowDeletePopup(false)}>No</button>
         </div>
       )}
 
