@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { PresentationType } from "../types";
+import axios from "axios";
 
 
 function Presentation() {
@@ -10,7 +11,30 @@ function Presentation() {
   const [currSlide, setCurrSlide] = useState(0);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const navigate = useNavigate();
-  
+
+  // NEED TO FETCH PRESENTATION, LOAD OG SLIDE AND DEAL W PRESENTATION ERR
+
+  const deletePresentation = async () => {
+    const res = await axios.get('http://localhost:5005/store', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    const store = res.data.store;
+    const updatedStore = {
+      ...store, presentations: store.presentations.filter((p: PresentationType) => p.id !== presentation.id),
+    };
+
+    await axios.put('http://localhost:5005/store', { store: updatedStore },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    navigate("/dashboard");
+  };
 
   return (
     <>
