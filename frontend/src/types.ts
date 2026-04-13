@@ -7,7 +7,7 @@ export type PresentationType = {
   name: string,
   desc: string,
   thumbnail: string,
-  slides: { id: number }[];
+  slides: SlideType[];
 }
 
 export type SlideType = {
