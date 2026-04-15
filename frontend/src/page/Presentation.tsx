@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+<<<<<<< HEAD
 import type { Store, PresentationType } from "../types";
+=======
+import type { PresentationType, SlideType, Store } from "../types";
+>>>>>>> 37fe8a2 (implemented update to usr's store for new text)
 import axios from "axios";
 
 
@@ -157,6 +161,7 @@ function Presentation() {
     }
 
     try {
+<<<<<<< HEAD
       const updatedPresentation: PresentationType = {
         ...presentation,
         name: trimmedTitle,
@@ -167,6 +172,67 @@ function Presentation() {
     } catch (err) {
       console.error(err);
       setError("Failed to update title");
+=======
+      const res = await axios.get('http://localhost:5005/store', {
+        headers: { Authorization: `Bearer ${token}`, },
+      });
+      const store: Store = res.data.store;
+
+      const updatedPresentations = store.presentations.map((p: PresentationType) => {
+        if (p.id !== presentation.id) {
+          return p;
+        }
+
+        const updatedSlides = p.slides.map((s: SlideType) => {
+          if (currSlide.id !== currentSlideIndex) {   // NEED TO FIX THIS DEPENDING ON IMPLEMENTATION
+            return s; 
+          }
+
+          const oldElems = s.elements || [];
+
+          const maxId = oldElems.length > 0 ? Math.max(...oldElems.map(elem => elem.id)) : 0;
+
+          const newElem = {
+            id: maxId + 1,
+            type: 'text',
+            content: text,
+            x: 0,
+            y: 0,
+            width,
+            height,
+            fontSize,
+            colour,
+          };
+
+          return {
+            ...s, elements: [...oldElems, newElem],
+          };
+        });
+        return {
+          ...p,
+          slides: updatedSlides,
+        };
+      });
+
+      await axios.put('http://localhost:5005/store', {
+        store: {
+          ...store,
+          presentations: updatedPresentations,
+        },
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // make sure its also updated on local state
+      
+    } catch (err: unknown) {
+    if (axios.isAxiosError(err)) {
+      setError(err.response?.data.error || 'Failed to add text');
+    } else {
+      setError('Something went wrong');
+>>>>>>> 37fe8a2 (implemented update to usr's store for new text)
     }
   };
 
