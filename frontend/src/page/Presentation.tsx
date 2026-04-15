@@ -211,29 +211,30 @@ function Presentation() {
     }
   };
 
-  return (
-    <>
-      {/* <h1>Presentation {presentation.name}</h1> */}
-      <h1>Presentation {id}: {presentation.name}</h1>
+  const deleteCurrentSlide = async () => {
+    if (presentation.slides.length === 1) {
+      setError("Cannot delete the only slide");
+      return;
+    }
 
-      <button onClick={() => navigate('/dashboard')}>Back</button>
-      <button onClick={() => setShowDeletePopup(true)}>Delete Presentation</button>
-      <br />
-      <br />
-      <br />
+    try {
+      const updatedSlides = presentation.slides.filter(
+        (_, index) => index !== currSlideIndex
+      );
 
-      {showDeletePopup && (
-        <div>
-          Are you sure?<br />
-          <button onClick={deletePresentation}>Yes</button>
-          <button onClick={() => setShowDeletePopup(false)}>No</button>
-        </div>
-      )}
-{/* 
-      <h2>Slide: {firstSlide.id}</h2>
-      <p>{firstSlide.content || "(empty slide)"}</p> */}
-    </>
-  )
+      const updatedPresentation: PresentationType = {
+        ...presentation,
+        slides: updatedSlides,
+      };
+
+      await updatePresentationInStore(updatedPresentation);
+      setCurrSlideIndex((prev) => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error(err);
+      setError("Failed to delete slide");
+    }
+  };
+
 }
 
 export default Presentation
