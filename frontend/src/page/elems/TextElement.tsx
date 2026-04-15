@@ -1,5 +1,7 @@
+import type { ElementType } from "../../types";
+
 type Props = {
-  elem: any;
+  elem: ElementType;
   onDelete: (id: number) => void;
 };
 
