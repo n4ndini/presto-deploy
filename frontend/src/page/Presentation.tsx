@@ -168,7 +168,22 @@ function Presentation() {
       console.error(err);
       setError("Failed to update title");
     }
-  }
+  };
+
+  const saveThumbnail = async () => {
+    try {
+      const updatedPresentation: PresentationType = {
+        ...presentation,
+        thumbnail: newThumbnail.trim(),
+      };
+
+      await updatePresentationInStore(updatedPresentation);
+      setShowEditThumbnailModal(false);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to update thumbnail");
+    }
+  };
 
   // Edit presentation title
   const editTitle = async () => {
