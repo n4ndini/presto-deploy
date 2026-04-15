@@ -93,6 +93,36 @@ function Presentation() {
     return <p>Loading...</p>;
   }
 
+  const currentSlide = presentation.slides[currSlideIndex];
+  const isFirstSlide = currSlideIndex === 0;
+  const isLastSlide = currSlideIndex === presentation.slides.length - 1;
+
+  const updatePresentationInStore = async (updatedPresentation: PresentationType) => {
+    const res = await axios.get("http://localhost:5005/store", {
+      headers: { Authorization: `Bearer ${token}`},
+    });
+
+    const store: Store = res.data.store;
+
+    const updatedPresentations = store.presentations.map((p: PresentationType) => 
+      p.id == updatedPresentation.id ? updatedPresentation : p
+    );
+
+    const updatedStore: Store = {
+      ...store,
+      presentations: updatedPresentations,
+    };
+
+    await axios.put("http://localhost:5005/store", 
+      { store: updatedStore },
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    setPresentation(updatedPresentation);
+  }
+
   const deletePresentation = async () => {
     const res = await axios.get('http://localhost:5005/store', {
       headers: {
