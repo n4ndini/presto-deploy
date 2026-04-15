@@ -5,7 +5,11 @@ import axios from "axios";
 <<<<<<< HEAD
 =======
 import TextModal from "./presentationComponents/TextModal";
+<<<<<<< HEAD
 >>>>>>> 3b59842 (moved out and connected up Presentation.tsx after moving textModal logic into separate file)
+=======
+import TextElement from "./elems/TextElement";
+>>>>>>> 3f8063c (fixed rendering of slides on screen to use show the actual curr slide and its elements)
 
 
 function Presentation() {
@@ -20,9 +24,16 @@ function Presentation() {
   const [showEditTitleModal, setShowEditTitleModal] = useState(false);
   const [showEditThumbnailModal, setShowEditThumbnailModal] = useState(false);
 
+<<<<<<< HEAD
   const [newTitle, setNewTitle] = useState('');
   const [newThumbnail, setNewThumbnail] = useState('');
   const [error, setError] = useState('');
+=======
+  // placeholder until nandini merges in changes
+  const [editScreen, setEditScreen] = useState(false);
+
+  const [showTextModal, setShowTextModal] = useState(false);
+>>>>>>> 3f8063c (fixed rendering of slides on screen to use show the actual curr slide and its elements)
 
   // NEED TO FETCH PRESENTATION, LOAD OG SLIDE AND DEAL W PRESENTATION ERR
   const fetchPresentation = async () => {
@@ -403,6 +414,28 @@ function Presentation() {
           }}
         >
           {currSlideIndex + 1}
+      )}
+
+      {/* if no elements or slides, then show an empty slide, else show the elems for that slide */}
+      {!currSlide.elements || currSlide.elements.length === 0 ? (
+        <p>(empty slide)</p>
+      ) : (
+        // currSlide.elements.map((el) => (
+        //   <div key={el.id}>
+        //     {el.content}
+        //   </div>
+        // ))
+        <div>
+          {currSlide.elements.map((el) => (
+            <TextElement key={el.id} elem={el} onDelete={handleDeleteElement}
+            />
+          ))}
+        </div>
+      )}
+
+      {editScreen && (
+        <div>
+          <button onClick={() => setShowTextModal(true)}>Add text</button>
         </div>
       </div>
   
