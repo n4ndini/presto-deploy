@@ -7,10 +7,18 @@ import axios from "axios";
 function Presentation() {
   const { id } = useParams();
   const token = localStorage.getItem('token');
-  const [presentation, setPresentation] = useState<PresentationType | null>(null);
-  // const [currSlide, setCurrSlide] = useState(0);
-  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const navigate = useNavigate();
+
+  const [presentation, setPresentation] = useState<PresentationType | null>(null);
+  const [currSlideIndex, setCurrSlideIndex] = useState(0);
+
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [showEditTitleModal, setShowEditTitleModal] = useState(false);
+  const [showEditThumbnailModal, setShowEditThumbnailModal] = useState(false);
+
+  const [newTitle, setNewTitle] = useState('');
+  const [newThumbnail, setNewThumbnail] = useState('');
+  const [error, setError] = useState('');
 
   // NEED TO FETCH PRESENTATION, LOAD OG SLIDE AND DEAL W PRESENTATION ERR
   useEffect(() => {
@@ -55,12 +63,44 @@ function Presentation() {
     navigate("/dashboard");
   };
 
+  // Edit presentation title
+  const editTitle = async () => {
+    const res = await axios.get('http://localhost:5005/store', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    const store = res.data.store; 
+    console.log(store.presentations);
+
+    const pToEdit = store.presentations.find((p: PresentationType) => p.id === presentation.id);
+    pToEdit.name = "new name Name";
+    const presentations = store.presentations.filter((p: PresentationType) => p.id !== presentation.id);
+    presentations.push(pToEdit);
+
+    const updatedStore = {
+      ...store, presentations: presentations,
+    };
+
+    await axios.put('http://localhost:5005/store', { store: updatedStore },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+    console.log(store.presentations);
+    return;
+  }
+
   const firstSlide = presentation.slides[0];
 
   return (
     <>
       {/* <h1>Presentation {presentation.name}</h1> */}
       <h1>Presentation {id}: {presentation.name}</h1>
+      <button onClick={() => editTitle()}>Edit Title</button>
 
       <button onClick={() => navigate('/dashboard')}>Back</button>
       <button onClick={() => setShowDeletePopup(true)}>Delete Presentation</button>
