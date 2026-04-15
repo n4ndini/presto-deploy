@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import type { Store, PresentationType } from "../types";
 import axios from "axios";
 
 =======
 import type { PresentationType, SlideType, Store } from "../types";
 >>>>>>> d40decb (fixed implementation errors of helper)
+=======
+import type { ElementType, PresentationType, SlideType, Store } from "../types";
+>>>>>>> 51075a4 (fixed usage of editing a text elem)
 import TextModal from "./presentationComponents/TextModal";
 import TextElement from "./elems/TextElement";
 
@@ -31,8 +35,10 @@ function Presentation() {
   const [error, setError] = useState('');
   // placeholder until nandini merges in changes
   const [editScreen, setEditScreen] = useState(false);
-
+  
+  const [editingElem, setEditingElem] = useState<ElementType | null>(null);
   const [showTextModal, setShowTextModal] = useState(false);
+
 
   useEffect(() => {
     if (!token) navigate("/");
@@ -263,15 +269,15 @@ function Presentation() {
 =======
   const addNewTextElem = async (
     text: string,
-    height: number,
     width: number,
+    height: number,
     fontSize: number,
     colour: string
   ) => {
     const slide = currSlide;
     const maxId = slide.elements.length > 0 ? Math.max(...slide.elements.map((el) => el.id)) : 0;
 
-    const newElem = {
+    const newElem: ElementType = {
       id: maxId + 1,
       type: 'text',
       content: text,
@@ -297,7 +303,11 @@ function Presentation() {
   }};
 =======
   };
+<<<<<<< HEAD
 >>>>>>> d40decb (fixed implementation errors of helper)
+=======
+  
+>>>>>>> 51075a4 (fixed usage of editing a text elem)
 
   const handleDeleteElement = async (id: number) => {
     const updated: PresentationType = {
@@ -309,6 +319,47 @@ function Presentation() {
     setPresentation(updated);
     await updatePresentation(token!, updated);
   };
+
+  const handleEditElement = (elem: ElementType) => {
+    setEditingElem(elem);
+  };
+
+  const updateExistingElement = async (
+    elemId: number,
+    text: string,
+    width: number,
+    height: number,
+    fontSize: number,
+    colour: string,
+    x: number,
+    y: number
+  ) => {
+    const updated: PresentationType = {
+      ...presentation!,
+      slides: presentation!.slides.map((slide, index) =>
+        index !== currSlideIndex ? slide : {
+          ...slide,
+          elements: slide.elements.map((el) =>
+            el.id !== elemId ? el : {
+              ...el,
+              content: text,
+              width,
+              height,
+              fontSize,
+              colour,
+              x,
+              y,
+            }
+          ),
+        }
+      ),
+    };
+
+    setPresentation(updated);
+    await updatePresentation(token!, updated);
+    setEditingElem(null);
+  };
+
 
   return (
     <>
@@ -412,6 +463,7 @@ function Presentation() {
           <button onClick={() => setShowDeletePopup(false)}>No</button>
         </div>
       )}
+<<<<<<< HEAD
   
       <div
         style={{
@@ -460,6 +512,10 @@ function Presentation() {
           </>
         )}
   
+=======
+
+      {error && (
+>>>>>>> 51075a4 (fixed usage of editing a text elem)
         <div>
           <h2>Slide Content</h2>
           <p>{currentSlide.content || "(empty slide)"}</p>
@@ -476,28 +532,54 @@ function Presentation() {
           {currSlideIndex + 1}
       )}
 
-      {/* if no elements or slides, then show an empty slide, else show the elems for that slide */}
-      {!currSlide.elements || currSlide.elements.length === 0 ? (
-        <p>(empty slide)</p>
-      ) : (
-        <div>
-          {currSlide.elements.map((el) => (
-            <TextElement key={el.id} elem={el} onDelete={handleDeleteElement}
-            />
-          ))}
-        </div>
-      )}
+      <h2>Slide: {currSlide.id}</h2>
+      
+      <div style={{
+        position: "relative",
+        width: "100%",
+        aspectRatio: "16/9",
+        border: "1px solid black",
+        background: "white",
+        overflow: "hidden",
+      }}>
+        {currSlide.elements.map((el) => (
+          <TextElement
+            key={el.id}
+            elem={el}
+            onDelete={handleDeleteElement}
+            onEdit={handleEditElement}
+          />
+        ))}
+      </div>
 
       {editScreen && (
         <div>
           <button onClick={() => setShowTextModal(true)}>Add text</button>
         </div>
+<<<<<<< HEAD
       </div>
   
       <div style={{ marginTop: "20px" }}>
         <button onClick={createNewSlide}>New Slide</button>
         <button onClick={deleteCurrentSlide}>Delete Slide</button>
       </div>
+=======
+      )}
+
+      {showTextModal && (
+        <TextModal onSubmit={addNewTextElem} onClose={() => setShowTextModal(false)}
+      />
+      )}
+      {editingElem && (
+      <TextModal
+        initial={editingElem}
+        onSubmit={(text, width, height, fontSize, colour, x, y) =>
+          updateExistingElement(editingElem.id, text, width, height, fontSize, colour, x, y)
+        }
+        onClose={() => setEditingElem(null)}
+      />
+    )}
+>>>>>>> 51075a4 (fixed usage of editing a text elem)
     </>
   );
 
