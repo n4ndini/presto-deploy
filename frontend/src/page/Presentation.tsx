@@ -7,6 +7,7 @@ import TextModal from "./presentationComponents/TextModal";
 import TextElement from "./elems/TextElement";
 
 import { deletePresentationById, updatePresentation } from "./Helpers";
+import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
 
 
 function Presentation() {
@@ -68,6 +69,11 @@ function Presentation() {
   };
 
   useEffect(() => {
+  useEffect(() => {
+    const fetchPresentation = async () => {
+      const pres = await getPresentationById(token, Number(id));
+      setPresentation(pres);
+    };
     fetchPresentation();
   }, [id]);
 
@@ -168,6 +174,7 @@ function Presentation() {
   const saveTitle = async () => {
     const trimmedTitle = newTitle.trim();
 
+<<<<<<< HEAD
     if (!trimmedTitle) {
       setError("Title cannot be empty");
       return; 
@@ -251,6 +258,39 @@ function Presentation() {
       setError("Failed to delete slide");
     }
   };
+=======
+  const addNewTextElem = async (
+    text: string,
+    height: number,
+    width: number,
+    fontSize: number,
+    colour: string
+  ) => {
+    const slide = currSlide;
+    const maxId = slide.elements.length > 0 ? Math.max(...slide.elements.map((el) => el.id)) : 0;
+
+    const newElem = {
+      id: maxId + 1,
+      type: 'text',
+      content: text,
+      x: 0,
+      y: 0,
+      width,
+      height,
+      fontSize,
+      colour,
+    };
+
+    const updated: PresentationType = {
+      ...presentation,
+      slides: presentation.slides.map((s, i) => i === currSlideIndex ? {...s, elements: [...s.elements, newElem] }: s),
+    };
+
+    setPresentation(updated);
+    await updatePresentation(token, updated);
+    setShowTextModal(false);
+    setError('');
+>>>>>>> 190e95a (continued trying to implement helpers into code)
   }};
 
   const handleDeleteElement = (id: number) => {
@@ -262,8 +302,7 @@ function Presentation() {
     };
     setPresentation(updated);
     await updatePresentation(token, updated);
-    })
-  }
+  };
 
   return (
     <>
