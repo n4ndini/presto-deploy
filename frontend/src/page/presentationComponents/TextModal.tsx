@@ -9,8 +9,10 @@ type TextModalProps = {
     width: number,
     height: number,
     fontSize: number,
-    colour: string
-  ) => void;
+    colour: string,
+    x: number,
+    y: number
+  ) => void | Promise<void>;
   onClose: () => void;
 };
 
@@ -38,7 +40,7 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
       setError('Width and height must be between 0 and 100');
       return;
     }
-    onSubmit(text, width, height, fontSize, colour);
+    onSubmit(text, width, height, fontSize, colour, x, y);
     onClose();
   };
   return (
