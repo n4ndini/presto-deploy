@@ -50,7 +50,28 @@ function Presentation() {
       console.error(err);
       setError("Failed to load presentation");
     }
-  }
+  };
+
+  useEffect(() => {
+    fetchPresentation();
+  }, [id]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!presentation || presentation.slides.length < 2) return;
+
+      if (e.key === "ArrowLeft" && currSlideIndex > 0) {
+        setCurrSlideIndex((prev) => prev - 1);
+      }
+
+      if (e.key === "ArrowRight" && currSlideIndex < presentation.slides.length - 1) {
+        setCurrSlideIndex((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [presentation, currSlideIndex]);
   
   // useEffect(() => {
   //   const fetchPresentation = async () => {
