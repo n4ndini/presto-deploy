@@ -131,8 +131,11 @@ function Presentation() {
     });
     
     const store = res.data.store;
-    const updatedStore = {
-      ...store, presentations: store.presentations.filter((p: PresentationType) => p.id !== presentation.id),
+    const updatedStore: Store = {
+      ...store,
+      presentations: store.presentations.filter(
+        (p: PresentationType) => p.id !== presentation.id
+      ),
     };
 
     await axios.put('http://localhost:5005/store', { store: updatedStore },
