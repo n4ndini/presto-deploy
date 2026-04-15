@@ -148,6 +148,28 @@ function Presentation() {
     navigate("/dashboard");
   };
 
+  const saveTitle = async () => {
+    const trimmedTitle = newTitle.trim();
+
+    if (!trimmedTitle) {
+      setError("Title cannot be empty");
+      return; 
+    }
+
+    try {
+      const updatedPresentation: PresentationType = {
+        ...presentation,
+        name: trimmedTitle,
+      };
+
+      await updatePresentationInStore(updatedPresentation);
+      setShowEditTitleModal(false);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to update title");
+    }
+  }
+
   // Edit presentation title
   const editTitle = async () => {
     const res = await axios.get('http://localhost:5005/store', {
