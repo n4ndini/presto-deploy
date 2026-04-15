@@ -16,6 +16,11 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!token) {
+      setError('Token not found');
+      return;
+    }
+
     const fetchPresentation = async () => {
       try {
         const res = await axios.get('http://localhost:5005/store', {

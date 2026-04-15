@@ -29,12 +29,20 @@ function App() {
   };
 
   async function logout() {
-    const response = await axios.post("http://localhost:5005/admin/auth/logout", {}, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-    });
-    if (response.status === 200) {
+    try {
+      const response = await axios.post("http://localhost:5005/admin/auth/logout", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
+      if (response.status === 200) {
+        setToken(null);
+        localStorage.removeItem('token');
+        navigate('/');
+      }
+    }
+    catch (err) {
+      console.error(err);
       setToken(null);
       localStorage.removeItem('token');
       navigate('/');
