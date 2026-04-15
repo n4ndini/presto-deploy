@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+<<<<<<< HEAD
 import type { Store, PresentationType } from "../types";
 import axios from "axios";
 
+=======
+import type { PresentationType, SlideType, Store } from "../types";
+>>>>>>> d40decb (fixed implementation errors of helper)
 import TextModal from "./presentationComponents/TextModal";
 import TextElement from "./elems/TextElement";
 
@@ -30,11 +34,9 @@ function Presentation() {
 
   const [showTextModal, setShowTextModal] = useState(false);
 
-  if (!token) {
-    // IS THIS RIGHT
-    navigate("/");
-    return;
-  }
+  useEffect(() => {
+    if (!token) navigate("/");
+  }, [token]);
 
   // NEED TO FETCH PRESENTATION, LOAD OG SLIDE AND DEAL W PRESENTATION ERR
   const fetchPresentation = async () => {
@@ -71,7 +73,7 @@ function Presentation() {
   useEffect(() => {
   useEffect(() => {
     const fetchPresentation = async () => {
-      const pres = await getPresentationById(token, Number(id));
+      const pres = await getPresentationById(token!, Number(id));
       setPresentation(pres);
     };
     fetchPresentation();
@@ -167,7 +169,7 @@ function Presentation() {
       });
 
   const handleDeletePresentation = async () => {
-    await deletePresentationById(token, presentation.id);
+    await deletePresentationById(token!, presentation.id);
     navigate("/dashboard");
   };
 
@@ -287,13 +289,17 @@ function Presentation() {
     };
 
     setPresentation(updated);
-    await updatePresentation(token, updated);
+    await updatePresentation(token!, updated);
     setShowTextModal(false);
     setError('');
+<<<<<<< HEAD
 >>>>>>> 190e95a (continued trying to implement helpers into code)
   }};
+=======
+  };
+>>>>>>> d40decb (fixed implementation errors of helper)
 
-  const handleDeleteElement = (id: number) => {
+  const handleDeleteElement = async (id: number) => {
     const updated: PresentationType = {
       ...presentation,
       slides: presentation.slides.map((slide, index) => index !== currSlideIndex ? slide : {
@@ -301,7 +307,7 @@ function Presentation() {
       }),
     };
     setPresentation(updated);
-    await updatePresentation(token, updated);
+    await updatePresentation(token!, updated);
   };
 
   return (
