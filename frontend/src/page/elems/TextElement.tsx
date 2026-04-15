@@ -3,11 +3,12 @@ import type { ElementType } from "../../types";
 type Props = {
   elem: ElementType;
   onDelete: (id: number) => void;
+  onEdit: (elem: ElementType) => void;
 };
 
 // handles behaviour and appearance of Text Element
 // renders text box, handles right click delete, double click edit and styling
-function TextElement({ elem, onDelete }: Props) {
+function TextElement({ elem, onDelete, onEdit }: Props) {
   return (
     <div
       onContextMenu={(e) => {
@@ -15,7 +16,7 @@ function TextElement({ elem, onDelete }: Props) {
         onDelete(elem.id);
       }}
       onDoubleClick={() => {
-        console.log("edit later");
+        onEdit(elem)
       }}
       style={{
         position: "absolute",
