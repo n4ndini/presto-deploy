@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { PresentationType } from "../types";
+import type { Store, PresentationType } from "../types";
 import axios from "axios";
 
 
@@ -21,21 +21,52 @@ function Presentation() {
   const [error, setError] = useState('');
 
   // NEED TO FETCH PRESENTATION, LOAD OG SLIDE AND DEAL W PRESENTATION ERR
-  useEffect(() => {
-    const fetchPresentation = async () => {
-      const res = await axios.get('http://localhost:5005/store', {
+  const fetchPresentation = async () => {
+    try {
+      const res = await axios.get("http://localhost:5005/store", {
         headers: {
           Authorization: `Bearer ${token}`,
-        },
+        }
       });
 
-      const store = res.data.store;
-      const found = store.presentations.find((p: PresentationType) => p.id === Number(id));
+      const store: Store = res.data.store;
+      const found = store.presentations.find(
+        (p: PresentationType) => p.id === Number(id)
+      );
+      
+      setPresentation(found || null);
 
-      setPresentation (found || null);
-    };
-    fetchPresentation();
-  }, [id]);
+      if (found) {
+        setNewTitle(found.name);
+        setNewThumbnail(found.thumbnail || "");
+
+        setCurrSlideIndex((prev) => {
+          if (prev < 0) { return 0; }
+          if (prev > found.slides.length - 1) { return found.slides.length - 1; }
+          return prev;
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load presentation");
+    }
+  }
+  
+  // useEffect(() => {
+  //   const fetchPresentation = async () => {
+  //     const res = await axios.get('http://localhost:5005/store', {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     const store = res.data.store;
+  //     const found = store.presentations.find((p: PresentationType) => p.id === Number(id));
+
+  //     setPresentation (found || null);
+  //   };
+  //   fetchPresentation();
+  // }, [id]);
 
   if (!presentation) {
     return <p>Loading...</p>;
