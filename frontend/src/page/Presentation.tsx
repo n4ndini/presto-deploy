@@ -1,22 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-<<<<<<< HEAD
 import type { Store, PresentationType } from "../types";
-=======
-import type { PresentationType, SlideType, Store } from "../types";
->>>>>>> 37fe8a2 (implemented update to usr's store for new text)
 import axios from "axios";
+<<<<<<< HEAD
+=======
+import TextModal from "./presentationComponents/TextModal";
+>>>>>>> 3b59842 (moved out and connected up Presentation.tsx after moving textModal logic into separate file)
 
 
 function Presentation() {
   const { id } = useParams();
   const token = localStorage.getItem('token');
-<<<<<<< HEAD
-=======
-  const [presentation, setPresentation] = useState<PresentationType | null>(null);
-  const [currSlideIndex, setCurrSlideIndex] = useState(0);
-  const [showDeletePopup, setShowDeletePopup] = useState(false);
->>>>>>> 6a8e0f2 (added local state update to presentation and fixed currSlide to currSlideIndex in useState so it was clearer)
   const navigate = useNavigate();
 
   const [presentation, setPresentation] = useState<PresentationType | null>(null);
@@ -158,13 +152,8 @@ function Presentation() {
     navigate("/dashboard");
   };
 
-<<<<<<< HEAD
   const saveTitle = async () => {
     const trimmedTitle = newTitle.trim();
-=======
-  // const firstSlide = presentation.slides[0];  // this should be changed to be currSlide
-  const currSlide = presentation.slides[currSlideIndex];
->>>>>>> 6a8e0f2 (added local state update to presentation and fixed currSlide to currSlideIndex in useState so it was clearer)
 
     if (!trimmedTitle) {
       setError("Title cannot be empty");
@@ -172,7 +161,6 @@ function Presentation() {
     }
 
     try {
-<<<<<<< HEAD
       const updatedPresentation: PresentationType = {
         ...presentation,
         name: trimmedTitle,
@@ -183,77 +171,6 @@ function Presentation() {
     } catch (err) {
       console.error(err);
       setError("Failed to update title");
-=======
-      const res = await axios.get('http://localhost:5005/store', {
-        headers: { Authorization: `Bearer ${token}`, },
-      });
-      const store: Store = res.data.store;
-
-      const updatedPresentations = store.presentations.map((p: PresentationType) => {
-        if (p.id !== presentation.id) {
-          return p;
-        }
-
-        const updatedSlides = p.slides.map((s: SlideType, index) => {
-          if (currSlideIndex !== index) {   // NEED TO FIX THIS DEPENDING ON IMPLEMENTATION
-            return s; 
-          }
-
-          const oldElems = s.elements || [];
-
-          const maxId = oldElems.length > 0 ? Math.max(...oldElems.map(elem => elem.id)) : 0;
-
-          const newElem = {
-            id: maxId + 1,
-            type: 'text',
-            content: text,
-            x: 0,
-            y: 0,
-            width,
-            height,
-            fontSize,
-            colour,
-          };
-
-          return {
-            ...s, elements: [...oldElems, newElem],
-          };
-        });
-        return {
-          ...p,
-          slides: updatedSlides,
-        };
-      });
-
-      await axios.put('http://localhost:5005/store', {
-        store: {
-          ...store,
-          presentations: updatedPresentations,
-        },
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // make sure its also updated on local state
-      setPresentation((prev) => {
-        if (!prev) return prev;
-        const updated = updatedPresentations.find(p => p.id === prev.id);
-        return updated ? updated as PresentationType : prev;
-      });
-
-      // reset modal
-      setShowTextModal(false);
-      setText('');
-      setError('');
-
-    } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      setError(err.response?.data.error || 'Failed to add text');
-    } else {
-      setError('Something went wrong');
->>>>>>> 37fe8a2 (implemented update to usr's store for new text)
     }
   };
 
@@ -424,7 +341,6 @@ function Presentation() {
           <button onClick={() => setShowDeletePopup(false)}>No</button>
         </div>
       )}
-<<<<<<< HEAD
   
       <div
         style={{
@@ -473,17 +389,10 @@ function Presentation() {
           </>
         )}
   
-=======
-
-      <h2>Slide: {currSlide.id}</h2>
-
-      {error && (
->>>>>>> 6a8e0f2 (added local state update to presentation and fixed currSlide to currSlideIndex in useState so it was clearer)
         <div>
           <h2>Slide Content</h2>
           <p>{currentSlide.content || "(empty slide)"}</p>
         </div>
-<<<<<<< HEAD
   
         <div
           style={{
@@ -494,23 +403,6 @@ function Presentation() {
           }}
         >
           {currSlideIndex + 1}
-=======
-      )}
-
-      {!currSlide.elements || currSlide.elements.length === 0 ? (
-        <p>(empty slide)</p>
-      ) : (
-        currSlide.elements.map((el) => (
-          <div key={el.id}>
-            {el.content}
-          </div>
-        ))
-      )}
-
-      {editScreen && (
-        <div>
-          <button onClick={() => setShowTextModal(true)}>Add text</button>
->>>>>>> 6a8e0f2 (added local state update to presentation and fixed currSlide to currSlideIndex in useState so it was clearer)
         </div>
       </div>
   
