@@ -23,4 +23,7 @@ export type ElementType = {
   y: number;
   width: number;
   height: number;
+
+  fontSize?: number;
+  colour?: string;
 }
