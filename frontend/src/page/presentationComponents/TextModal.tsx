@@ -12,6 +12,8 @@ type TextModalProps = {
   onClose: () => void;
 };
 
+// used for creating a new text element
+// collects usr input, validates it, calls onCreate and then closes itself
 function TextModal({ onCreate, onClose }: TextModalProps) {
   const [text, setText] = useState('');
   const [width, setWidth] = useState(50);
