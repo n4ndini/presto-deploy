@@ -1,8 +1,10 @@
 import type { React } from "next/dist/server/route-modules/app-page/vendored/ssr/entrypoints";
-import { useState } from "react";
+import { useState} from "react";
+import type { ElementType } from "../../types";
 
 type TextModalProps = {
-  onCreate: (
+  initial?: ElementType; // if true, we are editing a textbox
+  onSubmit: (
     text: string,
     width: number,
     height: number,
@@ -12,14 +14,16 @@ type TextModalProps = {
   onClose: () => void;
 };
 
-// used for creating a new text element
+// used for creating or editing a text element
 // collects usr input, validates it, calls onCreate and then closes itself
-function TextModal({ onCreate, onClose }: TextModalProps) {
-  const [text, setText] = useState('');
-  const [width, setWidth] = useState(50);
-  const [height, setHeight] = useState(20);
-  const [fontSize, setFontSize] = useState(1);
-  const [colour, setColour] = useState('#000000');
+function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
+  const [text, setText] = useState(initial?.content ?? '');
+  const [width, setWidth] = useState(initial?.width ?? 50);
+  const [height, setHeight] = useState(initial?.height ?? 20);
+  const [fontSize, setFontSize] = useState(initial?.fontSize ?? 1);
+  const [colour, setColour] = useState(initial?.colour ?? '#000000');
+  const [x, setX] = useState(initial?.x ?? 0);
+  const [y, setY] = useState(initial?.y ?? 0);
   const [error, setError] = useState(''); // implement error messages
   
   const computeSubmit = (e: React.SyntheticEvent) => {
@@ -34,7 +38,7 @@ function TextModal({ onCreate, onClose }: TextModalProps) {
       setError('Width and height must be between 0 and 100');
       return;
     }
-    onCreate(text, width, height, fontSize, colour);
+    onSubmit(text, width, height, fontSize, colour);
     onClose();
   };
   return (
@@ -47,6 +51,7 @@ function TextModal({ onCreate, onClose }: TextModalProps) {
           </button>
         </div>
       )}
+      <h3>{initial ? "Edit Text" : "Add Text"}</h3><br />
 
       Text:<input value={text} onChange={e => setText(e.target.value)} /><br />
       Size of TextBox:<div>
@@ -56,7 +61,7 @@ function TextModal({ onCreate, onClose }: TextModalProps) {
       Font Size (em):<input type="number" step="0.1" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /><br />
       Colour (hex):<input value={colour} onChange={e => setColour(e.target.value)} /><br />
 
-      <button type="submit">Add textbox</button>
+      <button type="submit">{initial ? "Save" : "Add"}</button>
       <button type="button" onClick={onClose}>Cancel</button>
     </form>
   );
