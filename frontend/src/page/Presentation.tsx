@@ -185,44 +185,36 @@ function Presentation() {
     }
   };
 
-  // Edit presentation title
-  const editTitle = async () => {
-    const res = await axios.get('http://localhost:5005/store', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    
-    const store = res.data.store; 
-    console.log(store.presentations);
+  const createNewSlide = async () => {
+    try {
+      const nextSlideId = 
+      presentation.slides.length > 0
+        ? Math.max(...presentation.slides.map((slide) => slide.id)) + 1
+        : 1;
 
-    const pToEdit = store.presentations.find((p: PresentationType) => p.id === presentation.id);
-    pToEdit.name = "new name Name";
-    const presentations = store.presentations.filter((p: PresentationType) => p.id !== presentation.id);
-    presentations.push(pToEdit);
+      const updatedPresentation: PresentationType = {
+        ...presentation, 
+        slides: [
+          ...presentation.slides,
+          {
+            id: nextSlideId,
+            content: "",
+          },
+        ],
+      };
 
-    const updatedStore = {
-      ...store, presentations: presentations,
-    };
-
-    await axios.put('http://localhost:5005/store', { store: updatedStore },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-    console.log(store.presentations);
-    return;
-  }
-
-  const firstSlide = presentation.slides[0];
+      await updatePresentationInStore(updatedPresentation);
+      setCurrSlideIndex(updatedPresentation.slides.length - 1);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to create slide");
+    }
+  };
 
   return (
     <>
       {/* <h1>Presentation {presentation.name}</h1> */}
       <h1>Presentation {id}: {presentation.name}</h1>
-      <button onClick={() => editTitle()}>Edit Title</button>
 
       <button onClick={() => navigate('/dashboard')}>Back</button>
       <button onClick={() => setShowDeletePopup(true)}>Delete Presentation</button>
@@ -237,9 +229,9 @@ function Presentation() {
           <button onClick={() => setShowDeletePopup(false)}>No</button>
         </div>
       )}
-
+{/* 
       <h2>Slide: {firstSlide.id}</h2>
-      <p>{firstSlide.content || "(empty slide)"}</p>
+      <p>{firstSlide.content || "(empty slide)"}</p> */}
     </>
   )
 }
