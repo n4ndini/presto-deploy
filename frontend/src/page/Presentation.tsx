@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Store, PresentationType } from "../types";
 import axios from "axios";
-<<<<<<< HEAD
-=======
+
 import TextModal from "./presentationComponents/TextModal";
-<<<<<<< HEAD
->>>>>>> 3b59842 (moved out and connected up Presentation.tsx after moving textModal logic into separate file)
-=======
 import TextElement from "./elems/TextElement";
->>>>>>> 3f8063c (fixed rendering of slides on screen to use show the actual curr slide and its elements)
+
+import { deletePresentationById, updatePresentation } from "./Helpers";
 
 
 function Presentation() {
@@ -24,16 +21,19 @@ function Presentation() {
   const [showEditTitleModal, setShowEditTitleModal] = useState(false);
   const [showEditThumbnailModal, setShowEditThumbnailModal] = useState(false);
 
-<<<<<<< HEAD
   const [newTitle, setNewTitle] = useState('');
   const [newThumbnail, setNewThumbnail] = useState('');
   const [error, setError] = useState('');
-=======
   // placeholder until nandini merges in changes
   const [editScreen, setEditScreen] = useState(false);
 
   const [showTextModal, setShowTextModal] = useState(false);
->>>>>>> 3f8063c (fixed rendering of slides on screen to use show the actual curr slide and its elements)
+
+  if (!token) {
+    // IS THIS RIGHT
+    navigate("/");
+    return;
+  }
 
   // NEED TO FETCH PRESENTATION, LOAD OG SLIDE AND DEAL W PRESENTATION ERR
   const fetchPresentation = async () => {
@@ -160,6 +160,8 @@ function Presentation() {
         },
       });
 
+  const handleDeletePresentation = async () => {
+    await deletePresentationById(token, presentation.id);
     navigate("/dashboard");
   };
 
@@ -249,6 +251,19 @@ function Presentation() {
       setError("Failed to delete slide");
     }
   };
+  }};
+
+  const handleDeleteElement = (id: number) => {
+    const updated: PresentationType = {
+      ...presentation,
+      slides: presentation.slides.map((slide, index) => index !== currSlideIndex ? slide : {
+        ...slide, elements: slide.elements.filter((el) => el.id !== id)
+      }),
+    };
+    setPresentation(updated);
+    await updatePresentation(token, updated);
+    })
+  }
 
   return (
     <>
@@ -420,11 +435,6 @@ function Presentation() {
       {!currSlide.elements || currSlide.elements.length === 0 ? (
         <p>(empty slide)</p>
       ) : (
-        // currSlide.elements.map((el) => (
-        //   <div key={el.id}>
-        //     {el.content}
-        //   </div>
-        // ))
         <div>
           {currSlide.elements.map((el) => (
             <TextElement key={el.id} elem={el} onDelete={handleDeleteElement}
