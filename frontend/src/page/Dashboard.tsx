@@ -64,12 +64,17 @@ function Dashboard() {
       const store: Store = res.data.store;
       const oldPresentations = store.presentations || [];
 
+      const newId =
+      oldPresentations.length > 0
+        ? Math.max(...oldPresentations.map((p) => p.id)) + 1
+        : 1;
+    
       const newPresentation: PresentationType = {
-        id: oldPresentations.length + 1,
+        id: newId,
         name,
         desc,
         thumbnail,
-        slides: [{ id: 1 , content:"" }],  // default single empty slide
+        slides: [{ id: 1, content: "" }],
       };
 
       const updatedStore: Store = {
