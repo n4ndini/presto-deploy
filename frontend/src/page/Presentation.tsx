@@ -2,12 +2,21 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Store, PresentationType } from "../types";
 import axios from "axios";
+import type { React } from "next/dist/server/route-modules/app-page/vendored/rsc/entrypoints";
 
 
 function Presentation() {
   const { id } = useParams();
   const token = localStorage.getItem('token');
+<<<<<<< HEAD
+=======
+  const [presentation, setPresentation] = useState<PresentationType | null>(null);
+  const [currSlide, setCurrSlide] = useState(0);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+>>>>>>> 4e5982f (implemented setError thing and began planning for adding new text element)
   const navigate = useNavigate();
+  const [error, setError] = useState(''); // implement error messages
+
   // placeholder until nandini merges in changes
   const [editScreen, setEditScreen] = useState(false);
 
