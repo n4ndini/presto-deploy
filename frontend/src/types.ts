@@ -26,8 +26,8 @@ type BaseElementType = {
 export type TextElementType = BaseElementType & {
   type: 'text';
   content: string; // text content, url of video/image, actual code
-  fontSize?: number;
-  colour?: string;
+  fontSize: number;
+  colour: string;
 }
 
 export type ImageElementType = BaseElementType & {
@@ -42,4 +42,10 @@ export type VideoElementType = BaseElementType & {
   autoplay: boolean;
 };
 
-export type ElementType = TextElementType | ImageElementType | VideoElementType;
+export type CodeElementType = BaseElementType & {
+  type: 'code';
+  code: string;
+  fontSize: number;
+};
+
+export type ElementType = TextElementType | ImageElementType | VideoElementType | CodeElementType;
