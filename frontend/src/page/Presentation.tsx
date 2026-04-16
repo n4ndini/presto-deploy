@@ -4,7 +4,6 @@ import type { ImageElementType, PresentationType, TextElementType } from "../typ
 import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
-import { describe } from "node:test";
 
 
 function Presentation() {
@@ -25,7 +24,7 @@ function Presentation() {
   const [editScreen, setEditScreen] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
-  const [editingElem, setEditingElem] = useState<ElementType | null>(null);
+  const [editingElem, setEditingElem] = useState<TextElementType | ImageElementType | null>(null);
 
   useEffect(() => {
     if (!token) navigate("/");

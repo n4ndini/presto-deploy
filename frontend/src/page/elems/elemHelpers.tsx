@@ -35,3 +35,14 @@ export const deleteElement = (
     elements.filter((el) => el.id !== elemId)
   );
 };
+
+export const updateElement = (
+  presentation: PresentationType,
+  slideIndex: number,
+  elemId: number,
+  updater: (el: ElementType) => ElementType
+): PresentationType => {
+  return updateSlide(presentation, slideIndex, (elements) =>
+    elements.map((el) => (el.id === elemId ? updater(el) : el))
+  );
+};

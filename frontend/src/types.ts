@@ -15,7 +15,7 @@ export type SlideType = {
   elements: ElementType[];
 }
 
-type ElementType = {
+export type ElementType = {
   id: number;
   // type: 'text' | 'image' | 'video' | 'code';
   // content: string; // text content, url of video/image, actual code
