@@ -34,8 +34,14 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
       return; // if no image url entered then dont make the text box
     }
 
-    // check url is an img or 64base encoded
-    // ENCODE IMAGE W .encode or smth is base64 string
+    const isBase64Image = /^data:image\/(png|jpg|jpeg|gif|tiff);base64,/.test(url);
+
+    const isValidUrl = /^https?:\/\/.+\.(png|jpg|jpeg|gif|tiff)(\?.*)?$/.test(url);
+
+    if (!isBase64Image && !isValidUrl) {
+      setError("Must be png, jpg, gif, tiff URL or base64 image");
+      return;
+    }
 
     if (width < 0 || height < 0 || width > 100 || height > 100) {
       setError('Width and height must be between 0 and 100');
