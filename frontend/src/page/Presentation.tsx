@@ -106,18 +106,12 @@ function Presentation() {
         ? Math.max(...presentation.slides.map((slide) => slide.id)) + 1
         : 1;
 
-      const updatedPresentation: PresentationType = {
-        ...presentation, 
-        slides: [
-          ...presentation.slides,
-          {
-            id: nextSlideId,
-            content: "",
-          },
-        ],
+      const updatedPresentation = {
+        ...presentation,
+        slides: [...presentation.slides, { id: nextSlideId, elements: [] }],
       };
 
-      await updatePresentationInStore(updatedPresentation);
+      await savePresentation(updatedPresentation);
       setCurrSlideIndex(updatedPresentation.slides.length - 1);
     } catch (err) {
       console.error(err);
@@ -132,22 +126,19 @@ function Presentation() {
     }
 
     try {
-      const updatedSlides = presentation.slides.filter(
-        (_, index) => index !== currSlideIndex
-      );
-
-      const updatedPresentation: PresentationType = {
+      const updatedSlides = {
         ...presentation,
-        slides: updatedSlides,
+        slides: presentation.slides.filter((_, i) => i !== currSlideIndex),
       };
 
-      await updatePresentationInStore(updatedPresentation);
+      await savePresentation(updatedSlides);
       setCurrSlideIndex((prev) => Math.max(0, prev - 1));
     } catch (err) {
       console.error(err);
       setError("Failed to delete slide");
     }
   };
+
   const addNewTextElem = async (
     text: string,
     height: number,
