@@ -34,6 +34,9 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
       return; // if no image url entered then dont make the text box
     }
 
+    // check url is an img or 64base encoded
+    // ENCODE IMAGE W .encode or smth is base64 string
+
     if (width < 0 || height < 0 || width > 100 || height > 100) {
       setError('Width and height must be between 0 and 100');
       return;
@@ -41,6 +44,7 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
     onSubmit(url, alt, width, height, x, y);
     onClose();
   };
+  
   return (
     <form onSubmit={computeSubmit}
       style={{

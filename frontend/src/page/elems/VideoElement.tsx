@@ -40,7 +40,7 @@ function VideoElement({ elem, onDelete, onEdit }: Props) {
           height:"100%",
           objectFit: "contain",
         }}
-      />
+      />g
     </div>
   );
 }
