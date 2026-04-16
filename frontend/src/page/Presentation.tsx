@@ -10,6 +10,7 @@ import ImageElement from "./elems/ImageElement";
 import VideoModal from "./elems/VideoModal";
 import VideoElement from "./elems/VideoElement";
 import CodeModal from "./elems/CodeModal";
+import CodeElement from "./elems/CodeElement";
 
 
 function Presentation() {
@@ -501,6 +502,15 @@ function Presentation() {
           case "video":
             return (
               <VideoElement
+                key={el.id}
+                elem={el}
+                onDelete={handleDeleteElement}
+                onEdit={setEditingElem}
+              />
+            );
+          case "code":
+            return (
+              <CodeElement
                 key={el.id}
                 elem={el}
                 onDelete={handleDeleteElement}

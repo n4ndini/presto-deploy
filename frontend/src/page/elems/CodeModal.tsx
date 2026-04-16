@@ -22,7 +22,7 @@ function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
     initial?.language ?? 'python'
   );
   const [code, setCode] = useState(initial?.code ?? '');
-  const [fontSize, setFontSize] = useState(initial?.fontSize ?? 10);
+  const [fontSize, setFontSize] = useState(initial?.fontSize ?? 1);
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
   const [x, setX] = useState(initial?.x ?? 0);
@@ -35,6 +35,11 @@ function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
 
     if (!code) {
       setError('Please enter code into the code block');
+      return;
+    }
+
+    if (fontSize < 0.5 || fontSize > 5) {
+      setError("Font size must be between 0.5 and 5");
       return;
     }
 
@@ -76,7 +81,7 @@ function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
       <h3 style={{ margin: 0 }}>{initial ? "Edit Code" : "Add Code"}</h3><br />
 
       Language:
-      <select value={language} onChange={e => setLanguage(e.target.value as any)}>
+      <select value={language} onChange={e => setLanguage(e.target.value as 'python' | 'c' | 'javascript')}>
         <option value="c">C</option>
         <option value="python">Python</option>
         <option value="javascript">JavaScript</option>

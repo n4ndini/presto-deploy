@@ -32,9 +32,6 @@ function CodeElement({ elem, onDelete, onEdit }: Props) {
         whiteSpace: "pre",
         textAlign: "left",
 
-        fontSize: `${elem.fontSize}em`,
-
-        padding: "4px",
       }}
     >
       <SyntaxHighlighter
@@ -42,8 +39,10 @@ function CodeElement({ elem, onDelete, onEdit }: Props) {
         style={dark}
         customStyle={{
           margin: 0,
-          padding: "4px",
-          background: "transparent",
+          border: 'none',
+          background: 'black',
+          // padding: "4px",
+        //  . background: "transparent",
           fontSize: `${elem.fontSize}em`,
         }}>
           {elem.code}
