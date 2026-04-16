@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { ImageElementType, PresentationType, TextElementType } from "../types";
-import TextModal from "./presentationComponents/TextModal";
+import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
 import { describe } from "node:test";
