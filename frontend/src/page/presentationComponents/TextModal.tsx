@@ -1,9 +1,9 @@
 import type { React } from "next/dist/server/route-modules/app-page/vendored/ssr/entrypoints";
 import { useState} from "react";
-import type { ElementType } from "../../types";
+import type { TextElementType } from "../../types";
 
 type TextModalProps = {
-  initial?: ElementType; // if true, we are editing a textbox
+  initial?: TextElementType; // if true, we are editing a textbox
   onSubmit: (
     text: string,
     width: number,
@@ -45,7 +45,8 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
     onClose();
   };
   return (
-    <form onSubmit={computeSubmit} style={{
+    <form onSubmit={computeSubmit}
+    style={{
       display: "flex",
       flexDirection: "column",
       gap: "12px",
@@ -63,7 +64,7 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
       minWidth: "320px",
     }}>
       {error && (
-        <div style={{ backgroundColor: "#ffe5e5", border: "1px solid red", borderRadius: "6px", padding: "10px", marginBottom: "16px" }}>
+        <div style={{ backgroundColor: "#ffe5e5", border: "1px solid red", borderRadius: "6px", padding: "10px", marginBottom: "10px" }}>
           {error}
           <button type="button" onClick={() => setError('')}>
             Close
