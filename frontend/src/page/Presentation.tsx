@@ -8,6 +8,16 @@ function Presentation() {
   const { id } = useParams();
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  // placeholder until nandini merges in changes
+  const [editScreen, setEditScreen] = useState(false);
+
+
+  const [showTextModal, setShowTextModal] = useState(false);
+  const [text, setText] = useState('');
+  const [width, setWidth] = useState(50);
+  const [height, setHeight] = useState(20);
+  const [fontSize, setFontSize] = useState(1);
+  const [colour, setColour] = useState('#000000');
 
   const [presentation, setPresentation] = useState<PresentationType | null>(null);
   const [currSlideIndex, setCurrSlideIndex] = useState(0);
