@@ -28,22 +28,22 @@ function CodeElement({ elem, onDelete, onEdit }: Props) {
         height: `${elem.height}%`,
 
         border: "1px solid lightgrey",
-        overflow: "auto",
-        whiteSpace: "pre",
-        textAlign: "left",
+        overflow: "hidden",
+        display: "flex", 
 
       }}
     >
       <SyntaxHighlighter
         language={elem.language}
         style={dark}
+        wrapLongLines={true}
         customStyle={{
           margin: 0,
           border: 'none',
           background: 'black',
-          // padding: "4px",
-        //  . background: "transparent",
           fontSize: `${elem.fontSize}em`,
+          height: "100%",
+          width: "100%",
         }}>
           {elem.code}
       </SyntaxHighlighter>
