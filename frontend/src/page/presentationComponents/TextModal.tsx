@@ -33,6 +33,7 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
     setError('');
 
     if (!text) {
+      setError('Enter text to create a text box!');
       return; // if no text entered then dont make the text box
     }
 
@@ -44,27 +45,50 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
     onClose();
   };
   return (
-    <form onSubmit={computeSubmit}>
+    <form onSubmit={computeSubmit} style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: "12px",
+
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+
+      backgroundColor: "#d4bff7",
+      padding: "24px",
+      borderRadius: "12px",
+      boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+      zIndex: 1000,
+      minWidth: "320px",
+    }}>
       {error && (
-        <div>
+        <div style={{ backgroundColor: "#ffe5e5", border: "1px solid red", borderRadius: "6px", padding: "10px", marginBottom: "16px" }}>
           {error}
           <button type="button" onClick={() => setError('')}>
             Close
           </button>
         </div>
       )}
-      <h3>{initial ? "Edit Text" : "Add Text"}</h3><br />
+      <h3 style={{ margin: 0 }}>{initial ? "Edit Text" : "Add Text"}</h3><br />
 
       Text:<input value={text} onChange={e => setText(e.target.value)} /><br />
-      Size of TextBox:<div>
-        Height (%):<input type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br />
-        Width (%):<input type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br />
+      Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
+        Height (%):<input style={{ width: "100%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br />
+        Width (%):<input style={{ width: "100%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br />
       </div>
       Font Size (em):<input type="number" step="0.1" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /><br />
       Colour (hex):<input value={colour} onChange={e => setColour(e.target.value)} /><br />
 
-      <button type="submit">{initial ? "Save" : "Add"}</button>
-      <button type="button" onClick={onClose}>Cancel</button>
+      <div style={{
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: "10px",
+        marginTop: "10px",
+      }}>
+        <button type="submit">{initial ? "Save" : "Add"}</button>
+        <button type="button" onClick={onClose}>Cancel</button>
+      </div>
     </form>
   );
 }
