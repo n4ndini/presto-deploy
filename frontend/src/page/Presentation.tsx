@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { Store, PresentationType } from "../types";
-import axios from "axios";
+import type { ElementType, ImageElementType, PresentationType, TextElementType } from "../types";
+import TextModal from "./elems/TextModal";
+import TextElement from "./elems/TextElement";
+import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
+import { addElement, deleteElement, updateElement } from "./elems/elemHelpers";
+import ImageModal from "./elems/ImageModal";
+import ImageElement from "./elems/ImageElement";
 
 
 function Presentation() {
   const { id } = useParams();
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const [error, setError] = useState('');
 
   const [presentation, setPresentation] = useState<PresentationType | null>(null);
   const [currSlideIndex, setCurrSlideIndex] = useState(0);
@@ -18,41 +24,28 @@ function Presentation() {
 
   const [newTitle, setNewTitle] = useState('');
   const [newThumbnail, setNewThumbnail] = useState('');
-  const [error, setError] = useState('');
-
-  // NEED TO FETCH PRESENTATION, LOAD OG SLIDE AND DEAL W PRESENTATION ERR
-  const fetchPresentation = async () => {
-    try {
-      const res = await axios.get("http://localhost:5005/store", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
-
-      const store: Store = res.data.store;
-      const found = store.presentations.find(
-        (p: PresentationType) => p.id === Number(id)
-      );
-      
-      setPresentation(found || null);
-
-      if (found) {
-        setNewTitle(found.name);
-        setNewThumbnail(found.thumbnail || "");
-
-        setCurrSlideIndex((prev) => {
-          if (prev < 0) { return 0; }
-          if (prev > found.slides.length - 1) { return found.slides.length - 1; }
-          return prev;
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load presentation");
-    }
-  };
+  const [editScreen, setEditScreen] = useState(false);
+  const [showTextModal, setShowTextModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [editingElem, setEditingElem] = useState<TextElementType | ImageElementType | null>(null);
 
   useEffect(() => {
+    if (!token) navigate("/");
+  }, [token]);
+
+  useEffect(() => {
+    const fetchPresentation = async () => {
+      try {
+        const pres = await getPresentationById(token!, Number(id));
+        setPresentation(pres);
+        if (pres) {
+          setNewTitle(pres.name);
+          setNewThumbnail(pres.thumbnail || '');
+        }
+      } catch {
+        setError("Failed to load presentation");
+      }
+    };
     fetchPresentation();
   }, [id]);
 
@@ -72,22 +65,6 @@ function Presentation() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [presentation, currSlideIndex]);
-  
-  // useEffect(() => {
-  //   const fetchPresentation = async () => {
-  //     const res = await axios.get('http://localhost:5005/store', {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     const store = res.data.store;
-  //     const found = store.presentations.find((p: PresentationType) => p.id === Number(id));
-
-  //     setPresentation (found || null);
-  //   };
-  //   fetchPresentation();
-  // }, [id]);
 
   if (!presentation) {
     return <p>Loading...</p>;
@@ -97,90 +74,31 @@ function Presentation() {
   const isFirstSlide = currSlideIndex === 0;
   const isLastSlide = currSlideIndex === presentation.slides.length - 1;
 
-  const updatePresentationInStore = async (updatedPresentation: PresentationType) => {
-    const res = await axios.get("http://localhost:5005/store", {
-      headers: { Authorization: `Bearer ${token}`},
-    });
+  const savePresentation = async (updated: PresentationType) => {
+    setPresentation(updated);
+    await updatePresentation(token!, updated);
+  };
 
-    const store: Store = res.data.store;
-
-    const updatedPresentations = store.presentations.map((p: PresentationType) => 
-      p.id == updatedPresentation.id ? updatedPresentation : p
-    );
-
-    const updatedStore: Store = {
-      ...store,
-      presentations: updatedPresentations,
-    };
-
-    await axios.put("http://localhost:5005/store", 
-      { store: updatedStore },
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    );
-
-    setPresentation(updatedPresentation);
-  }
-
-  const deletePresentation = async () => {
-    const res = await axios.get('http://localhost:5005/store', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    
-    const store = res.data.store;
-    const updatedStore: Store = {
-      ...store,
-      presentations: store.presentations.filter(
-        (p: PresentationType) => p.id !== presentation.id
-      ),
-    };
-
-    await axios.put('http://localhost:5005/store', { store: updatedStore },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
+  const handleDeletePresentation = async () => {
+    await deletePresentationById(token!, presentation.id);
     navigate("/dashboard");
   };
 
   const saveTitle = async () => {
-    const trimmedTitle = newTitle.trim();
-
-    if (!trimmedTitle) {
-      setError("Title cannot be empty");
-      return; 
-    }
-
+    if (!newTitle.trim()) { setError("Title cannot be empty"); return; }
     try {
-      const updatedPresentation: PresentationType = {
-        ...presentation,
-        name: trimmedTitle,
-      };
-
-      await updatePresentationInStore(updatedPresentation);
+      await savePresentation({ ...presentation, name: newTitle.trim() });
       setShowEditTitleModal(false);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Failed to update title");
     }
   };
 
   const saveThumbnail = async () => {
     try {
-      const updatedPresentation: PresentationType = {
-        ...presentation,
-        thumbnail: newThumbnail.trim(),
-      };
-
-      await updatePresentationInStore(updatedPresentation);
+      await savePresentation({ ...presentation, thumbnail: newThumbnail.trim() });
       setShowEditThumbnailModal(false);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Failed to update thumbnail");
     }
   };
@@ -192,18 +110,12 @@ function Presentation() {
         ? Math.max(...presentation.slides.map((slide) => slide.id)) + 1
         : 1;
 
-      const updatedPresentation: PresentationType = {
-        ...presentation, 
-        slides: [
-          ...presentation.slides,
-          {
-            id: nextSlideId,
-            content: "",
-          },
-        ],
+      const updatedPresentation = {
+        ...presentation,
+        slides: [...presentation.slides, { id: nextSlideId, elements: [] }],
       };
 
-      await updatePresentationInStore(updatedPresentation);
+      await savePresentation(updatedPresentation);
       setCurrSlideIndex(updatedPresentation.slides.length - 1);
     } catch (err) {
       console.error(err);
@@ -218,16 +130,12 @@ function Presentation() {
     }
 
     try {
-      const updatedSlides = presentation.slides.filter(
-        (_, index) => index !== currSlideIndex
-      );
-
-      const updatedPresentation: PresentationType = {
+      const updatedSlides = {
         ...presentation,
-        slides: updatedSlides,
+        slides: presentation.slides.filter((_, i) => i !== currSlideIndex),
       };
 
-      await updatePresentationInStore(updatedPresentation);
+      await savePresentation(updatedSlides);
       setCurrSlideIndex((prev) => Math.max(0, prev - 1));
     } catch (err) {
       console.error(err);
@@ -235,9 +143,82 @@ function Presentation() {
     }
   };
 
+  const addNewTextElem = async (
+    text: string,
+    width: number,
+    height: number,
+    fontSize: number,
+    colour: string,
+    x: number,
+    y: number
+  ) => {
+    const maxId = currentSlide.elements.length > 0 ? Math.max(...currentSlide.elements.map((el) => el.id)) : 0;
+
+    const newElem: TextElementType  = {
+      id: maxId + 1,
+      type: 'text',
+      content: text,
+      x: 0,
+      y: 0,
+      width,
+      height,
+      fontSize,
+      colour,
+    };
+    const updated = addElement(presentation!, currSlideIndex, newElem);
+
+    await savePresentation(updated);
+    setShowTextModal(false);
+    setError('');
+  };
+
+  const handleDeleteElement =  async(id: number) => {
+    const updated = deleteElement(presentation!, currSlideIndex, id);
+    setPresentation(updated);
+    await savePresentation(updated);
+  };
+
+  const updateExistingElement = async (
+    elemId: number,
+    updater: (el: ElementType) => ElementType
+  ) => {
+    const updated = updateElement(presentation!, currSlideIndex, elemId, updater);
+
+    await savePresentation(updated);
+    setEditingElem(null);
+  };
+
+  const addNewImageElem = async (
+    url: string,
+    alt: string,
+    width: number,
+    height: number,
+    x: number,
+    y: number
+  ) => {
+    const maxId = currentSlide.elements.length > 0 ? Math.max(...currentSlide.elements.map((el) => el.id)) : 0;
+
+    const newElem: ImageElementType  = {
+      id: maxId + 1,
+      type: 'image',
+      url,
+      alt,
+      x: 0,
+      y: 0,
+      width,
+      height,
+    };
+
+    const updated = addElement(presentation!, currSlideIndex, newElem);
+
+    await savePresentation(updated);
+    setShowImageModal(false);
+    setError('');
+  };
+
   return (
     <>
-      <div style={{ marginBottom: "20px" }}>
+      <div style={{ marginBottom: "20px", display: 'flex', gap: '8px', alignItems: 'center' }}>
         <button onClick={() => navigate("/dashboard")}>Back</button>
         <button onClick={() => setShowDeletePopup(true)}>
           Delete Presentation
@@ -333,11 +314,60 @@ function Presentation() {
           }}
         >
           <p>Are you sure you want to delete this presentation?</p>
-          <button onClick={deletePresentation}>Yes</button>
+          <button onClick={handleDeletePresentation}>Yes</button>
           <button onClick={() => setShowDeletePopup(false)}>No</button>
         </div>
       )}
-  
+      
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', marginBottom: '6px' }}>
+        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={createNewSlide}>New Slide</button>
+        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={deleteCurrentSlide}>Delete Slide</button>
+        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setEditScreen(p => !p)}>
+          {editScreen ? "Close Editor" : "Edit Slide"}
+        </button>
+        {editScreen && (
+          <div>
+            <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
+            <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
+          </div>
+        )}
+      </div>
+
+      {showTextModal && (
+        <TextModal onSubmit={addNewTextElem} onClose={() => setShowTextModal(false)} />
+      )}
+
+      {showImageModal && (
+        <ImageModal onSubmit={addNewImageElem} onClose={() => setShowImageModal(false)} />
+      )}
+
+      {editingElem && editingElem.type === 'text' && (
+        <TextModal
+          initial={editingElem}
+          onSubmit={(text, width, height, fontSize, colour, x, y) =>
+            updateExistingElement(editingElem.id, (el) => {
+              if (el.type !== 'text') return el;
+              return {...el, content: text, width, height, fontSize, colour, x, y};
+            })
+          }
+          onClose={() => setEditingElem(null)}
+        />
+      )}
+
+      {editingElem && editingElem.type === 'image' && (
+        <ImageModal
+          initial={editingElem}
+          onSubmit={(url, alt, width, height, x, y) =>
+            updateExistingElement(editingElem.id, (el) => {
+              if (el.type !== 'image') return el;
+              return {...el, url, alt, width, height, x, y};
+            })
+          }
+          onClose={() => setEditingElem(null)}
+        />
+      )}
+
+      {/* side canvas */}
       <div
         style={{
           width: "800px",
@@ -349,8 +379,40 @@ function Presentation() {
           alignItems: "center",
           justifyContent: "center",
           marginTop: "20px",
-        }}
-      >
+        }}>
+        {currentSlide.elements.map((el) => {
+        switch (el.type) {
+          case "text":
+            return (
+              <TextElement
+                key={el.id}
+                elem={el}
+                onDelete={handleDeleteElement}
+                onEdit={setEditingElem}
+              />
+            );
+
+          case "image":
+            return (
+              <ImageElement
+                key={el.id}
+                elem={el}
+                onDelete={handleDeleteElement}
+                onEdit={setEditingElem}
+              />
+            );
+
+          default:
+            return null;
+         }
+       })}
+
+        {/* Slide number */}
+        <div style={{ position: 'absolute', bottom: '8px', left: '8px', fontSize: '0.75em', color: '#888' }}>
+          {currSlideIndex + 1}
+        </div>
+
+        {/* nav arrows? */}
         {presentation.slides.length >= 2 && (
           <>
             <button
@@ -381,34 +443,11 @@ function Presentation() {
               }}
             >
               →
-            </button>
-          </>
-        )}
-  
-        <div>
-          <h2>Slide Content</h2>
-          <p>{currentSlide.content || "(empty slide)"}</p>
-        </div>
-  
-        <div
-          style={{
-            position: "absolute",
-            bottom: "10px",
-            left: "10px",
-            fontWeight: "bold",
-          }}
-        >
-          {currSlideIndex + 1}
-        </div>
-      </div>
-  
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={createNewSlide}>New Slide</button>
-        <button onClick={deleteCurrentSlide}>Delete Slide</button>
+           </button>
+         </>
+       )}  
       </div>
     </>
   );
-
 }
-
-export default Presentation
+export default Presentation;
