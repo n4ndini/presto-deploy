@@ -77,8 +77,8 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
       URL/Base 64 Encoding:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
       Description of image:<input value={alt} onChange={e => setAlt(e.target.value)} /><br />
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
-        Height (%):<input style={{ width: "100%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br />
-        Width (%):<input style={{ width: "100%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br />
+        <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
+        <span>Width (%):<input style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
       </div>
 
       <div style={{

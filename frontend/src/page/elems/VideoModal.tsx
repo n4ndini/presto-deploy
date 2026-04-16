@@ -71,10 +71,12 @@ function VideoModal({ initial, onSubmit, onClose }: VideoModalProps) {
       <h3 style={{ margin: 0 }}>{initial ? "Edit Video" : "Add Video"}</h3><br />
 
       Youtube URL:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
-      Autoplay video?:<input type="checked" checked={autoplay} onChange={e => setAutoplay(e.target.checked)} /><br />
+      <div style={{display:"flex", gap: "10px"}}> 
+        Autoplay video? :<input style={{ display: "flex", alignItems: "center", gap: "8px", width: "20px", height:"20px"}} type="checkbox" checked={autoplay} onChange={e => setAutoplay(e.target.checked)} /><br />
+      </div>
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
-        Height (%):<input style={{ width: "100%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br />
-        Width (%):<input style={{ width: "100%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br />
+        <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
+        <span>Width (%):<input style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
       </div>
 
       <div style={{
