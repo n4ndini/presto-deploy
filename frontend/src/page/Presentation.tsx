@@ -146,10 +146,9 @@ function Presentation() {
     fontSize: number,
     colour: string
   ) => {
-    const slide = currSlide;
-    const maxId = slide.elements.length > 0 ? Math.max(...slide.elements.map((el) => el.id)) : 0;
+    const maxId = currSlide.elements.length > 0 ? Math.max(...currSlide.elements.map((el) => el.id)) : 0;
 
-    const newElem = {
+    const newElem: ElementType  = {
       id: maxId + 1,
       type: 'text',
       content: text,
@@ -163,16 +162,16 @@ function Presentation() {
 
     const updated: PresentationType = {
       ...presentation,
-      slides: presentation.slides.map((s, i) => i === currSlideIndex ? {...s, elements: [...s.elements, newElem] }: s),
+      slides: presentation.slides.map((s, i) =>
+        i === currSlideIndex ? { ...s, elements: [...s.elements, newElem] } : s
     };
 
-    setPresentation(updated);
-    await updatePresentation(token, updated);
+    await savePresentation(updated);
     setShowTextModal(false);
     setError('');
-  }};
+  };
 
-  const handleDeleteElement = (id: number) => {
+  const handleDeleteElement =  async(id: number) => {
     const updated: PresentationType = {
       ...presentation,
       slides: presentation.slides.map((slide, index) => index !== currSlideIndex ? slide : {
@@ -180,7 +179,32 @@ function Presentation() {
       }),
     };
     setPresentation(updated);
-    await updatePresentation(token, updated);
+    await savePresentation(updated);
+  };
+
+  const updateExistingElement = async (
+    elemId: number,
+    text: string,
+    height: number,
+    width: number,
+    fontSize: number,
+    colour: string,
+    x: number,
+    y: number
+  ) => {
+    const updated: PresentationType = {
+      ...presentation,
+      slides: presentation.slides.map((s, i) =>
+        i !== currSlideIndex ? s : {
+          ...s,
+          elements: s.elements.map(el =>
+            el.id !== elemId ? el : { ...el, content: text, width, height, fontSize, colour, x, y }
+          ),
+        }
+      ),
+    };
+    await savePresentation(updated);
+    setEditingElem(null);
   };
 
   return (
