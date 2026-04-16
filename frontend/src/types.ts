@@ -36,4 +36,10 @@ export type ImageElementType = BaseElementType & {
   alt: string;
 };
 
-export type ElementType = TextElementType | ImageElementType;
+export type VideoElementType = BaseElementType & {
+  type: 'video';
+  url: string;
+  autoplay: boolean;
+};
+
+export type ElementType = TextElementType | ImageElementType | VideoElementType;
