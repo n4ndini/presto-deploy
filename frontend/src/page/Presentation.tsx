@@ -7,6 +7,7 @@ import { deletePresentationById, getPresentationById, updatePresentation } from 
 import { addElement, deleteElement, updateElement } from "./elems/elemHelpers";
 import ImageModal from "./elems/ImageModal";
 import ImageElement from "./elems/ImageElement";
+import VideoModal from "./elems/VideoModal";
 
 
 function Presentation() {
@@ -28,7 +29,7 @@ function Presentation() {
   const [showTextModal, setShowTextModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
-  const [editingElem, setEditingElem] = useState<TextElementType | ImageElementType | null>(null);
+  const [editingElem, setEditingElem] = useState<ElementType | null>(null);
 
   useEffect(() => {
     if (!token) navigate("/");
@@ -402,12 +403,12 @@ function Presentation() {
       )}
 
       {editingElem && editingElem.type === 'video' && (
-        <ImageModal
+        <VideoModal
           initial={editingElem}
-          onSubmit={(url, alt, width, height, x, y) =>
+          onSubmit={(url, autoplay, width, height, x, y) =>
             updateExistingElement(editingElem.id, (el) => {
               if (el.type !== 'image') return el;
-              return {...el, url, alt, width, height, x, y};
+              return {...el, url, autoplay, width, height, x, y};
             })
           }
           onClose={() => setEditingElem(null)}
