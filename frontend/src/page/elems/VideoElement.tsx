@@ -33,14 +33,14 @@ function VideoElement({ elem, onDelete, onEdit }: Props) {
 
       }}
     >
-      <video controls autoPlay 
+      <video controls autoPlay={elem.autoplay} 
         src={elem.url}
         style={{
           width: "100%",
           height:"100%",
           objectFit: "contain",
         }}
-      />g
+      />
     </div>
   );
 }
