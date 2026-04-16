@@ -1,7 +1,7 @@
 import { useState} from "react";
 import type { VideoElementType } from "../../types";
 
-type ImageModalProps = {
+type VideoModalProps = {
   initial?: VideoElementType; // if true, we are editing an image
   onSubmit: (
     url: string,
@@ -16,7 +16,7 @@ type ImageModalProps = {
 
 // used for creating or editing an image element
 // collects usr input, validates it, calls onCreate and then closes itself
-function VideoModal({ initial, onSubmit, onClose }: ImageModalProps) {
+function VideoModal({ initial, onSubmit, onClose }: VideoModalProps) {
   const [url, setUrl] = useState(initial?.url ?? '');
   const [autoplay, setAutoplay] = useState(initial?.autoplay ?? false);
   const [width, setWidth] = useState(initial?.width ?? 50);
@@ -71,6 +71,7 @@ function VideoModal({ initial, onSubmit, onClose }: ImageModalProps) {
       <h3 style={{ margin: 0 }}>{initial ? "Edit Text" : "Add Text"}</h3><br />
 
       Youtube URL:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
+      Autoplay video?:<input type="checked" checked={autoplay} onChange={e => setAutoplay(e.target.checked)} /><br />
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
         Height (%):<input style={{ width: "100%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br />
         Width (%):<input style={{ width: "100%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br />
