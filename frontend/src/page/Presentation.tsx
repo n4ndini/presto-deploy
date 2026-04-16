@@ -1,20 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-<<<<<<< HEAD
-<<<<<<< HEAD
-import type { Store, PresentationType } from "../types";
-import axios from "axios";
-
-=======
-import type { PresentationType, SlideType, Store } from "../types";
->>>>>>> d40decb (fixed implementation errors of helper)
-=======
-import type { ElementType, PresentationType, SlideType, Store } from "../types";
->>>>>>> 51075a4 (fixed usage of editing a text elem)
+import type { ElementType, PresentationType } from "../types";
 import TextModal from "./presentationComponents/TextModal";
 import TextElement from "./elems/TextElement";
-
-import { deletePresentationById, updatePresentation } from "./Helpers";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
 
 
@@ -22,6 +10,7 @@ function Presentation() {
   const { id } = useParams();
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
+  const [error, setError] = useState('');
 
   const [presentation, setPresentation] = useState<PresentationType | null>(null);
   const [currSlideIndex, setCurrSlideIndex] = useState(0);
@@ -32,55 +21,26 @@ function Presentation() {
 
   const [newTitle, setNewTitle] = useState('');
   const [newThumbnail, setNewThumbnail] = useState('');
-  const [error, setError] = useState('');
-  // placeholder until nandini merges in changes
   const [editScreen, setEditScreen] = useState(false);
-  
-  const [editingElem, setEditingElem] = useState<ElementType | null>(null);
   const [showTextModal, setShowTextModal] = useState(false);
-
+  const [editingElem, setEditingElem] = useState<ElementType | null>(null);
 
   useEffect(() => {
     if (!token) navigate("/");
   }, [token]);
 
-  // NEED TO FETCH PRESENTATION, LOAD OG SLIDE AND DEAL W PRESENTATION ERR
-  const fetchPresentation = async () => {
-    try {
-      const res = await axios.get("http://localhost:5005/store", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      });
-
-      const store: Store = res.data.store;
-      const found = store.presentations.find(
-        (p: PresentationType) => p.id === Number(id)
-      );
-      
-      setPresentation(found || null);
-
-      if (found) {
-        setNewTitle(found.name);
-        setNewThumbnail(found.thumbnail || "");
-
-        setCurrSlideIndex((prev) => {
-          if (prev < 0) { return 0; }
-          if (prev > found.slides.length - 1) { return found.slides.length - 1; }
-          return prev;
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load presentation");
-    }
-  };
-
-  useEffect(() => {
   useEffect(() => {
     const fetchPresentation = async () => {
-      const pres = await getPresentationById(token!, Number(id));
-      setPresentation(pres);
+      try {
+        const pres = await getPresentationById(token!, Number(id));
+        setPresentation(pres);
+        if (pres) {
+          setNewTitle(pres.name);
+          setNewThumbnail(pres.thumbnail || '');
+        }
+      } catch {
+        setError("Failed to load presentation");
+      }
     };
     fetchPresentation();
   }, [id]);
@@ -101,22 +61,6 @@ function Presentation() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [presentation, currSlideIndex]);
-  
-  // useEffect(() => {
-  //   const fetchPresentation = async () => {
-  //     const res = await axios.get('http://localhost:5005/store', {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     const store = res.data.store;
-  //     const found = store.presentations.find((p: PresentationType) => p.id === Number(id));
-
-  //     setPresentation (found || null);
-  //   };
-  //   fetchPresentation();
-  // }, [id]);
 
   if (!presentation) {
     return <p>Loading...</p>;
@@ -126,93 +70,31 @@ function Presentation() {
   const isFirstSlide = currSlideIndex === 0;
   const isLastSlide = currSlideIndex === presentation.slides.length - 1;
 
-  const updatePresentationInStore = async (updatedPresentation: PresentationType) => {
-    const res = await axios.get("http://localhost:5005/store", {
-      headers: { Authorization: `Bearer ${token}`},
-    });
-
-    const store: Store = res.data.store;
-
-    const updatedPresentations = store.presentations.map((p: PresentationType) => 
-      p.id == updatedPresentation.id ? updatedPresentation : p
-    );
-
-    const updatedStore: Store = {
-      ...store,
-      presentations: updatedPresentations,
-    };
-
-    await axios.put("http://localhost:5005/store", 
-      { store: updatedStore },
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    );
-
-    setPresentation(updatedPresentation);
-  }
-
-  const deletePresentation = async () => {
-    const res = await axios.get('http://localhost:5005/store', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    
-    const store = res.data.store;
-    const updatedStore: Store = {
-      ...store,
-      presentations: store.presentations.filter(
-        (p: PresentationType) => p.id !== presentation.id
-      ),
-    };
-
-    await axios.put('http://localhost:5005/store', { store: updatedStore },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  const savePresentation = async (updated: PresentationType) => {
+    setPresentation(updated);
+    await updatePresentation(token!, updated);
+  };
 
   const handleDeletePresentation = async () => {
-    await deletePresentationById(token!, presentation.id);
+    await deletePresentationById(token, presentation.id);
     navigate("/dashboard");
   };
 
   const saveTitle = async () => {
-    const trimmedTitle = newTitle.trim();
-
-<<<<<<< HEAD
-    if (!trimmedTitle) {
-      setError("Title cannot be empty");
-      return; 
-    }
-
+    if (!newTitle.trim()) { setError("Title cannot be empty"); return; }
     try {
-      const updatedPresentation: PresentationType = {
-        ...presentation,
-        name: trimmedTitle,
-      };
-
-      await updatePresentationInStore(updatedPresentation);
+      await savePresentation({ ...presentation, name: newTitle.trim() });
       setShowEditTitleModal(false);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Failed to update title");
     }
   };
 
   const saveThumbnail = async () => {
     try {
-      const updatedPresentation: PresentationType = {
-        ...presentation,
-        thumbnail: newThumbnail.trim(),
-      };
-
-      await updatePresentationInStore(updatedPresentation);
+      await savePresentation({ ...presentation, thumbnail: newThumbnail.trim() });
       setShowEditThumbnailModal(false);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Failed to update thumbnail");
     }
   };
@@ -266,18 +148,17 @@ function Presentation() {
       setError("Failed to delete slide");
     }
   };
-=======
   const addNewTextElem = async (
     text: string,
-    width: number,
     height: number,
+    width: number,
     fontSize: number,
     colour: string
   ) => {
     const slide = currSlide;
     const maxId = slide.elements.length > 0 ? Math.max(...slide.elements.map((el) => el.id)) : 0;
 
-    const newElem: ElementType = {
+    const newElem = {
       id: maxId + 1,
       type: 'text',
       content: text,
@@ -295,21 +176,12 @@ function Presentation() {
     };
 
     setPresentation(updated);
-    await updatePresentation(token!, updated);
+    await updatePresentation(token, updated);
     setShowTextModal(false);
     setError('');
-<<<<<<< HEAD
->>>>>>> 190e95a (continued trying to implement helpers into code)
   }};
-=======
-  };
-<<<<<<< HEAD
->>>>>>> d40decb (fixed implementation errors of helper)
-=======
-  
->>>>>>> 51075a4 (fixed usage of editing a text elem)
 
-  const handleDeleteElement = async (id: number) => {
+  const handleDeleteElement = (id: number) => {
     const updated: PresentationType = {
       ...presentation,
       slides: presentation.slides.map((slide, index) => index !== currSlideIndex ? slide : {
@@ -317,49 +189,8 @@ function Presentation() {
       }),
     };
     setPresentation(updated);
-    await updatePresentation(token!, updated);
+    await updatePresentation(token, updated);
   };
-
-  const handleEditElement = (elem: ElementType) => {
-    setEditingElem(elem);
-  };
-
-  const updateExistingElement = async (
-    elemId: number,
-    text: string,
-    width: number,
-    height: number,
-    fontSize: number,
-    colour: string,
-    x: number,
-    y: number
-  ) => {
-    const updated: PresentationType = {
-      ...presentation!,
-      slides: presentation!.slides.map((slide, index) =>
-        index !== currSlideIndex ? slide : {
-          ...slide,
-          elements: slide.elements.map((el) =>
-            el.id !== elemId ? el : {
-              ...el,
-              content: text,
-              width,
-              height,
-              fontSize,
-              colour,
-              x,
-              y,
-            }
-          ),
-        }
-      ),
-    };
-
-    setPresentation(updated);
-    await updatePresentation(token!, updated);
-    setEditingElem(null);
-  };
-
 
   return (
     <>
@@ -463,7 +294,6 @@ function Presentation() {
           <button onClick={() => setShowDeletePopup(false)}>No</button>
         </div>
       )}
-<<<<<<< HEAD
   
       <div
         style={{
@@ -512,10 +342,6 @@ function Presentation() {
           </>
         )}
   
-=======
-
-      {error && (
->>>>>>> 51075a4 (fixed usage of editing a text elem)
         <div>
           <h2>Slide Content</h2>
           <p>{currentSlide.content || "(empty slide)"}</p>
@@ -532,54 +358,28 @@ function Presentation() {
           {currSlideIndex + 1}
       )}
 
-      <h2>Slide: {currSlide.id}</h2>
-      
-      <div style={{
-        position: "relative",
-        width: "100%",
-        aspectRatio: "16/9",
-        border: "1px solid black",
-        background: "white",
-        overflow: "hidden",
-      }}>
-        {currSlide.elements.map((el) => (
-          <TextElement
-            key={el.id}
-            elem={el}
-            onDelete={handleDeleteElement}
-            onEdit={handleEditElement}
-          />
-        ))}
-      </div>
+      {/* if no elements or slides, then show an empty slide, else show the elems for that slide */}
+      {!currSlide.elements || currSlide.elements.length === 0 ? (
+        <p>(empty slide)</p>
+      ) : (
+        <div>
+          {currSlide.elements.map((el) => (
+            <TextElement key={el.id} elem={el} onDelete={handleDeleteElement}
+            />
+          ))}
+        </div>
+      )}
 
       {editScreen && (
         <div>
           <button onClick={() => setShowTextModal(true)}>Add text</button>
         </div>
-<<<<<<< HEAD
       </div>
   
       <div style={{ marginTop: "20px" }}>
         <button onClick={createNewSlide}>New Slide</button>
         <button onClick={deleteCurrentSlide}>Delete Slide</button>
       </div>
-=======
-      )}
-
-      {showTextModal && (
-        <TextModal onSubmit={addNewTextElem} onClose={() => setShowTextModal(false)}
-      />
-      )}
-      {editingElem && (
-      <TextModal
-        initial={editingElem}
-        onSubmit={(text, width, height, fontSize, colour, x, y) =>
-          updateExistingElement(editingElem.id, text, width, height, fontSize, colour, x, y)
-        }
-        onClose={() => setEditingElem(null)}
-      />
-    )}
->>>>>>> 51075a4 (fixed usage of editing a text elem)
     </>
   );
 
