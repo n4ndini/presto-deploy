@@ -209,7 +209,7 @@ function Presentation() {
 
   return (
     <>
-      <div style={{ marginBottom: "20px" }}>
+      <div style={{ marginBottom: "20px", display: 'flex', gap: '8px', alignItems: 'center' }}>
         <button onClick={() => navigate("/dashboard")}>Back</button>
         <button onClick={() => setShowDeletePopup(true)}>
           Delete Presentation
@@ -305,7 +305,7 @@ function Presentation() {
           }}
         >
           <p>Are you sure you want to delete this presentation?</p>
-          <button onClick={deletePresentation}>Yes</button>
+          <button onClick={handleDeletePresentation}>Yes</button>
           <button onClick={() => setShowDeletePopup(false)}>No</button>
         </div>
       )}
@@ -371,23 +371,6 @@ function Presentation() {
           }}
         >
           {currSlideIndex + 1}
-      )}
-
-      {/* if no elements or slides, then show an empty slide, else show the elems for that slide */}
-      {!currSlide.elements || currSlide.elements.length === 0 ? (
-        <p>(empty slide)</p>
-      ) : (
-        <div>
-          {currSlide.elements.map((el) => (
-            <TextElement key={el.id} elem={el} onDelete={handleDeleteElement}
-            />
-          ))}
-        </div>
-      )}
-
-      {editScreen && (
-        <div>
-          <button onClick={() => setShowTextModal(true)}>Add text</button>
         </div>
       </div>
   
