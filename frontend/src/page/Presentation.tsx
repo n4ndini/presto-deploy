@@ -9,6 +9,7 @@ import ImageModal from "./elems/ImageModal";
 import ImageElement from "./elems/ImageElement";
 import VideoModal from "./elems/VideoModal";
 import VideoElement from "./elems/VideoElement";
+import CodeModal from "./elems/CodeModal";
 
 
 function Presentation() {
@@ -248,6 +249,7 @@ function Presentation() {
   };
 
   const addNewCodeElem = async (
+    language: 'Python' | 'C' | 'Javascript',
     code: string,
     fontSize: number,
     width: number,
@@ -259,6 +261,7 @@ function Presentation() {
 
     const newElem: CodeElementType  = {
       id: maxId + 1,
+      language,
       type: 'code',
       code,
       fontSize,
@@ -270,7 +273,7 @@ function Presentation() {
 
     const updated = addElement(presentation!, currSlideIndex, newElem);
     await savePresentation(updated);
-    setShowVideoModal(false);
+    setShowCodeModal(false);
     setError('');
   };
 
@@ -385,10 +388,10 @@ function Presentation() {
         </button>
         {editScreen && (
           <div>
-            <button style={{ fontSize: '9.9rem', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
-            <button style={{ fontSize: '9.9rem', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
-            <button style={{ fontSize: '9.9rem', padding: '2px 8px' }} onClick={() => setShowVideoModal(true)}>+ Add Video</button>
-            <button style={{ fontSize: '9.9rem', padding: '2px 8px' }} onClick={() => setShowCodeModal(true)}>+ Add Code block</button>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowVideoModal(true)}>+ Add Video</button>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowCodeModal(true)}>+ Add Code block</button>
           </div>
         )}
       </div>
@@ -451,10 +454,10 @@ function Presentation() {
       {editingElem && editingElem.type === 'code' && (
         <CodeModal
           initial={editingElem}
-          onSubmit={(code, fontSize, width, height, x, y) =>
+          onSubmit={(language, code, fontSize, width, height, x, y) =>
             updateExistingElement(editingElem.id, (el) => {
               if (el.type !== 'code') return el;
-              return {...el, code, fontSize, width, height, x, y};
+              return {...el, language, code, fontSize, width, height, x, y};
             })
           }
           onClose={() => setEditingElem(null)}

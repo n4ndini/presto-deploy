@@ -4,6 +4,7 @@ import type { CodeElementType } from "../../types";
 type CodeModalProps = {
   initial?: CodeElementType; // if true, we are editing an image
   onSubmit: (
+    language: 'Python' | 'C' | 'Javascript',
     code: string,
     fontSize: number,
     width: number,
@@ -17,6 +18,7 @@ type CodeModalProps = {
 // used for creating or editing an image element
 // collects usr input, validates it, calls onCreate and then closes itself
 function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
+  const [language, setLanguage] = useState(initial?.language ?? 'python');
   const [code, setCode] = useState(initial?.code ?? '');
   const [fontSize, setFontSize] = useState(initial?.fontSize ?? 10);
   const [width, setWidth] = useState(initial?.width ?? 50);
@@ -34,14 +36,11 @@ function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
       return;
     }
 
-    // check url is an img or 64base encoded
-    // ENCODE IMAGE W .encode or smth is base64 string
-
     if (width < 0 || height < 0 || width > 100 || height > 100) {
       setError('Width and height must be between 0 and 100');
       return;
     }
-    onSubmit(code, fontSize, width, height, x, y);
+    onSubmit(language, code, fontSize, width, height, x, y);
     onClose();
   };
   
@@ -74,6 +73,12 @@ function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
       )}
       <h3 style={{ margin: 0 }}>{initial ? "Edit Code" : "Add Code"}</h3><br />
 
+      Language:
+      <select value={language} onChange={e => setLanguage(e.target.value as any)}>
+        <option value="c">C</option>
+        <option value="python">Python</option>
+        <option value="javascript">JavaScript</option>
+      </select>
       Code:<input value={code} onChange={e => setCode(e.target.value)} /><br />
       Font Size (em):<input type="number" step="0.1" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /><br />
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
