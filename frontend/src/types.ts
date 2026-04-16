@@ -43,6 +43,7 @@ export type VideoElementType = BaseElementType & {
 };
 
 export type CodeElementType = BaseElementType & {
+  language: 'Python' | 'C' | 'Javascript';
   type: 'code';
   code: string;
   fontSize: number;
