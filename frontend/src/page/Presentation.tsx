@@ -313,7 +313,30 @@ function Presentation() {
         </div>
       )}
       
-      
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', marginBottom: '6px' }}>
+        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={createNewSlide}>New Slide</button>
+        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={deleteCurrentSlide}>Delete Slide</button>
+        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setEditScreen(p => !p)}>
+          {editScreen ? "Close Editor" : "Edit Slide"}
+        </button>
+        {editScreen && (
+          <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
+        )}
+      </div>
+
+      {showTextModal && (
+        <TextModal onSubmit={addNewTextElem} onClose={() => setShowTextModal(false)} />
+      )}
+
+      {editingElem && (
+        <TextModal
+          initial={editingElem}
+          onSubmit={(text, width, height, fontSize, colour, x, y) =>
+            updateExistingElement(editingElem.id, text, width, height, fontSize, colour, x, y)
+          }
+          onClose={() => setEditingElem(null)}
+        />
+      )}
 
       {/* side canvas */}
       <div
