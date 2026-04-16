@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { ElementType, ImageElementType, PresentationType, TextElementType, VideoElementType } from "../types";
+import type { CodeElementType, ElementType, ImageElementType, PresentationType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
@@ -235,6 +235,33 @@ function Presentation() {
       type: 'video',
       url,
       autoplay,
+      x: 0,
+      y: 0,
+      width,
+      height,
+    };
+
+    const updated = addElement(presentation!, currSlideIndex, newElem);
+    await savePresentation(updated);
+    setShowVideoModal(false);
+    setError('');
+  };
+
+  const addNewCodeElem = async (
+    code: string,
+    fontSize: number,
+    width: number,
+    height: number,
+    x: number,
+    y: number
+  ) => {
+    const maxId = currentSlide.elements.length > 0 ? Math.max(...currentSlide.elements.map((el) => el.id)) : 0;
+
+    const newElem: CodeElementType  = {
+      id: maxId + 1,
+      type: 'code',
+      code,
+      fontSize,
       x: 0,
       y: 0,
       width,
