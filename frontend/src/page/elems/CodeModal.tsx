@@ -4,7 +4,7 @@ import type { CodeElementType } from "../../types";
 type CodeModalProps = {
   initial?: CodeElementType; // if true, we are editing an image
   onSubmit: (
-    language: 'Python' | 'C' | 'Javascript',
+    language: 'python' | 'c' | 'javascript',
     code: string,
     fontSize: number,
     width: number,
@@ -18,7 +18,9 @@ type CodeModalProps = {
 // used for creating or editing an image element
 // collects usr input, validates it, calls onCreate and then closes itself
 function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
-  const [language, setLanguage] = useState(initial?.language ?? 'python');
+  const [language, setLanguage] = useState<'python' | 'c' | 'javascript'>(
+    initial?.language ?? 'python'
+  );
   const [code, setCode] = useState(initial?.code ?? '');
   const [fontSize, setFontSize] = useState(initial?.fontSize ?? 10);
   const [width, setWidth] = useState(initial?.width ?? 50);

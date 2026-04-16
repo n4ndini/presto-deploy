@@ -249,7 +249,7 @@ function Presentation() {
   };
 
   const addNewCodeElem = async (
-    language: 'Python' | 'C' | 'Javascript',
+    language: 'python' | 'c' | 'javascript',
     code: string,
     fontSize: number,
     width: number,
