@@ -8,6 +8,7 @@ import { addElement, deleteElement, updateElement } from "./elems/elemHelpers";
 import ImageModal from "./elems/ImageModal";
 import ImageElement from "./elems/ImageElement";
 import VideoModal from "./elems/VideoModal";
+import VideoElement from "./elems/VideoElement";
 
 
 function Presentation() {
@@ -242,7 +243,7 @@ function Presentation() {
     const updated = addElement(presentation!, currSlideIndex, newElem);
 
     await savePresentation(updated);
-    setShowImageModal(false);
+    setShowVideoModal(false);
     setError('');
   };
 
@@ -407,7 +408,7 @@ function Presentation() {
           initial={editingElem}
           onSubmit={(url, autoplay, width, height, x, y) =>
             updateExistingElement(editingElem.id, (el) => {
-              if (el.type !== 'image') return el;
+              if (el.type !== 'video') return el;
               return {...el, url, autoplay, width, height, x, y};
             })
           }
@@ -449,7 +450,15 @@ function Presentation() {
                 onEdit={setEditingElem}
               />
             );
-
+            case "video":
+              return (
+                <VideoElement
+                  key={el.id}
+                  elem={el}
+                  onDelete={handleDeleteElement}
+                  onEdit={setEditingElem}
+                />
+              );
           default:
             return null;
          }
