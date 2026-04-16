@@ -30,6 +30,7 @@ function Presentation() {
   const [showTextModal, setShowTextModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showCodeModal, setShowCodeModal] = useState(false);
   const [editingElem, setEditingElem] = useState<ElementType | null>(null);
 
   useEffect(() => {
@@ -241,7 +242,6 @@ function Presentation() {
     };
 
     const updated = addElement(presentation!, currSlideIndex, newElem);
-
     await savePresentation(updated);
     setShowVideoModal(false);
     setError('');
@@ -358,9 +358,10 @@ function Presentation() {
         </button>
         {editScreen && (
           <div>
-            <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
-            <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
-            <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowVideoModal(true)}>+ Add Video</button>
+            <button style={{ fontSize: '9.9rem', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
+            <button style={{ fontSize: '9.9rem', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
+            <button style={{ fontSize: '9.9rem', padding: '2px 8px' }} onClick={() => setShowVideoModal(true)}>+ Add Video</button>
+            <button style={{ fontSize: '9.9rem', padding: '2px 8px' }} onClick={() => setShowCodeModal(true)}>+ Add Code block</button>
           </div>
         )}
       </div>
@@ -375,6 +376,10 @@ function Presentation() {
 
       {showVideoModal && (
         <VideoModal onSubmit={addNewVideoElem} onClose={() => setShowVideoModal(false)} />
+      )}
+
+      {showCodeModal && (
+        <CodeModal onSubmit={addNewCodeElem} onClose={() => setShowCodeModal(false)} />
       )}
 
       {editingElem && editingElem.type === 'text' && (
@@ -416,6 +421,19 @@ function Presentation() {
         />
       )}
 
+      {editingElem && editingElem.type === 'code' && (
+        <CodeModal
+          initial={editingElem}
+          onSubmit={(code, fontSize, width, height, x, y) =>
+            updateExistingElement(editingElem.id, (el) => {
+              if (el.type !== 'code') return el;
+              return {...el, code, fontSize, width, height, x, y};
+            })
+          }
+          onClose={() => setEditingElem(null)}
+        />
+      )}
+
       {/* side canvas */}
       <div
         style={{
@@ -430,7 +448,7 @@ function Presentation() {
           marginTop: "20px",
         }}>
         {currentSlide.elements.map((el) => {
-        switch (el.type) {
+          switch (el.type) {
           case "text":
             return (
               <TextElement
@@ -450,15 +468,15 @@ function Presentation() {
                 onEdit={setEditingElem}
               />
             );
-            case "video":
-              return (
-                <VideoElement
-                  key={el.id}
-                  elem={el}
-                  onDelete={handleDeleteElement}
-                  onEdit={setEditingElem}
-                />
-              );
+          case "video":
+            return (
+              <VideoElement
+                key={el.id}
+                elem={el}
+                onDelete={handleDeleteElement}
+                onEdit={setEditingElem}
+              />
+            );
           default:
             return null;
          }
@@ -500,9 +518,9 @@ function Presentation() {
               }}
             >
               →
-           </button>
-         </>
-       )}  
+            </button>
+          </>
+        )}  
       </div>
     </>
   );
