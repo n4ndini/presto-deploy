@@ -15,11 +15,11 @@ type ImageModalProps = {
   onClose: () => void;
 };
 
-// used for creating or editing a text element
+// used for creating or editing an image element
 // collects usr input, validates it, calls onCreate and then closes itself
 function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
-  const [url, setUrl] = useState(initial?.url ?? 'http://.. or base 64');
-  const [alt, setAlt] = useState(initial?.alt ?? 'Image description');
+  const [url, setUrl] = useState(initial?.url ?? '');
+  const [alt, setAlt] = useState(initial?.alt ?? '');
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
   const [x, setX] = useState(initial?.x ?? 0);
@@ -32,7 +32,7 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
 
     if (!url) {
       setError('Enter image URL or base 64 string encoding of the whole image itself');
-      return; // if no text entered then dont make the text box
+      return; // if no image url entered then dont make the text box
     }
 
     if (width < 0 || height < 0 || width > 100 || height > 100) {
