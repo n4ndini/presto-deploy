@@ -33,14 +33,14 @@ function VideoElement({ elem, onDelete, onEdit }: Props) {
 
       }}
     >
-      <video controls autoPlay={elem.autoplay} 
-        src={elem.url}
+      <iframe
+        src={elem.url.replace("watch?v=", "embed/")}
         style={{
           width: "100%",
-          height:"100%",
-          objectFit: "contain",
+          height: "100%",
+          border: "none",
         }}
-      />
+        allow="autoplay" />
     </div>
   );
 }
