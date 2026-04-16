@@ -74,7 +74,7 @@ function Dashboard() {
         name,
         desc,
         thumbnail,
-        slides: [{ id: 1, content: "" }],
+        slides: [{ id: 1 , elements: [] }],  // default single empty slide
       };
 
       const updatedStore: Store = {
