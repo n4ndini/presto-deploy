@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { ImageElementType, PresentationType, TextElementType } from "../types";
+import type { ElementType, ImageElementType, PresentationType, TextElementType } from "../types";
 import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
+import { addElement, deleteElement, updateElement } from "./elems/elemHelpers";
 
 
 function Presentation() {
@@ -162,13 +163,7 @@ function Presentation() {
       fontSize,
       colour,
     };
-
-    const updated: PresentationType = {
-      ...presentation,
-      slides: presentation.slides.map((s, i) =>
-        i === currSlideIndex ? { ...s, elements: [...s.elements, newElem] } : s
-      ),
-    };
+    const updated = addElement(presentation!, currSlideIndex, newElem);
 
     await savePresentation(updated);
     setShowTextModal(false);
@@ -176,39 +171,17 @@ function Presentation() {
   };
 
   const handleDeleteElement =  async(id: number) => {
-    const updated: PresentationType = {
-      ...presentation,
-      slides: presentation.slides.map((slide, index) => index !== currSlideIndex ? slide : {
-        ...slide, elements: slide.elements.filter((el) => el.id !== id)
-      }),
-    };
+    const updated = deleteElement(presentation!, currSlideIndex, id);
     setPresentation(updated);
     await savePresentation(updated);
   };
 
-
-  // MAYBE HAVE AN ELEM HELPER???
   const updateExistingElement = async (
     elemId: number,
-    text: string,
-    width: number,
-    height: number,
-    fontSize: number,
-    colour: string,
-    x: number,
-    y: number
+    updater: (el: ElementType) => ElementType
   ) => {
-    const updated: PresentationType = {
-      ...presentation,
-      slides: presentation.slides.map((s, i) =>
-        i !== currSlideIndex ? s : {
-          ...s,
-          elements: s.elements.map(el =>
-            el.id !== elemId ? el : { ...el, content: text, width, height, fontSize, colour, x, y }
-          ),
-        }
-      ),
-    };
+    const updated = updateElement(presentation!, currSlideIndex, elemId, updater);
+
     await savePresentation(updated);
     setEditingElem(null);
   };
@@ -234,12 +207,7 @@ function Presentation() {
       height,
     };
 
-    const updated: PresentationType = {
-      ...presentation,
-      slides: presentation.slides.map((s, i) =>
-        i === currSlideIndex ? { ...s, elements: [...s.elements, newElem] } : s
-      ),
-    };
+    const updated = addElement(presentation!, currSlideIndex, newElem);
 
     await savePresentation(updated);
     setShowImageModal(false);
@@ -371,22 +339,28 @@ function Presentation() {
         <ImageModal onSubmit={addNewImageElem} onClose={() => setShowImageModal(false)} />
       )}
 
-      {editingElem.type === 'text' && (
+      {editingElem && editingElem.type === 'text' && (
         <TextModal
           initial={editingElem}
           onSubmit={(text, width, height, fontSize, colour, x, y) =>
-            updateExistingElement(editingElem.id, text, width, height, fontSize, colour, x, y)
-          }
+            updateExistingElement(editingElem.id, (el) => {
+              if (el.type !== 'text') return el;
+              return {...el, content: text, width, height, fontSize, colour, x, y};
+            })
+         }
           onClose={() => setEditingElem(null)}
         />
       )}
 
-      {editingElem.type === 'image' && (
-        <ImageModal
+      {editingElem && editingElem.type === 'image' && (
+        <TextModal
           initial={editingElem}
-          onSubmit={(url, alt, width, height, x, y) =>
-            updateExistingElement(editingElem.id, url, alt, width, height, x, y)
-          }
+          onSubmit={(text, width, height, fontSize, colour, x, y) =>
+            updateExistingElement(editingElem.id, (el) => {
+              if (el.type !== 'image') return el;
+              return {...el, url, alt, width, height, x, y};
+            })
+         }
           onClose={() => setEditingElem(null)}
         />
       )}

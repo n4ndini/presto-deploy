@@ -1,9 +1,9 @@
-import type { ElementType } from "../../types";
+import type { TextElementType } from "../../types";
 
 type Props = {
-  elem: ElementType;
+  elem: TextElementType;
   onDelete: (id: number) => void;
-  onEdit: (elem: ElementType) => void;
+  onEdit: (elem: TextElementType) => void;
 };
 
 // handles behaviour and appearance of Text Element
