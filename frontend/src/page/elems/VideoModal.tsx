@@ -68,7 +68,7 @@ function VideoModal({ initial, onSubmit, onClose }: VideoModalProps) {
           </button>
         </div>
       )}
-      <h3 style={{ margin: 0 }}>{initial ? "Edit Text" : "Add Text"}</h3><br />
+      <h3 style={{ margin: 0 }}>{initial ? "Edit Video" : "Add Video"}</h3><br />
 
       Youtube URL:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
       Autoplay video?:<input type="checked" checked={autoplay} onChange={e => setAutoplay(e.target.checked)} /><br />

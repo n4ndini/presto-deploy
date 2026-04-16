@@ -72,7 +72,7 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
           </button>
         </div>
       )}
-      <h3 style={{ margin: 0 }}>{initial ? "Edit Text" : "Add Text"}</h3><br />
+      <h3 style={{ margin: 0 }}>{initial ? "Edit Image" : "Add Image"}</h3><br />
 
       URL/Base 64 Encoding:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
       Description of image:<input value={alt} onChange={e => setAlt(e.target.value)} /><br />
