@@ -1,4 +1,6 @@
 import type { CodeElementType } from "../../types";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 type Props = {
   elem: CodeElementType;
@@ -35,7 +37,17 @@ function CodeElement({ elem, onDelete, onEdit }: Props) {
         padding: "4px",
       }}
     >
-      {elem.code}
+      <SyntaxHighlighter
+        language={elem.language}
+        style={dark}
+        customStyle={{
+          margin: 0,
+          padding: "4px",
+          background: "transparent",
+          fontSize: `${elem.fontSize}em`,
+        }}>
+          {elem.code}
+      </SyntaxHighlighter>
     </div>
   );
 }
