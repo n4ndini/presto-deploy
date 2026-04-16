@@ -15,28 +15,25 @@ export type SlideType = {
   elements: ElementType[];
 }
 
-export type ElementType = {
+type BaseElementType = {
   id: number;
-  // type: 'text' | 'image' | 'video' | 'code';
-  // content: string; // text content, url of video/image, actual code
   x: number;
   y: number;
   width: number;
   height: number;
+};
 
-  // fontSize?: number;
-  // colour?: string;
-}
-
-export type TextElementType = ElementType & {
+export type TextElementType = BaseElementType & {
   type: 'text';
   content: string; // text content, url of video/image, actual code
   fontSize?: number;
   colour?: string;
 }
 
-export type ImageElementType = ElementType & {
+export type ImageElementType = BaseElementType & {
   type: 'image';
   url: string;  // or base 64
   alt: string;
 };
+
+export type ElementType = TextElementType | ImageElementType;
