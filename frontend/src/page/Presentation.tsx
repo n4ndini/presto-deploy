@@ -5,6 +5,8 @@ import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
 import { addElement, deleteElement, updateElement } from "./elems/elemHelpers";
+import ImageModal from "./elems/ImageModal";
+import ImageElement from "./elems/ImageElement";
 
 
 function Presentation() {
@@ -353,9 +355,9 @@ function Presentation() {
       )}
 
       {editingElem && editingElem.type === 'image' && (
-        <TextModal
+        <ImageModal
           initial={editingElem}
-          onSubmit={(text, width, height, fontSize, colour, x, y) =>
+          onSubmit={(url, alt, width, height, x, y) =>
             updateExistingElement(editingElem.id, (el) => {
               if (el.type !== 'image') return el;
               return {...el, url, alt, width, height, x, y};
@@ -378,9 +380,32 @@ function Presentation() {
           justifyContent: "center",
           marginTop: "20px",
         }}>
-          {currentSlide.elements?.map(el => (
-            <TextElement key={el.id} elem={el} onDelete={handleDeleteElement} onEdit={setEditingElem} />
-          ))}
+          {currentSlide.elements.map((el) => {
+            switch (el.type) {
+              case "text":
+                return (
+                  <TextElement
+                    key={el.id}
+                    elem={el}
+                    onDelete={handleDeleteElement}
+                    onEdit={setEditingElem}
+                  />
+                );
+
+              case "image":
+                return (
+                  <ImageElement
+                    key={el.id}
+                    elem={el}
+                    onDelete={handleDeleteElement}
+                    onEdit={setEditingElem}
+                  />
+                );
+
+              default:
+                return null;
+            }
+          })}
 
           {/* Slide number */}
           <div style={{ position: 'absolute', bottom: '8px', left: '8px', fontSize: '0.75em', color: '#888' }}>
