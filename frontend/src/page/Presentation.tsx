@@ -76,7 +76,7 @@ function Presentation() {
   };
 
   const handleDeletePresentation = async () => {
-    await deletePresentationById(token, presentation.id);
+    await deletePresentationById(token!, presentation.id);
     navigate("/dashboard");
   };
 
@@ -141,12 +141,14 @@ function Presentation() {
 
   const addNewTextElem = async (
     text: string,
+    width: number,  // ← swap these
     height: number,
-    width: number,
     fontSize: number,
-    colour: string
+    colour: string,
+    x: number,
+    y: number
   ) => {
-    const maxId = currSlide.elements.length > 0 ? Math.max(...currSlide.elements.map((el) => el.id)) : 0;
+    const maxId = currentSlide.elements.length > 0 ? Math.max(...currentSlide.elements.map((el) => el.id)) : 0;
 
     const newElem: ElementType  = {
       id: maxId + 1,
@@ -164,6 +166,7 @@ function Presentation() {
       ...presentation,
       slides: presentation.slides.map((s, i) =>
         i === currSlideIndex ? { ...s, elements: [...s.elements, newElem] } : s
+      ),
     };
 
     await savePresentation(updated);
@@ -185,8 +188,8 @@ function Presentation() {
   const updateExistingElement = async (
     elemId: number,
     text: string,
-    height: number,
     width: number,
+    height: number,
     fontSize: number,
     colour: string,
     x: number,
@@ -309,7 +312,10 @@ function Presentation() {
           <button onClick={() => setShowDeletePopup(false)}>No</button>
         </div>
       )}
-  
+      
+      
+
+      {/* side canvas */}
       <div
         style={{
           width: "800px",
@@ -321,66 +327,53 @@ function Presentation() {
           alignItems: "center",
           justifyContent: "center",
           marginTop: "20px",
-        }}
-      >
-        {presentation.slides.length >= 2 && (
-          <>
-            <button
-              onClick={() => setCurrSlideIndex((prev) => prev - 1)}
-              disabled={isFirstSlide}
-              style={{
-                position: "absolute",
-                left: "12px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                opacity: isFirstSlide ? 0.5 : 1,
-                cursor: isFirstSlide ? "not-allowed" : "pointer",
-              }}
-            >
-              ←
-            </button>
-  
-            <button
-              onClick={() => setCurrSlideIndex((prev) => prev + 1)}
-              disabled={isLastSlide}
-              style={{
-                position: "absolute",
-                right: "12px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                opacity: isLastSlide ? 0.5 : 1,
-                cursor: isLastSlide ? "not-allowed" : "pointer",
-              }}
-            >
-              →
+        }}>
+          {currentSlide.elements?.map(el => (
+            <TextElement key={el.id} elem={el} onDelete={handleDeleteElement} onEdit={setEditingElem} />
+          ))}
+
+          {/* Slide number */}
+          <div style={{ position: 'absolute', bottom: '8px', left: '8px', fontSize: '0.75em', color: '#888' }}>
+            {currSlideIndex + 1}
+          </div>
+
+          {/* nav arrows? */}
+          {presentation.slides.length >= 2 && (
+            <>
+              <button
+                onClick={() => setCurrSlideIndex((prev) => prev - 1)}
+                disabled={isFirstSlide}
+                style={{
+                  position: "absolute",
+                  left: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  opacity: isFirstSlide ? 0.5 : 1,
+                  cursor: isFirstSlide ? "not-allowed" : "pointer",
+                }}
+              >
+                ←
+              </button>
+    
+              <button
+                onClick={() => setCurrSlideIndex((prev) => prev + 1)}
+                disabled={isLastSlide}
+                style={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  opacity: isLastSlide ? 0.5 : 1,
+                  cursor: isLastSlide ? "not-allowed" : "pointer",
+                }}
+              >
+                →
             </button>
           </>
-        )}
-  
-        <div>
-          <h2>Slide Content</h2>
-          <p>{currentSlide.content || "(empty slide)"}</p>
-        </div>
-  
-        <div
-          style={{
-            position: "absolute",
-            bottom: "10px",
-            left: "10px",
-            fontWeight: "bold",
-          }}
-        >
-          {currSlideIndex + 1}
-        </div>
+        )}  
       </div>
-  
-      <div style={{ marginTop: "20px" }}>
-        <button onClick={createNewSlide}>New Slide</button>
-        <button onClick={deleteCurrentSlide}>Delete Slide</button>
-      </div>
+
     </>
   );
-
 }
-
-export default Presentation
+export default Presentation;
