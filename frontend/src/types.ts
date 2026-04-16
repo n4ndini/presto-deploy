@@ -37,6 +37,6 @@ export type TextElementType = ElementType & {
 
 export type ImageElementType = ElementType & {
   type: 'image';
-  url: string;
+  url: string;  // or base 64
   alt: string;
 };

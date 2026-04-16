@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { ElementType, PresentationType } from "../types";
+import type { ImageElementType, PresentationType, TextElementType } from "../types";
 import TextModal from "./presentationComponents/TextModal";
 import TextElement from "./elems/TextElement";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
+import { describe } from "node:test";
 
 
 function Presentation() {
@@ -23,6 +24,7 @@ function Presentation() {
   const [newThumbnail, setNewThumbnail] = useState('');
   const [editScreen, setEditScreen] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
   const [editingElem, setEditingElem] = useState<ElementType | null>(null);
 
   useEffect(() => {
@@ -141,7 +143,7 @@ function Presentation() {
 
   const addNewTextElem = async (
     text: string,
-    width: number,  // ← swap these
+    width: number,
     height: number,
     fontSize: number,
     colour: string,
@@ -150,7 +152,7 @@ function Presentation() {
   ) => {
     const maxId = currentSlide.elements.length > 0 ? Math.max(...currentSlide.elements.map((el) => el.id)) : 0;
 
-    const newElem: ElementType  = {
+    const newElem: TextElementType  = {
       id: maxId + 1,
       type: 'text',
       content: text,
@@ -185,6 +187,8 @@ function Presentation() {
     await savePresentation(updated);
   };
 
+
+  // MAYBE HAVE AN ELEM HELPER???
   const updateExistingElement = async (
     elemId: number,
     text: string,
@@ -208,6 +212,39 @@ function Presentation() {
     };
     await savePresentation(updated);
     setEditingElem(null);
+  };
+
+  const addNewImageElem = async (
+    url: string,
+    alt: string,
+    width: number,
+    height: number,
+    x: number,
+    y: number
+  ) => {
+    const maxId = currentSlide.elements.length > 0 ? Math.max(...currentSlide.elements.map((el) => el.id)) : 0;
+
+    const newElem: ImageElementType  = {
+      id: maxId + 1,
+      type: 'image',
+      url,
+      alt,
+      x: 0,
+      y: 0,
+      width,
+      height,
+    };
+
+    const updated: PresentationType = {
+      ...presentation,
+      slides: presentation.slides.map((s, i) =>
+        i === currSlideIndex ? { ...s, elements: [...s.elements, newElem] } : s
+      ),
+    };
+
+    await savePresentation(updated);
+    setShowImageModal(false);
+    setError('');
   };
 
   return (
@@ -320,7 +357,10 @@ function Presentation() {
           {editScreen ? "Close Editor" : "Edit Slide"}
         </button>
         {editScreen && (
-          <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
+          <div>
+           <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
+           <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
+          </div>
         )}
       </div>
 
@@ -328,11 +368,25 @@ function Presentation() {
         <TextModal onSubmit={addNewTextElem} onClose={() => setShowTextModal(false)} />
       )}
 
-      {editingElem && (
+      {showImageModal && (
+        <ImageModal onSubmit={addNewImageElem} onClose={() => setShowImageModal(false)} />
+      )}
+
+      {editingElem.type === 'text' && (
         <TextModal
           initial={editingElem}
           onSubmit={(text, width, height, fontSize, colour, x, y) =>
             updateExistingElement(editingElem.id, text, width, height, fontSize, colour, x, y)
+          }
+          onClose={() => setEditingElem(null)}
+        />
+      )}
+
+      {editingElem.type === 'image' && (
+        <ImageModal
+          initial={editingElem}
+          onSubmit={(url, alt, width, height, x, y) =>
+            updateExistingElement(editingElem.id, url, alt, width, height, x, y)
           }
           onClose={() => setEditingElem(null)}
         />
