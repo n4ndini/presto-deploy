@@ -26,8 +26,8 @@ type BaseElementType = {
 export type TextElementType = BaseElementType & {
   type: 'text';
   content: string; // text content, url of video/image, actual code
-  fontSize?: number;
-  colour?: string;
+  fontSize: number;
+  colour: string;
 }
 
 export type ImageElementType = BaseElementType & {
@@ -36,4 +36,17 @@ export type ImageElementType = BaseElementType & {
   alt: string;
 };
 
-export type ElementType = TextElementType | ImageElementType;
+export type VideoElementType = BaseElementType & {
+  type: 'video';
+  url: string;
+  autoplay: boolean;
+};
+
+export type CodeElementType = BaseElementType & {
+  language: 'python' | 'c' | 'javascript';
+  type: 'code';
+  code: string;
+  fontSize: number;
+};
+
+export type ElementType = TextElementType | ImageElementType | VideoElementType | CodeElementType;

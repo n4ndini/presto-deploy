@@ -1,11 +1,12 @@
 import { useState} from "react";
-import type { ImageElementType } from "../../types";
+import type { CodeElementType } from "../../types";
 
-type ImageModalProps = {
-  initial?: ImageElementType; // if true, we are editing an image
+type CodeModalProps = {
+  initial?: CodeElementType; // if true, we are editing an image
   onSubmit: (
-    url: string,
-    alt: string,
+    language: 'python' | 'c' | 'javascript',
+    code: string,
+    fontSize: number,
     width: number,
     height: number,
     x: number,
@@ -16,9 +17,12 @@ type ImageModalProps = {
 
 // used for creating or editing an image element
 // collects usr input, validates it, calls onCreate and then closes itself
-function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
-  const [url, setUrl] = useState(initial?.url ?? '');
-  const [alt, setAlt] = useState(initial?.alt ?? '');
+function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
+  const [language, setLanguage] = useState<'python' | 'c' | 'javascript'>(
+    initial?.language ?? 'python'
+  );
+  const [code, setCode] = useState(initial?.code ?? '');
+  const [fontSize, setFontSize] = useState(initial?.fontSize ?? 1);
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
   const [x, setX] = useState(initial?.x ?? 0);
@@ -29,17 +33,13 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
     e.preventDefault();
     setError('');
 
-    if (!url) {
-      setError('Enter image URL or base 64 string encoding of the whole image itself');
-      return; // if no image url entered then dont make the text box
+    if (!code) {
+      setError('Please enter code into the code block');
+      return;
     }
 
-    const isBase64Image = /^data:image\/(png|jpg|jpeg|gif|tiff);base64,/.test(url);
-
-    const isValidUrl = /^https?:\/\/.+\.(png|jpg|jpeg|gif|tiff)(\?.*)?$/.test(url);
-
-    if (!isBase64Image && !isValidUrl) {
-      setError("Must be png, jpg, gif, tiff URL or base64 image");
+    if (fontSize < 0.5 || fontSize > 5) {
+      setError("Font size must be between 0.5 and 5");
       return;
     }
 
@@ -47,7 +47,7 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
       setError('Width and height must be between 0 and 100');
       return;
     }
-    onSubmit(url, alt, width, height, x, y);
+    onSubmit(language, code, fontSize, width, height, x, y);
     onClose();
   };
   
@@ -78,10 +78,16 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
           </button>
         </div>
       )}
-      <h3 style={{ margin: 0 }}>{initial ? "Edit Image" : "Add Image"}</h3><br />
+      <h3 style={{ margin: 0 }}>{initial ? "Edit Code" : "Add Code"}</h3><br />
 
-      URL/Base 64 Encoding:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
-      Description of image:<input value={alt} onChange={e => setAlt(e.target.value)} /><br />
+      Language:
+      <select value={language} onChange={e => setLanguage(e.target.value as 'python' | 'c' | 'javascript')}>
+        <option value="c">C</option>
+        <option value="python">Python</option>
+        <option value="javascript">JavaScript</option>
+      </select>
+      Code:<textarea style={{width: "100%", height: "50%"}} value={code} onChange={e => setCode(e.target.value)} /><br />
+      Font Size (em):<input type="number" step="0.1" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /><br />
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
         <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
         <span>Width (%):<input style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
@@ -100,4 +106,4 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
   );
 }
 
-export default ImageModal;
+export default CodeModal;

@@ -1,11 +1,11 @@
 import { useState} from "react";
-import type { ImageElementType } from "../../types";
+import type { VideoElementType } from "../../types";
 
-type ImageModalProps = {
-  initial?: ImageElementType; // if true, we are editing an image
+type VideoModalProps = {
+  initial?: VideoElementType; // if true, we are editing an image
   onSubmit: (
     url: string,
-    alt: string,
+    autoplay: boolean,
     width: number,
     height: number,
     x: number,
@@ -16,9 +16,9 @@ type ImageModalProps = {
 
 // used for creating or editing an image element
 // collects usr input, validates it, calls onCreate and then closes itself
-function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
+function VideoModal({ initial, onSubmit, onClose }: VideoModalProps) {
   const [url, setUrl] = useState(initial?.url ?? '');
-  const [alt, setAlt] = useState(initial?.alt ?? '');
+  const [autoplay, setAutoplay] = useState(initial?.autoplay ?? false);
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
   const [x, setX] = useState(initial?.x ?? 0);
@@ -29,28 +29,18 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
     e.preventDefault();
     setError('');
 
-    if (!url) {
-      setError('Enter image URL or base 64 string encoding of the whole image itself');
+    if (!url || !url.includes('https://www.youtube.com')) {
+      setError('Enter a URL of a youtube video');
       return; // if no image url entered then dont make the text box
-    }
-
-    const isBase64Image = /^data:image\/(png|jpg|jpeg|gif|tiff);base64,/.test(url);
-
-    const isValidUrl = /^https?:\/\/.+\.(png|jpg|jpeg|gif|tiff)(\?.*)?$/.test(url);
-
-    if (!isBase64Image && !isValidUrl) {
-      setError("Must be png, jpg, gif, tiff URL or base64 image");
-      return;
     }
 
     if (width < 0 || height < 0 || width > 100 || height > 100) {
       setError('Width and height must be between 0 and 100');
       return;
     }
-    onSubmit(url, alt, width, height, x, y);
+    onSubmit(url, autoplay, width, height, x, y);
     onClose();
   };
-  
   return (
     <form onSubmit={computeSubmit}
       style={{
@@ -78,10 +68,12 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
           </button>
         </div>
       )}
-      <h3 style={{ margin: 0 }}>{initial ? "Edit Image" : "Add Image"}</h3><br />
+      <h3 style={{ margin: 0 }}>{initial ? "Edit Video" : "Add Video"}</h3><br />
 
-      URL/Base 64 Encoding:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
-      Description of image:<input value={alt} onChange={e => setAlt(e.target.value)} /><br />
+      Youtube URL:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
+      <div style={{display:"flex", gap: "10px"}}> 
+        Autoplay video? :<input style={{ display: "flex", alignItems: "center", gap: "8px", width: "20px", height:"20px"}} type="checkbox" checked={autoplay} onChange={e => setAutoplay(e.target.checked)} /><br />
+      </div>
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
         <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
         <span>Width (%):<input style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
@@ -100,4 +92,4 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
   );
 }
 
-export default ImageModal;
+export default VideoModal;

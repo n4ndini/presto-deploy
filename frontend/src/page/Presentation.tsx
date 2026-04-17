@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { ElementType, ImageElementType, PresentationType, TextElementType } from "../types";
+import type { CodeElementType, ElementType, ImageElementType, PresentationType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
 import { addElement, deleteElement, updateElement } from "./elems/elemHelpers";
 import ImageModal from "./elems/ImageModal";
 import ImageElement from "./elems/ImageElement";
+import VideoModal from "./elems/VideoModal";
+import VideoElement from "./elems/VideoElement";
+import CodeModal from "./elems/CodeModal";
+import CodeElement from "./elems/CodeElement";
 
 
 function Presentation() {
@@ -27,7 +31,9 @@ function Presentation() {
   const [editScreen, setEditScreen] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
-  const [editingElem, setEditingElem] = useState<TextElementType | ImageElementType | null>(null);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showCodeModal, setShowCodeModal] = useState(false);
+  const [editingElem, setEditingElem] = useState<ElementType | null>(null);
 
   useEffect(() => {
     if (!token) navigate("/");
@@ -216,6 +222,62 @@ function Presentation() {
     setError('');
   };
 
+  const addNewVideoElem = async (
+    url: string,
+    autoplay: boolean,
+    width: number,
+    height: number,
+    x: number,
+    y: number
+  ) => {
+    const maxId = currentSlide.elements.length > 0 ? Math.max(...currentSlide.elements.map((el) => el.id)) : 0;
+
+    const newElem: VideoElementType  = {
+      id: maxId + 1,
+      type: 'video',
+      url,
+      autoplay,
+      x: 0,
+      y: 0,
+      width,
+      height,
+    };
+
+    const updated = addElement(presentation!, currSlideIndex, newElem);
+    await savePresentation(updated);
+    setShowVideoModal(false);
+    setError('');
+  };
+
+  const addNewCodeElem = async (
+    language: 'python' | 'c' | 'javascript',
+    code: string,
+    fontSize: number,
+    width: number,
+    height: number,
+    x: number,
+    y: number
+  ) => {
+    const maxId = currentSlide.elements.length > 0 ? Math.max(...currentSlide.elements.map((el) => el.id)) : 0;
+
+    const newElem: CodeElementType  = {
+      id: maxId + 1,
+      language,
+      type: 'code',
+      code,
+      fontSize,
+      x: 0,
+      y: 0,
+      width,
+      height,
+    };
+
+    const updated = addElement(presentation!, currSlideIndex, newElem);
+    await savePresentation(updated);
+    setShowCodeModal(false);
+    setError('');
+  };
+
   return (
     <>
       <div style={{ marginBottom: "20px", display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -327,8 +389,10 @@ function Presentation() {
         </button>
         {editScreen && (
           <div>
-            <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
-            <button style={{ fontSize: '1em', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowVideoModal(true)}>+ Add Video</button>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowCodeModal(true)}>+ Add Code block</button>
           </div>
         )}
       </div>
@@ -339,6 +403,14 @@ function Presentation() {
 
       {showImageModal && (
         <ImageModal onSubmit={addNewImageElem} onClose={() => setShowImageModal(false)} />
+      )}
+
+      {showVideoModal && (
+        <VideoModal onSubmit={addNewVideoElem} onClose={() => setShowVideoModal(false)} />
+      )}
+
+      {showCodeModal && (
+        <CodeModal onSubmit={addNewCodeElem} onClose={() => setShowCodeModal(false)} />
       )}
 
       {editingElem && editingElem.type === 'text' && (
@@ -367,6 +439,32 @@ function Presentation() {
         />
       )}
 
+      {editingElem && editingElem.type === 'video' && (
+        <VideoModal
+          initial={editingElem}
+          onSubmit={(url, autoplay, width, height, x, y) =>
+            updateExistingElement(editingElem.id, (el) => {
+              if (el.type !== 'video') return el;
+              return {...el, url, autoplay, width, height, x, y};
+            })
+          }
+          onClose={() => setEditingElem(null)}
+        />
+      )}
+
+      {editingElem && editingElem.type === 'code' && (
+        <CodeModal
+          initial={editingElem}
+          onSubmit={(language, code, fontSize, width, height, x, y) =>
+            updateExistingElement(editingElem.id, (el) => {
+              if (el.type !== 'code') return el;
+              return {...el, language, code, fontSize, width, height, x, y};
+            })
+          }
+          onClose={() => setEditingElem(null)}
+        />
+      )}
+
       {/* side canvas */}
       <div
         style={{
@@ -381,7 +479,7 @@ function Presentation() {
           marginTop: "20px",
         }}>
         {currentSlide.elements.map((el) => {
-        switch (el.type) {
+          switch (el.type) {
           case "text":
             return (
               <TextElement
@@ -401,7 +499,24 @@ function Presentation() {
                 onEdit={setEditingElem}
               />
             );
-
+          case "video":
+            return (
+              <VideoElement
+                key={el.id}
+                elem={el}
+                onDelete={handleDeleteElement}
+                onEdit={setEditingElem}
+              />
+            );
+          case "code":
+            return (
+              <CodeElement
+                key={el.id}
+                elem={el}
+                onDelete={handleDeleteElement}
+                onEdit={setEditingElem}
+              />
+            );
           default:
             return null;
          }
@@ -443,9 +558,9 @@ function Presentation() {
               }}
             >
               →
-           </button>
-         </>
-       )}  
+            </button>
+          </>
+        )}  
       </div>
     </>
   );

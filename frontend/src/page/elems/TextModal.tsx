@@ -74,8 +74,8 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
 
       Text:<input value={text} onChange={e => setText(e.target.value)} /><br />
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
-        Height (%):<input style={{ width: "100%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br />
-        Width (%):<input style={{ width: "100%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br />
+        <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
+        <span>Width (%):<input style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
       </div>
       Font Size (em):<input type="number" step="0.1" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /><br />
       Colour (hex):<input value={colour} onChange={e => setColour(e.target.value)} /><br />
