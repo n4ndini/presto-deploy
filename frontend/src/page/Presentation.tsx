@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { CodeElementType, ElementType, ImageElementType, PresentationType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
@@ -86,7 +87,7 @@ function Presentation() {
   useEffect(() => {
     if (!dragging || !slideRef.current) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e: globalThis.MouseEvent) => {
       if (!slideRef.current) return;
 
       const rect = slideRef.current.getBoundingClientRect();
@@ -218,7 +219,7 @@ function Presentation() {
     }
   };
 
-  const handleStartMove = (e: React.MouseEvent, elem: ElementType) => {
+  const handleStartMove = (e: ReactMouseEvent, elem: ElementType) => {
     e.stopPropagation();
     if (e.button !== 0) return;
 
