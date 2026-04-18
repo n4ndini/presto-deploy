@@ -9,8 +9,8 @@ type VideoModalProps = {
     autoplay: boolean,
     width: number,
     height: number,
-    x: number,
-    y: number
+    _x: number,
+    _y: number
   ) => void | Promise<void>;
   onClose: () => void;
 };

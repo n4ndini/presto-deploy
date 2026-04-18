@@ -10,8 +10,8 @@ type TextModalProps = {
     height: number,
     fontSize: number,
     colour: string,
-    x: number,
-    y: number
+    _x: number,
+    _y: number
   ) => void | Promise<void>;
   onClose: () => void;
 };
