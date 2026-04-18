@@ -28,6 +28,7 @@ export type TextElementType = BaseElementType & {
   content: string; // text content, url of video/image, actual code
   fontSize: number;
   colour: string;
+  fontFamily: string;
 }
 
 export type ImageElementType = BaseElementType & {
