@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import type { SyntheticEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import type { PresentationType, Store } from "../types";
 
@@ -43,7 +44,7 @@ function Dashboard() {
     fetchPresentation();
   }, []);
 
-  const createPresentation = async (e: React.SyntheticEvent) => {
+  const createPresentation = async (e: SyntheticEvent) => {
     e.preventDefault();
     setError('');
 
