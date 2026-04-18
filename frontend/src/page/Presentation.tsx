@@ -550,6 +550,8 @@ function Presentation() {
 
       {/* side canvas */}
       <div
+        ref={slideRef}
+        onClick={() => setSelectedElemId(null)}
         style={{
           width: "800px",
           height: "450px",
@@ -570,6 +572,9 @@ function Presentation() {
                 elem={el}
                 onDelete={handleDeleteElement}
                 onEdit={setEditingElem}
+                isSelected={selectedElemId === el.id}
+                onSelect={() => setSelectedElemId(el.id)}
+                onMoveStart={handleStartMove} 
               />
             );
 
@@ -580,6 +585,9 @@ function Presentation() {
                 elem={el}
                 onDelete={handleDeleteElement}
                 onEdit={setEditingElem}
+                isSelected={selectedElemId === el.id}
+                onSelect={() => setSelectedElemId(el.id)}
+                onMoveStart={handleStartMove}
               />
             );
           case "video":
@@ -589,6 +597,9 @@ function Presentation() {
                 elem={el}
                 onDelete={handleDeleteElement}
                 onEdit={setEditingElem}
+                isSelected={selectedElemId === el.id}
+                onSelect={() => setSelectedElemId(el.id)}
+                onMoveStart={handleStartMove}
               />
             );
           case "code":
@@ -598,6 +609,9 @@ function Presentation() {
                 elem={el}
                 onDelete={handleDeleteElement}
                 onEdit={setEditingElem}
+                isSelected={selectedElemId === el.id}
+                onSelect={() => setSelectedElemId(el.id)}
+                onMoveStart={handleStartMove}
               />
             );
           default:
