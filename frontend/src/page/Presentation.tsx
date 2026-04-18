@@ -95,7 +95,7 @@ function Presentation() {
       const dyPx = e.clientY - dragging.startMouseY;
 
       const dxPercent = (dxPx / rect.width) * 100;
-      const dyPercent = (dyPx / rect.width) * 100;
+      const dyPercent = (dyPx / rect.height) * 100;
 
       setPresentation((prev) => {
         if (!prev) { return prev; }
