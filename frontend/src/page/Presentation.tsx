@@ -83,6 +83,43 @@ function Presentation() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [presentation, currSlideIndex]);
 
+  useEffect(() => {
+    if (!dragging || !slideRef.current) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!slideRef.current) return;
+
+      const rect = slideRef.current.getBoundingClientRect();
+      const dxPx = e.clientX - dragging.startMouseX;
+      const dyPx = e.clientY - dragging.startMouseY;
+
+      const dxPercent = (dxPx / rect.width) * 100;
+      const dyPercent = (dyPx / rect.width) * 100;
+
+      setPresentation((prev) => {
+        if (!prev) { return prev; }
+
+        const elem = prev.slides[currSlideIndex].elements.find(
+          (el) => el.id === dragging.elemId
+        );
+        if (!elem) { return prev; }
+
+        const newX = Math.max(0, Math.min(dragging.startX + dxPercent, 100 - elem.width));
+        const newY = Math.max(0, Math.min(dragging.startY + dyPercent, 100 - elem.height));
+
+        return updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
+          ...el,
+          x: newX,
+          y: newY,
+        }));
+      });
+
+      setHasDragged(true);
+    };
+
+    //sdfsds
+  })
+
   if (!presentation) {
     return <p>Loading...</p>;
   }
