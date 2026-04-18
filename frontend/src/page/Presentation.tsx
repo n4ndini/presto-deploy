@@ -134,15 +134,17 @@ function Presentation() {
       setError("Cannot delete the only slide");
       return;
     }
-
+  
     try {
-      const updatedSlides = {
+      const newIndex = currSlideIndex > 0 ? currSlideIndex - 1 : 0;
+  
+      const updatedPresentation = {
         ...presentation,
         slides: presentation.slides.filter((_, i) => i !== currSlideIndex),
       };
-
-      await savePresentation(updatedSlides);
-      setCurrSlideIndex((prev) => Math.max(0, prev - 1));
+  
+      setCurrSlideIndex(newIndex);
+      await savePresentation(updatedPresentation);
     } catch (err) {
       console.error(err);
       setError("Failed to delete slide");
