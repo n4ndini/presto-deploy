@@ -218,6 +218,20 @@ function Presentation() {
     }
   };
 
+  const handleStartMove = (e: React.MouseEvent, elem: ElementType) => {
+    e.stopPropagation();
+    if (e.button !== 0) return;
+
+    setSelectedElemId(elem.id);
+    setDragging({
+      elemId: elem.id,
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startX: elem.x,
+      startY: elem.y,
+    });
+  };
+
   const addNewTextElem = async (
     text: string,
     width: number,
