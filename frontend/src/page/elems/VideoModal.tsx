@@ -1,4 +1,5 @@
 import { useState} from "react";
+import type { SyntheticEvent } from "react";
 import type { VideoElementType } from "../../types";
 
 type VideoModalProps = {
@@ -25,7 +26,7 @@ function VideoModal({ initial, onSubmit, onClose }: VideoModalProps) {
   const [y, setY] = useState(initial?.y ?? 0);
   const [error, setError] = useState(''); // implement error messages
   
-  const computeSubmit = (e: React.SyntheticEvent) => {
+  const computeSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     setError('');
 

@@ -1,4 +1,5 @@
 import { useState} from "react";
+import type { SyntheticEvent } from "react";
 import type { ImageElementType } from "../../types";
 
 type ImageModalProps = {
@@ -25,7 +26,7 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
   const [y, setY] = useState(initial?.y ?? 0);
   const [error, setError] = useState(''); // implement error messages
   
-  const computeSubmit = (e: React.SyntheticEvent) => {
+  const computeSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     setError('');
 

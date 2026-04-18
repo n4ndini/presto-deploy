@@ -12,7 +12,7 @@ type Props = {
 
 // handles behaviour and appearance of Text Element
 // renders text box, handles right click delete, double click edit and styling
-function VideoElement({ elem, onDelete, onEdit, onSelect, onMoveStart}: Props) {
+function VideoElement({ elem, onDelete, onEdit, onSelect, onMoveStart, isSelected }: Props) {
   return (
     <div
       onClick={(e) => { 
