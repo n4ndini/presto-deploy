@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { CodeElementType, ElementType, ImageElementType, PresentationType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
@@ -34,6 +34,17 @@ function Presentation() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [editingElem, setEditingElem] = useState<ElementType | null>(null);
+
+  const [selectedElemId, setSelectedElemId] = useState<number | null>(null);
+  const [dragging, setDragging] = useState<{
+    elemId: number;
+    startMouseX: number;
+    startMouseY: number;
+    startX: number;
+    startY: number;
+  } | null>(null);
+  const [hasDragged, setHasDragged] = useState(false);
+  const slideRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!token) navigate("/");
