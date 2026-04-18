@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import type { SyntheticEvent } from "react";
 import type { ImageElementType } from "../../types";
 
@@ -9,8 +9,8 @@ type ImageModalProps = {
     alt: string,
     width: number,
     height: number,
-    x: number,
-    y: number
+    _x: number,
+    _y: number
   ) => void | Promise<void>;
   onClose: () => void;
 };
@@ -18,26 +18,32 @@ type ImageModalProps = {
 // used for creating or editing an image element
 // collects usr input, validates it, calls onCreate and then closes itself
 function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
-  const [url, setUrl] = useState(initial?.url ?? '');
-  const [alt, setAlt] = useState(initial?.alt ?? '');
+  const [url, setUrl] = useState(initial?.url ?? "");
+  const [alt, setAlt] = useState(initial?.alt ?? "");
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
   const [x, setX] = useState(initial?.x ?? 0);
   const [y, setY] = useState(initial?.y ?? 0);
-  const [error, setError] = useState(''); // implement error messages
-  
+  const [error, setError] = useState(""); // implement error messages
+
   const computeSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!url) {
-      setError('Enter image URL or base 64 string encoding of the whole image itself');
+      setError(
+        "Enter image URL or base 64 string encoding of the whole image itself"
+      );
       return; // if no image url entered then dont make the text box
     }
 
-    const isBase64Image = /^data:image\/(png|jpg|jpeg|gif|tiff);base64,/.test(url);
+    const isBase64Image = /^data:image\/(png|jpg|jpeg|gif|tiff);base64,/.test(
+      url
+    );
 
-    const isValidUrl = /^https?:\/\/.+\.(png|jpg|jpeg|gif|tiff)(\?.*)?$/.test(url);
+    const isValidUrl = /^https?:\/\/.+\.(png|jpg|jpeg|gif|tiff)(\?.*)?$/.test(
+      url
+    );
 
     if (!isBase64Image && !isValidUrl) {
       setError("Must be png, jpg, gif, tiff URL or base64 image");
@@ -45,15 +51,16 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
     }
 
     if (width < 0 || height < 0 || width > 100 || height > 100) {
-      setError('Width and height must be between 0 and 100');
+      setError("Width and height must be between 0 and 100");
       return;
     }
     onSubmit(url, alt, width, height, x, y);
     onClose();
   };
-  
+
   return (
-    <form onSubmit={computeSubmit}
+    <form
+      onSubmit={computeSubmit}
       style={{
         display: "flex",
         flexDirection: "column",
@@ -70,32 +77,67 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
         boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
         zIndex: 1000,
         minWidth: "320px",
-      }}>
+      }}
+    >
       {error && (
-        <div style={{ backgroundColor: "#ffe5e5", border: "1px solid red", borderRadius: "6px", padding: "10px", marginBottom: "10px" }}>
+        <div
+          style={{
+            backgroundColor: "#ffe5e5",
+            border: "1px solid red",
+            borderRadius: "6px",
+            padding: "10px",
+            marginBottom: "10px",
+          }}
+        >
           {error}
-          <button type="button" onClick={() => setError('')}>
+          <button type="button" onClick={() => setError("")}>
             Close
           </button>
         </div>
       )}
-      <h3 style={{ margin: 0 }}>{initial ? "Edit Image" : "Add Image"}</h3><br />
-
-      URL/Base 64 Encoding:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
-      Description of image:<input value={alt} onChange={e => setAlt(e.target.value)} /><br />
-      Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
-        <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
-        <span>Width (%):<input style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
+      <h3 style={{ margin: 0 }}>{initial ? "Edit Image" : "Add Image"}</h3>
+      <br />
+      URL/Base 64 Encoding:
+      <input value={url} onChange={(e) => setUrl(e.target.value)} />
+      <br />
+      Description of image:
+      <input value={alt} onChange={(e) => setAlt(e.target.value)} />
+      <br />
+      Size of TextBox:
+      <div style={{ display: "flex", gap: "10px" }}>
+        <span>
+          Height (%):
+          <input
+            style={{ width: "100%", height: "50%" }}
+            type="number"
+            value={height}
+            onChange={(e) => setHeight(Number(e.target.value))}
+          />
+          <br />
+        </span>
+        <span>
+          Width (%):
+          <input
+            style={{ width: "100%", height: "50%" }}
+            type="number"
+            value={width}
+            onChange={(e) => setWidth(Number(e.target.value))}
+          />
+          <br />
+        </span>
       </div>
-
-      <div style={{
-        display: "flex",
-        justifyContent: "flex-end",
-        gap: "10px",
-        marginTop: "10px",
-      }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: "10px",
+          marginTop: "10px",
+        }}
+      >
         <button type="submit">{initial ? "Save" : "Add"}</button>
-        <button type="button" onClick={onClose}>Cancel</button>
+        <button type="button" onClick={onClose}>
+          Cancel
+        </button>
       </div>
     </form>
   );
