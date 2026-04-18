@@ -130,6 +130,15 @@ function Presentation() {
     };
   }, [dragging, currSlideIndex]);
 
+  useEffect(() => {
+    if (!presentation || dragging || !hasDragged ) return;
+
+    updatePresentation(token!, presentation)
+      .catch(() => setError("Failed to save element position"));
+
+    setHasDragged(false);
+  }, [presentation, dragging, hasDragged, token]);
+
   if (!presentation) {
     return <p>Loading...</p>;
   }
