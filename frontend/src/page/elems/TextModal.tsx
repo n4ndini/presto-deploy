@@ -10,8 +10,9 @@ type TextModalProps = {
     height: number,
     fontSize: number,
     colour: string,
-    _x: number,
-    _y: number
+    fontFamily: string,
+    x: number,
+    y: number
   ) => void | Promise<void>;
   onClose: () => void;
 };
@@ -26,6 +27,7 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
   const [colour, setColour] = useState(initial?.colour ?? '#000000');
   const [x, setX] = useState(initial?.x ?? 0);
   const [y, setY] = useState(initial?.y ?? 0);
+  const [fontFamily, setFontFamily] = useState(initial?.fontFamily ?? 'Arial');
   const [error, setError] = useState(''); // implement error messages
   
   const computeSubmit = (e: SyntheticEvent) => {
@@ -41,7 +43,7 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
       setError('Width and height must be between 0 and 100');
       return;
     }
-    onSubmit(text, width, height, fontSize, colour, x, y);
+    onSubmit(text, width, height, fontSize, colour, fontFamily, x, y);
     onClose();
   };
   return (
@@ -80,7 +82,11 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
       </div>
       Font Size (em):<input type="number" step="0.1" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /><br />
       Colour (hex):<input value={colour} onChange={e => setColour(e.target.value)} /><br />
-
+      Font:<select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}>
+        <option value="Arial">Arial</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Parchment">Parchment</option>
+      </select>
       <div style={{
         display: "flex",
         justifyContent: "flex-end",
