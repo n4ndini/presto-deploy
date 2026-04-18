@@ -117,8 +117,18 @@ function Presentation() {
       setHasDragged(true);
     };
 
-    //sdfsds
-  })
+    const handleMouseUp = () => {
+      setDragging(null);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [dragging, currSlideIndex]);
 
   if (!presentation) {
     return <p>Loading...</p>;
