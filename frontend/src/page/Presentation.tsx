@@ -13,7 +13,7 @@ import VideoElement from "./elems/VideoElement";
 import CodeModal from "./elems/CodeModal";
 import CodeElement from "./elems/CodeElement";
 import dropper from '../assets/dropper.png';
-
+import BackgroundModal from "./BackgroundModal";
 
 function Presentation() {
   const { id } = useParams();
@@ -40,7 +40,6 @@ function Presentation() {
   const [fontFamAdjustment, setFontFamAdjustment] = useState(false);
   const [fontFam, setFontFam] = useState('Arial');
   const [changeBackground, setChangeBackground] = useState(false);
-
 
   const [selectedElemId, setSelectedElemId] = useState<number | null>(null);
   const [dragging, setDragging] = useState<{
@@ -525,13 +524,8 @@ function Presentation() {
           </div>
         )}
         {changeBackground && (
-          <div>
-            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowCurrBackground(true)}>Modify Current Background Style</button>
-            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowDefaultBackground(true)}>Default Background Style</button>
-
-          </div>
+          <BackgroundModal onSubmit={} onClose={() => setChangeBackground(false)}/>
         )}
-        
       </div>
 
       {showTextModal && (
