@@ -723,7 +723,7 @@ function Presentation() {
           <img src={dropper} alt="dropper" style={{ height: '20px' }} />
           {changeBackground ? "Close background editor" : "Change Background"}
         </button>
-        <button style={{ fontSize: '1em', padding: '4px 12px', color:'#000000' }} onClick={() => setShowSlidePanel(true)}>
+        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setShowSlidePanel(true)}>
           Slide Control Panel
         </button>
         <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={openPreview}>
@@ -897,7 +897,7 @@ function Presentation() {
                       cursor: 'pointer',
                     }}
                   >
-                    <div style={{ marginBottom: '10px', fontWeight: 700, color: '##000000' }}>
+                    <div style={{ marginBottom: '10px', fontWeight: 700 }}>
                       Slide {index + 1}
                     </div>
                     <div
