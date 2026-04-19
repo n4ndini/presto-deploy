@@ -143,7 +143,7 @@ function Dashboard() {
         marginTop: '20px',
       }}>
         {presentations.map(p => (
-          <div key={p.id} onClick={() => navigate(`/presentation/${p.id}`)} style={{
+          <div key={p.id} onClick={() => navigate(`/presentation/${p.id}?slide=0`)} style={{
             border: '1px solid black',
             aspectRatio: '2 / 1',
             padding: '6px',
