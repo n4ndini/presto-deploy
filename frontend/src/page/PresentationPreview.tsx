@@ -187,15 +187,76 @@ function PresentationPreview() {
   }, [presentation, currSlideIndex]);
 
   if (!presentation) {
-    return <p>{error || 'Loading preview...'}</p>;
+    return <p>{error || "Loading preview..."}</p>;
   }
 
   const currentSlide = presentation.slides[currSlideIndex];
   const isFirstSlide = currSlideIndex === 0;
   const isLastSlide = currSlideIndex === presentation.slides.length - 1;
 
+  return (
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        background: "#111827",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          width: "min(96vw, calc(96vh * 16 / 9))",
+          aspectRatio: "16 / 9",
+          background: "#ffffff",
+          position: "relative",
+          overflow: "hidden",
+          boxShadow: "0 12px 30px rgba(0,0,0,0.35)",
+        }}
+      >
+        <PreviewSlide slide={currentSlide} slideNumber={currSlideIndex + 1} />
 
-  return <></>;
+        {presentation.slides.length >= 2 && (
+          <>
+            <button
+              onClick={() => setCurrSlideIndex((prev) => prev - 1)}
+              disabled={isFirstSlide}
+              style={{
+                position: "absolute",
+                left: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                opacity: isFirstSlide ? 0.45 : 1,
+                cursor: isFirstSlide ? "not-allowed" : "pointer",
+                zIndex: 2,
+              }}
+            >
+              ←
+            </button>
+
+            <button
+              onClick={() => setCurrSlideIndex((prev) => prev + 1)}
+              disabled={isLastSlide}
+              style={{
+                position: "absolute",
+                right: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                opacity: isLastSlide ? 0.45 : 1,
+                cursor: isLastSlide ? "not-allowed" : "pointer",
+                zIndex: 2,
+              }}
+            >
+              →
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default PresentationPreview;
