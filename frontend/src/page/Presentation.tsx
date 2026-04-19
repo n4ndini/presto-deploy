@@ -14,6 +14,8 @@ import CodeModal from "./elems/CodeModal";
 import CodeElement from "./elems/CodeElement";
 import dropper from '../assets/dropper.png';
 import BackgroundModal from "./BackgroundModal";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { dark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const reorderSlides = (presentation: PresentationType, fromIndex: number, toIndex: number) => {
   const slides = [...presentation.slides];
@@ -80,8 +82,45 @@ const renderPreviewElement = (el: ElementType) => {
         </div>
       );
 
-    case 'code':
     case 'video':
+      return (
+        <div
+          key={el.id}
+          style={commonStyle}
+        >
+          <iframe 
+            src={el.url.replace("watch?v=", "embed/")}
+            style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
+            allow="autoplay"
+            title={`preview-video-${el.id}`} 
+          />
+        </div>
+      );
+
+    case 'code':
+      return (
+        <div 
+          key={el.id} 
+          style={commonStyle}
+        >
+          <SyntaxHighlighter
+            language={el.language}
+            style={dark}
+            wrapLongLines={true}
+            customStyle={{
+              margin: 0,
+              border: 'none',
+              background: 'black',
+              fontSize: `${el.fontSize}em`,
+              height: '100%',
+              width: '100%',
+              pointerEvents: 'none',
+            }}
+          >
+            {el.code}
+          </SyntaxHighlighter>
+        </div>
+      );
 
     default:
       return null;
