@@ -64,7 +64,52 @@ function SlideModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: SlideMo
         </input>
       </label>
 
+      {backgroundStyle === 'solid' && (
+        <input
+          type="text"
+          value={solidColour}
+          onChange={(e) => setSolidColour(e.target.value)}
+          placeholder="#ffffff"
+        />
+      )}
 
+      <label>
+        <input type="radio" value="gradient" checked={backgroundStyle === 'gradient'} onChange={(e) => setBackgroundStyle(e.target.value)}>
+          Gradient Colour
+        </input>
+      </label>
+
+      {backgroundStyle === 'gradient' && (
+        <div>
+          <input
+            type="text"
+            value={gradientFrom}
+            onChange={(e) => setGradientFrom(e.target.value)}
+            placeholder="From (#fff)"
+          />
+          <input
+            type="text"
+            value={gradientTo}
+            onChange={(e) => setGradientTo(e.target.value)}
+            placeholder="To (#000)"
+          />
+        </div>
+      )}
+
+      <label>
+        <input type="radio" value="image" checked={backgroundStyle === 'image'} onChange={(e) => setBackgroundStyle(e.target.value)}>
+          Image
+        </input>
+      </label>
+
+      {backgroundStyle === 'image' && (
+        <input
+          type="text"
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          placeholder="Image URL"
+        />
+      )}
 
       <div style={{
         display: "flex",
