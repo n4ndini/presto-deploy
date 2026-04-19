@@ -42,7 +42,7 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
     }
 
     if (backgroundStyle === 'image') {
-      const isValidUrl = /^https?:\/\/.+\.(png|jpg|jpeg|gif|tiff)(\?.*)?$/.test(url);
+      const isValidUrl = /^https?:\/\/.+\.(png|jpg|jpeg|gif|tiff)(\?.*)?$/.test(imageUrl);
       if (!isValidUrl) {
         setError("Image must be png, jpg, gif, tiff image URL");
         return;
@@ -53,9 +53,24 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
     return 'white';
   };
 
+  const handleSubmitCurr = () => {
+    const background = setBackground();
+    if (!background) return;
+
+    onSubmitCurr(background);
+    onClose();
+  };
+
+  const handleSubmitDefault = () => {
+    const background = setBackground();
+    if (!background) return;
+
+    onSubmitDefault(background);
+    onClose();
+  };
+
   return (
-    <form onSubmit={computeSubmit}
-      style={{
+    <div style={{
         display: "flex",
         flexDirection: "column",
         gap: "12px",
@@ -72,6 +87,8 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
         zIndex: 1000,
         minWidth: "320px",
       }}>
+      <h3>Background Settings</h3>
+      
       {error && (
         <div style={{ backgroundColor: "#ffe5e5", border: "1px solid red", borderRadius: "6px", padding: "10px", marginBottom: "10px" }}>
           {error}
@@ -80,11 +97,10 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
           </button>
         </div>
       )}
-      <h3 style={{ margin: 0 }}>{initial ? "Edit Text" : "Add Text"}</h3><br />
 
       Choose Background Style:
       <label>
-        <input type="radio" value="solid" checked={backgroundStyle === 'solid'} onChange={(e) => setBackgroundStyle(e.target.value)}>
+        <input type="radio" value="solid" checked={backgroundStyle === 'solid'} onChange={() => setBackgroundStyle('solid')}>
           Solid Colour
         </input>
       </label>
@@ -99,7 +115,7 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
       )}
 
       <label>
-        <input type="radio" value="gradient" checked={backgroundStyle === 'gradient'} onChange={(e) => setBackgroundStyle(e.target.value)}>
+        <input type="radio" value="gradient" checked={backgroundStyle === 'gradient'} onChange={() => setBackgroundStyle('gradient')}>
           Gradient Colour
         </input>
       </label>
@@ -122,7 +138,7 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
       )}
 
       <label>
-        <input type="radio" value="image" checked={backgroundStyle === 'image'} onChange={(e) => setBackgroundStyle(e.target.value)}>
+        <input type="radio" value="image" checked={backgroundStyle === 'image'} onChange={() => setBackgroundStyle('image')}>
           Image
         </input>
       </label>
@@ -142,15 +158,15 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
         gap: "10px",
         marginTop: "10px",
       }}>
-        <button onClick={() => { onSubmitCurr(setBackground()); onClose(); }}>
+        <button onClick={() => { handleSubmitCurr }}>
           Save for Current Slide
         </button>
-        <button onClick={() => { onSubmitDefault(setBackground()); onClose(); }}>
+        <button onClick={() => { handleSubmitDefault }}>
           Save as Default
         </button>
         <button type="button" onClick={onClose}>Cancel</button>
       </div>
-    </form>
+    </div>
   );
 }
 
