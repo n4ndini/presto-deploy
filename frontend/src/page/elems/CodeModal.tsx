@@ -26,8 +26,8 @@ function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
   const [fontSize, setFontSize] = useState(initial?.fontSize ?? 1);
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
-  const [x, setX] = useState(initial?.x ?? 0);
-  const [y, setY] = useState(initial?.y ?? 0);
+  const [x, _setX] = useState(initial?.x ?? 0);
+  const [y, _setY] = useState(initial?.y ?? 0);
   const [error, setError] = useState(''); // implement error messages
   
   const computeSubmit = (e: SyntheticEvent) => {
