@@ -39,7 +39,47 @@ const renderPreviewElement = (el: ElementType) => {
 
   switch (el.type) {
     case 'text':
+      return (
+        <div
+          key={el.id}
+          style={{
+            ...commonStyle,
+            whiteSpace: 'pre-wrap',
+            padding: '4px',
+            fontSize: `${el.fontSize}em`,
+            color: el.colour,
+            fontFamily: el.fontFamily,
+          }}
+        >
+          {el.content}
+        </div>
+      );
+
     case 'image':
+      return (
+        <div
+          key={el.id}
+          style={{
+            ...commonStyle,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'content',
+          }}
+        >
+          <img 
+            src={el.url}
+            alt={el.alt}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              pointerEvents: 'none',
+              border: 'none'
+            }}
+          />
+        </div>
+      );
+
     case 'code':
     case 'video':
 
