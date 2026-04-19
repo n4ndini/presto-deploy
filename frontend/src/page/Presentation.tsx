@@ -15,6 +15,16 @@ import CodeElement from "./elems/CodeElement";
 import dropper from '../assets/dropper.png';
 import BackgroundModal from "./BackgroundModal";
 
+const reorderSlides = (presentation: PresentationType, fromIndex: number, toIndex: number) => {
+  const slides = [...presentation.slides];
+  const [movedSlide] = slides.splice(fromIndex, 1);
+  slides.splice(toIndex, 0, movedSlide);
+  return {
+    ...presentation,
+    slides,
+  };
+};
+
 function Presentation() {
   const { id } = useParams();
   const token = localStorage.getItem('token');
