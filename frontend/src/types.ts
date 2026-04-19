@@ -8,6 +8,7 @@ export type PresentationType = {
   desc: string,
   thumbnail: string,
   slides: SlideType[];
+  defaultBackground: string,
 }
 
 export type SlideType = {

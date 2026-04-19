@@ -75,6 +75,7 @@ function Dashboard() {
         name,
         desc,
         thumbnail,
+        defaultBackground: 'white',
         slides: [{ id: 1 , background: 'white', elements: [] }],  // default single empty slide
       };
 

@@ -153,6 +153,10 @@ function Presentation() {
   const isFirstSlide = currSlideIndex === 0;
   const isLastSlide = currSlideIndex === presentation.slides.length - 1;
 
+  const slideBackground =
+  currentSlide.background ?? presentation.defaultBackground ?? "#ffffff";
+
+
   const savePresentation = async (updated: PresentationType) => {
     setPresentation(updated);
     await updatePresentation(token!, updated);
@@ -390,6 +394,32 @@ function Presentation() {
     await savePresentation(updated);
   };
 
+  const updateCurrentSlideBackground = async (background: string) => {
+    const updated = {
+      ...presentation,
+      slides: presentation.slides.map((slide, i) =>
+        i === currSlideIndex ? { ...slide, background: background } : slide
+      ),
+    };
+    await savePresentation(updated);
+  };
+
+  const updateDefaultBackground = async (background: string) => {
+    if (!presentation) return;
+
+    const updated = {
+      ...presentation,
+      defaultBackground: background,
+      slides: presentation.slides.map(slide =>
+        slide.background === presentation.defaultBackground ||
+        !slide.background
+          ? { ...slide, background }
+          : slide
+      ),
+    };
+    await savePresentation(updated);
+  };
+
   return (
     <>
       <div style={{ marginBottom: "20px", display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -524,7 +554,7 @@ function Presentation() {
           </div>
         )}
         {changeBackground && (
-          <BackgroundModal onSubmit={} onClose={() => setChangeBackground(false)}/>
+          <BackgroundModal onSubmitCurr={updateCurrentSlideBackground} onSubmitDefault={updateDefaultBackground} onClose={() => setChangeBackground(false)}/>
         )}
       </div>
 
@@ -610,6 +640,7 @@ function Presentation() {
           alignItems: "center",
           justifyContent: "center",
           marginTop: "20px",
+          background: slideBackground,
         }}>
         {currentSlide.elements.map((el) => {
           switch (el.type) {
