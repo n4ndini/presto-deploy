@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import type { SyntheticEvent } from 'react';
+import { API_BASE_URL } from '../backend';
 
 type RegisterProps = {
   successCallback : (token: string) => void;
@@ -37,7 +38,7 @@ function Register({ successCallback }: RegisterProps) {
     }
    
     try {
-      const response = await axios.post("http://localhost:5005/admin/auth/register", {
+      const response = await axios.post(`${API_BASE_URL}/admin/auth/register`, {
         name,
         email,
         password,

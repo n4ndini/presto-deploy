@@ -1,20 +1,19 @@
 // Helpers.ts
 import axios from "axios";
 import type { PresentationType, Store } from "../types";
-
-const BASE_URL = "http://localhost:5005";
+import { API_BASE_URL } from "../backend";
 
 const getHeaders = (token: string) => ({
   Authorization: `Bearer ${token}`,
 });
 
 export const getStore = async (token: string): Promise<Store> => {
-  const res = await axios.get(`${BASE_URL}/store`, { headers: getHeaders(token) });
+  const res = await axios.get(`${API_BASE_URL}/store`, { headers: getHeaders(token) });
   return res.data.store;
 };
 
 export const putStore = async (token: string, store: Store): Promise<void> => {
-  await axios.put(`${BASE_URL}/store`, { store }, { headers: getHeaders(token) });
+  await axios.put(`${API_BASE_URL}/store`, { store }, { headers: getHeaders(token) });
 };
 
 export const getPresentationById = async (token: string, id: number): Promise<PresentationType | null> => {

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import type { SyntheticEvent } from 'react';
+import { API_BASE_URL } from '../backend';
 
 type LoginProps = {
   successCallback : (token: string) => void;
@@ -30,7 +31,7 @@ function Login({ successCallback }: LoginProps) {
     }
    
     try {
-      const response = await axios.post("http://localhost:5005/admin/auth/login", {
+      const response = await axios.post(`${API_BASE_URL}/admin/auth/login`, {
         email,
         password,
       });

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import type { SyntheticEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import type { PresentationType, Store } from "../types";
+import { API_BASE_URL } from "../backend";
 
 
 function Dashboard() {
@@ -24,7 +25,7 @@ function Dashboard() {
 
     const fetchPresentation = async () => {
       try {
-        const res = await axios.get('http://localhost:5005/store', {
+        const res = await axios.get(`${API_BASE_URL}/store`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -61,7 +62,7 @@ function Dashboard() {
 
     // have to GET curr store, then return og store + new presentation
     try {
-      const res = await axios.get('http://localhost:5005/store', {headers: { Authorization: `Bearer ${token}`, },});
+      const res = await axios.get(`${API_BASE_URL}/store`, {headers: { Authorization: `Bearer ${token}`, },});
       const store: Store = res.data.store;
       const oldPresentations = store.presentations || [];
 
@@ -83,7 +84,7 @@ function Dashboard() {
         presentations: [...oldPresentations, newPresentation],
       };
 
-      await axios.put('http://localhost:5005/store', { store: updatedStore },
+      await axios.put(`${API_BASE_URL}/store`, { store: updatedStore },
         {
           headers: {
             Authorization: `Bearer ${token}`,

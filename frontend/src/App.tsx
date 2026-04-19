@@ -1,5 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from './backend';
 // import styles from './App.module.css'
 import Register from './page/Register';
 import Login from './page/Login';
@@ -30,7 +31,7 @@ function App() {
 
   async function logout() {
     try {
-      const response = await axios.post("http://localhost:5005/admin/auth/logout", {}, {
+      const response = await axios.post(`${API_BASE_URL}/admin/auth/logout`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
         },
