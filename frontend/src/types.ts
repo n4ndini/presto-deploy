@@ -12,6 +12,7 @@ export type PresentationType = {
 
 export type SlideType = {
   id: number;
+  background: string;
   elements: ElementType[];
 }
 
