@@ -1,8 +1,7 @@
 import { useState} from "react";
-import type { SyntheticEvent } from "react";
 import type { SlideType } from "../types";
 
-type SlideModalProps = {
+type BackgroundModalProps = {
   initial?: SlideType; // if true, we are editing a textbox
   onSubmitCurr: (
     background: string,
@@ -15,22 +14,19 @@ type SlideModalProps = {
 
 // used for creating or editing a text element
 // collects usr input, validates it, calls onCreate and then closes itself
-function SlideModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: SlideModalProps) {
+function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: BackgroundModalProps) {
   const [backgroundStyle, setBackgroundStyle] = useState<'solid' | 'gradient' | 'image'>('solid');
 
   const [solidColour, setSolidColour] = useState('#ffffff');
   const [gradientFrom, setGradientFrom] = useState('#ffffff');
   const [gradientTo, setGradientTo] = useState('#000000');
   const [imageUrl, setImageUrl] = useState('');
-  
-  const [currBack, setCurrBack] = useState(initial?.background ?? 'white');
-  const [defaultBack, setDefaultBack] = useState(initial?.background ?? 'white');
 
   const [error, setError] = useState(''); // implement error messages
 
   const setBackground = () => {
     if (backgroundStyle === 'solid') {
-      if (solidColour.length !== 6) {
+      if (!/^#([0-9A-Fa-f]{6})$/.test(solidColour)){
         setError('Not a valid HEXCODE!');
         return;
       }
@@ -38,7 +34,7 @@ function SlideModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: SlideMo
     }
 
     if (backgroundStyle === 'gradient') {
-      if (gradientFrom.length !== 6 || gradientTo.length !== 6) {
+      if (!/^#([0-9A-Fa-f]{6})$/.test(gradientFrom) || !/^#([0-9A-Fa-f]{6})$/.test(gradientTo)) {
         setError('Not a valid HEXCODE!');
         return;
       }
@@ -146,12 +142,16 @@ function SlideModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: SlideMo
         gap: "10px",
         marginTop: "10px",
       }}>
-        <button type="submit">{initial ? "Save for Current Slide" : "Add"}</button>
-        <button type="submit">{initial ? "Save as Default" : "Add"}</button>
+        <button onClick={() => { onSubmitCurr(setBackground()); onClose(); }}>
+          Save for Current Slide
+        </button>
+        <button onClick={() => { onSubmitDefault(setBackground()); onClose(); }}>
+          Save as Default
+        </button>
         <button type="button" onClick={onClose}>Cancel</button>
       </div>
     </form>
   );
 }
 
-export default SlideModal;
+export default BackgroundModal;
