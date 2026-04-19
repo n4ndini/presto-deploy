@@ -592,7 +592,22 @@ function Presentation() {
     setDragOverSlideIndex(slideIndex);
   }
 
-  const currentSlideId = presentation.slides[currSlideIndex].id;
+  const handleSlideDrop = async (targetIndex: number) => {
+    if (draggedSlideIndex === null || draggedSlideIndex === targetIndex) {
+      setDraggedSlideIndex(null);
+      setDragOverSlideIndex(null);
+      return;
+    }
+
+    const currentSlideId = presentation.slides[currSlideIndex].id;
+    const updatedPresentation = reorderSlides(presentation, draggedSlideIndex, targetIndex);
+    const updatedCurrentSlideIndex = updatedPresentation.slides.findIndex((slide) => slide.id === currentSlideId);
+
+    setCurrSlideIndex(updatedCurrentSlideIndex);
+    setDraggedSlideIndex(null);
+    setDragOverSlideIndex(null);
+    await savePresentation(updatedPresentation);
+  };
 
   return (
     <>
