@@ -75,7 +75,7 @@ function Dashboard() {
         name,
         desc,
         thumbnail,
-        slides: [{ id: 1 , elements: [] }],  // default single empty slide
+        slides: [{ id: 1 , background: 'white', elements: [] }],  // default single empty slide
       };
 
       const updatedStore: Store = {
@@ -153,10 +153,8 @@ function Dashboard() {
             <h2>{p.name}</h2><br />
             <p>{p.desc}</p><br />
             <span>{p.slides.length} slides</span><br />
-
           </div>
         ))}
-
       </div>
       
     </>
