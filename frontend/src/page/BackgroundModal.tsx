@@ -100,9 +100,9 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
 
       Choose Background Style:
       <label>
-        <input type="radio" value="solid" checked={backgroundStyle === 'solid'} onChange={() => setBackgroundStyle('solid')}>
-          Solid Colour
-        </input>
+        <input type="radio" value="solid" checked={backgroundStyle === 'solid'} onChange={() => setBackgroundStyle('solid')}
+        />
+        Solid Colour
       </label>
 
       {backgroundStyle === 'solid' && (
@@ -115,9 +115,13 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
       )}
 
       <label>
-        <input type="radio" value="gradient" checked={backgroundStyle === 'gradient'} onChange={() => setBackgroundStyle('gradient')}>
-          Gradient Colour
-        </input>
+        <input
+          type="radio"
+          value="gradient"
+          checked={backgroundStyle === 'gradient'}
+          onChange={() => setBackgroundStyle('gradient')}
+        />
+        Gradient Colour
       </label>
 
       {backgroundStyle === 'gradient' && (
@@ -138,10 +142,16 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
       )}
 
       <label>
-        <input type="radio" value="image" checked={backgroundStyle === 'image'} onChange={() => setBackgroundStyle('image')}>
-          Image
-        </input>
+        <input
+          type="radio"
+          value="image"
+          checked={backgroundStyle === 'image'}
+          onChange={() => setBackgroundStyle('image')}
+        />
+        Image
       </label>
+
+
 
       {backgroundStyle === 'image' && (
         <input
@@ -158,10 +168,10 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
         gap: "10px",
         marginTop: "10px",
       }}>
-        <button onClick={() => { handleSubmitCurr }}>
+        <button type="button" onClick={handleSubmitCurr}>
           Save for Current Slide
         </button>
-        <button onClick={() => { handleSubmitDefault }}>
+        <button type="button" onClick={handleSubmitDefault}>
           Save as Default
         </button>
         <button type="button" onClick={onClose}>Cancel</button>
