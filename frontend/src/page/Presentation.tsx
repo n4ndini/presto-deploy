@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import type { MouseEvent as ReactMouseEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { CodeElementType, ElementType, ImageElementType, PresentationType, TextElementType, VideoElementType } from "../types";
+import type { CodeElementType, ElementType, ImageElementType, PresentationType, SlideType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
@@ -12,7 +12,8 @@ import VideoModal from "./elems/VideoModal";
 import VideoElement from "./elems/VideoElement";
 import CodeModal from "./elems/CodeModal";
 import CodeElement from "./elems/CodeElement";
-
+import dropper from '../assets/dropper.png';
+import BackgroundModal from "./BackgroundModal";
 
 function Presentation() {
   const { id } = useParams();
@@ -35,6 +36,10 @@ function Presentation() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [editingElem, setEditingElem] = useState<ElementType | null>(null);
+  
+  const [fontFamAdjustment, setFontFamAdjustment] = useState(false);
+  const [fontFam, setFontFam] = useState('Arial');
+  const [changeBackground, setChangeBackground] = useState(false);
 
   const [selectedElemId, setSelectedElemId] = useState<number | null>(null);
   const [dragging, setDragging] = useState<{
@@ -148,6 +153,10 @@ function Presentation() {
   const isFirstSlide = currSlideIndex === 0;
   const isLastSlide = currSlideIndex === presentation.slides.length - 1;
 
+  const getSlideBackground = (slide: SlideType) =>
+  slide.background ?? presentation?.defaultBackground ?? "#ffffff";
+
+
   const savePresentation = async (updated: PresentationType) => {
     setPresentation(updated);
     await updatePresentation(token!, updated);
@@ -186,7 +195,14 @@ function Presentation() {
 
       const updatedPresentation = {
         ...presentation,
-        slides: [...presentation.slides, { id: nextSlideId, elements: [] }],
+        slides: [
+          ...presentation.slides,
+          {
+            id: nextSlideId,
+            elements: [],
+            background: presentation.defaultBackground || "#ffffff",
+          },
+        ],
       };
 
       await savePresentation(updatedPresentation);
@@ -239,6 +255,7 @@ function Presentation() {
     height: number,
     fontSize: number,
     colour: string,
+    fontFamily: string,
     x: number,
     y: number
   ) => {
@@ -254,6 +271,7 @@ function Presentation() {
       height,
       fontSize,
       colour,
+      fontFamily: fontFam,
     };
     const updated = addElement(presentation!, currSlideIndex, newElem);
 
@@ -360,6 +378,53 @@ function Presentation() {
     await savePresentation(updated);
     setShowCodeModal(false);
     setError('');
+  };
+
+  const updateFontFamily = async (newFont: string) => {
+    setFontFam(newFont);
+
+    if(!presentation) return;
+
+    const updated = {
+      ...presentation,
+      slides: presentation.slides.map((slide, index) =>
+        index === currSlideIndex ? {
+          ...slide,
+          elements: slide.elements.map(el => el.type === 'text' ? {
+            ...el,
+            fontFamily: newFont
+          } : el)
+        }
+        :slide
+      ),
+    };
+    await savePresentation(updated);
+  };
+
+  const updateCurrentSlideBackground = async (background: string) => {
+    const updated = {
+      ...presentation,
+      slides: presentation.slides.map((slide, i) =>
+        i === currSlideIndex ? { ...slide, background: background } : slide
+      ),
+    };
+    await savePresentation(updated);
+  };
+
+  const updateDefaultBackground = async (background: string) => {
+    if (!presentation) return;
+
+    const updated = {
+      ...presentation,
+      defaultBackground: background,
+      slides: presentation.slides.map(slide =>
+        slide.background === presentation.defaultBackground ||
+        !slide.background
+          ? { ...slide, background }
+          : slide
+      ),
+    };
+    await savePresentation(updated);
   };
 
   return (
@@ -471,13 +536,32 @@ function Presentation() {
         <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setEditScreen(p => !p)}>
           {editScreen ? "Close Editor" : "Edit Slide"}
         </button>
+        <button style={{display: 'flex', alignItems: 'center'}} onClick={() => setChangeBackground(p => !p)}>
+          <img src={dropper} alt="dropper" style={{ height: '20px' }} />
+          {changeBackground ? "Close background editor" : "Change Background"}
+        </button>
         {editScreen && (
           <div>
             <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
             <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
             <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowVideoModal(true)}>+ Add Video</button>
             <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowCodeModal(true)}>+ Add Code block</button>
+            
+            <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setFontFamAdjustment(p => !p)}>
+              {fontFamAdjustment ? "Close Font Options" : "Font Options"}
+            </button>
+            {fontFamAdjustment && (
+              <div>
+                <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => updateFontFamily('Arial')}>Arial</button>
+                <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => updateFontFamily('Times New Roman')}>Times New Roman</button>
+                <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => updateFontFamily('Parchment')}>Parchment</button>
+
+              </div>
+            )}
           </div>
+        )}
+        {changeBackground && (
+          <BackgroundModal onSubmitCurr={updateCurrentSlideBackground} onSubmitDefault={updateDefaultBackground} onClose={() => setChangeBackground(false)}/>
         )}
       </div>
 
@@ -500,10 +584,10 @@ function Presentation() {
       {editingElem && editingElem.type === 'text' && (
         <TextModal
           initial={editingElem}
-          onSubmit={(text, width, height, fontSize, colour, x, y) =>
+          onSubmit={(text, width, height, fontSize, colour, fontFam, x, y) =>
             updateExistingElement(editingElem.id, (el) => {
               if (el.type !== 'text') return el;
-              return {...el, content: text, width, height, fontSize, colour, x, y};
+              return {...el, content: text, width, height, fontSize, colour, fontFamily: fontFam, x, y};
             })
           }
           onClose={() => setEditingElem(null)}
@@ -563,6 +647,7 @@ function Presentation() {
           alignItems: "center",
           justifyContent: "center",
           marginTop: "20px",
+          background: getSlideBackground(currentSlide) || "#ffffff",
         }}>
         {currentSlide.elements.map((el) => {
           switch (el.type) {
@@ -617,8 +702,8 @@ function Presentation() {
             );
           default:
             return null;
-         }
-       })}
+          }
+        })}
 
         {/* Slide number */}
         <div style={{ position: 'absolute', bottom: '8px', left: '8px', fontSize: '0.75em', color: '#888' }}>

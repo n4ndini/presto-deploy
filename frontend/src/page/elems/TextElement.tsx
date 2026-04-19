@@ -44,6 +44,7 @@ function TextElement({ elem, onDelete, onEdit, onSelect, onMoveStart, isSelected
 
         fontSize: `${elem.fontSize}em`,
         color: elem.colour,
+        fontFamily: elem.fontFamily,
 
         padding: "4px",
         cursor: "move",
