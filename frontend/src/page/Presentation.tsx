@@ -25,6 +25,29 @@ const reorderSlides = (presentation: PresentationType, fromIndex: number, toInde
   };
 };
 
+const renderPreviewElement = (el: ElementType) => {
+  const commonStyle = {
+    position: "absolute" as const,
+    left: `${el.x}%`,
+    top: `${el.y}%`,
+    width: `${el.width}%`,
+    height: `${el.height}%`,
+    boxSizing: "border-box" as const,
+    overflow: "hidden" as const,
+    border: "none",
+  };
+
+  switch (el.type) {
+    case 'text':
+    case 'image':
+    case 'code':
+    case 'video':
+
+    default:
+      return null;
+  }
+};
+
 function ReadOnlySlidePreview({
   slide,
   slideNumber,
