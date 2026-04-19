@@ -159,7 +159,7 @@ function ReadOnlySlidePreview({
             bottom: '8px',
             left: '8px',
             fontSize: '0.75em',
-            color: '#888',
+            color: '#000000',
           }}
         >
           {slideNumber}
@@ -849,7 +849,7 @@ function Presentation() {
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ margin: 0 }}>Slide Control Panel</h2>
+              <h2 style={{ margin: 0, color: '#000000' }}>Slide Control Panel</h2>
               <button onClick={() => setShowSlidePanel(false)}>Close</button>
             </div>
 
@@ -897,7 +897,7 @@ function Presentation() {
                       cursor: 'pointer',
                     }}
                   >
-                    <div style={{ marginBottom: '10px', fontWeight: 700 }}>
+                    <div style={{ marginBottom: '10px', fontWeight: 700, color: '#000000'}}>
                       Slide {index + 1}
                     </div>
                     <div
