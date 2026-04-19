@@ -397,7 +397,7 @@ function Presentation() {
         }
         :slide
       ),
-     };
+    };
     await savePresentation(updated);
   };
 
@@ -702,8 +702,8 @@ function Presentation() {
             );
           default:
             return null;
-         }
-       })}
+          }
+        })}
 
         {/* Slide number */}
         <div style={{ position: 'absolute', bottom: '8px', left: '8px', fontSize: '0.75em', color: '#888' }}>

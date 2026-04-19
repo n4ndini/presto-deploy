@@ -71,22 +71,22 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
 
   return (
     <div style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
+      display: "flex",
+      flexDirection: "column",
+      gap: "12px",
 
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
 
-        backgroundColor: "#88d3ed",
-        padding: "24px",
-        borderRadius: "12px",
-        boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-        zIndex: 1000,
-        minWidth: "320px",
-      }}>
+      backgroundColor: "#88d3ed",
+      padding: "24px",
+      borderRadius: "12px",
+      boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+      zIndex: 1000,
+      minWidth: "320px",
+    }}>
       <h3>Background Settings</h3>
       
       {error && (
@@ -150,8 +150,6 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
         />
         Image
       </label>
-
-
 
       {backgroundStyle === 'image' && (
         <input
