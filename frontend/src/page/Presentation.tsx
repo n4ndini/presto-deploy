@@ -51,6 +51,10 @@ function Presentation() {
   const [hasDragged, setHasDragged] = useState(false);
   const slideRef = useRef<HTMLDivElement | null>(null);
 
+  const [showSlidePanel, setShowSlidePanel] = useState(false);
+  const [draggedSlideIndex, setDraggedSlideIndex] = useState<number | null>(null);
+  const [dragOverSlideIndex, setDragOverSlideIndex] = useState<number | null>(null);
+
   useEffect(() => {
     if (!token) navigate("/");
   }, [token]);
