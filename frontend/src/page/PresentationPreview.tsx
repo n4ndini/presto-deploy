@@ -166,6 +166,35 @@ function PresentationPreview() {
     fetchPresentation();
   }, [id, token, navigate]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!presentation || presentation.slides.length < 2) return;
+
+      if (e.key === "ArrowLeft" && currSlideIndex > 0) {
+        setCurrSlideIndex((prev) => prev - 1);
+      }
+
+      if (
+        e.key === "ArrowRight" &&
+        currSlideIndex < presentation.slides.length - 1
+      ) {
+        setCurrSlideIndex((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [presentation, currSlideIndex]);
+
+  if (!presentation) {
+    return <p>{error || 'Loading preview...'}</p>;
+  }
+
+  const currentSlide = presentation.slides[currSlideIndex];
+  const isFirstSlide = currSlideIndex === 0;
+  const isLastSlide = currSlideIndex === presentation.slides.length - 1;
+
+
   return <></>;
 }
 
