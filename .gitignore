@@ -4,5 +4,4 @@
 *.idea
 *dist
 *package-lock.json
-presto-backend/
 .DS_store
