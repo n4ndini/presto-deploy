@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { CodeElementType, ElementType, ImageElementType, PresentationType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
@@ -34,6 +35,17 @@ function Presentation() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [editingElem, setEditingElem] = useState<ElementType | null>(null);
+
+  const [selectedElemId, setSelectedElemId] = useState<number | null>(null);
+  const [dragging, setDragging] = useState<{
+    elemId: number;
+    startMouseX: number;
+    startMouseY: number;
+    startX: number;
+    startY: number;
+  } | null>(null);
+  const [hasDragged, setHasDragged] = useState(false);
+  const slideRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!token) navigate("/");
@@ -71,6 +83,62 @@ function Presentation() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [presentation, currSlideIndex]);
+
+  useEffect(() => {
+    if (!dragging || !slideRef.current) return;
+
+    const handleMouseMove = (e: globalThis.MouseEvent) => {
+      if (!slideRef.current) return;
+
+      const rect = slideRef.current.getBoundingClientRect();
+      const dxPx = e.clientX - dragging.startMouseX;
+      const dyPx = e.clientY - dragging.startMouseY;
+
+      const dxPercent = (dxPx / rect.width) * 100;
+      const dyPercent = (dyPx / rect.height) * 100;
+
+      setPresentation((prev) => {
+        if (!prev) { return prev; }
+
+        const elem = prev.slides[currSlideIndex].elements.find(
+          (el) => el.id === dragging.elemId
+        );
+        if (!elem) { return prev; }
+
+        const newX = Math.max(0, Math.min(dragging.startX + dxPercent, 100 - elem.width));
+        const newY = Math.max(0, Math.min(dragging.startY + dyPercent, 100 - elem.height));
+
+        return updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
+          ...el,
+          x: newX,
+          y: newY,
+        }));
+      });
+
+      setHasDragged(true);
+    };
+
+    const handleMouseUp = () => {
+      setDragging(null);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [dragging, currSlideIndex]);
+
+  useEffect(() => {
+    if (!presentation || dragging || !hasDragged ) return;
+
+    updatePresentation(token!, presentation)
+      .catch(() => setError("Failed to save element position"));
+
+    setHasDragged(false);
+  }, [presentation, dragging, hasDragged, token]);
 
   if (!presentation) {
     return <p>Loading...</p>;
@@ -134,19 +202,35 @@ function Presentation() {
       setError("Cannot delete the only slide");
       return;
     }
-
+  
     try {
-      const updatedSlides = {
+      const newIndex = currSlideIndex > 0 ? currSlideIndex - 1 : 0;
+  
+      const updatedPresentation = {
         ...presentation,
         slides: presentation.slides.filter((_, i) => i !== currSlideIndex),
       };
-
-      await savePresentation(updatedSlides);
-      setCurrSlideIndex((prev) => Math.max(0, prev - 1));
+  
+      setCurrSlideIndex(newIndex);
+      await savePresentation(updatedPresentation);
     } catch (err) {
       console.error(err);
       setError("Failed to delete slide");
     }
+  };
+
+  const handleStartMove = (e: ReactMouseEvent, elem: ElementType) => {
+    e.stopPropagation();
+    if (e.button !== 0) return;
+
+    setSelectedElemId(elem.id);
+    setDragging({
+      elemId: elem.id,
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startX: elem.x,
+      startY: elem.y,
+    });
   };
 
   const addNewTextElem = async (
@@ -467,6 +551,8 @@ function Presentation() {
 
       {/* side canvas */}
       <div
+        ref={slideRef}
+        onClick={() => setSelectedElemId(null)}
         style={{
           width: "800px",
           height: "450px",
@@ -487,6 +573,9 @@ function Presentation() {
                 elem={el}
                 onDelete={handleDeleteElement}
                 onEdit={setEditingElem}
+                isSelected={selectedElemId === el.id}
+                onSelect={() => setSelectedElemId(el.id)}
+                onMoveStart={handleStartMove} 
               />
             );
 
@@ -497,6 +586,9 @@ function Presentation() {
                 elem={el}
                 onDelete={handleDeleteElement}
                 onEdit={setEditingElem}
+                isSelected={selectedElemId === el.id}
+                onSelect={() => setSelectedElemId(el.id)}
+                onMoveStart={handleStartMove}
               />
             );
           case "video":
@@ -506,6 +598,9 @@ function Presentation() {
                 elem={el}
                 onDelete={handleDeleteElement}
                 onEdit={setEditingElem}
+                isSelected={selectedElemId === el.id}
+                onSelect={() => setSelectedElemId(el.id)}
+                onMoveStart={handleStartMove}
               />
             );
           case "code":
@@ -515,6 +610,9 @@ function Presentation() {
                 elem={el}
                 onDelete={handleDeleteElement}
                 onEdit={setEditingElem}
+                isSelected={selectedElemId === el.id}
+                onSelect={() => setSelectedElemId(el.id)}
+                onMoveStart={handleStartMove}
               />
             );
           default:

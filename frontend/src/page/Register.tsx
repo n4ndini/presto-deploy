@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
+import type { SyntheticEvent } from 'react';
 
 type RegisterProps = {
   successCallback : (token: string) => void;
@@ -15,7 +16,7 @@ function Register({ successCallback }: RegisterProps) {
 
   //   npm install axios 
   // check local port is right
-  const register = async (e: React.SyntheticEvent) => {
+  const register = async (e: SyntheticEvent) => {
     e.preventDefault(); // enables enter key to be clicked
     setError('');
 

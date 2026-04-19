@@ -1,4 +1,5 @@
 import { useState} from "react";
+import type { SyntheticEvent } from "react";
 import type { TextElementType } from "../../types";
 
 type TextModalProps = {
@@ -9,8 +10,8 @@ type TextModalProps = {
     height: number,
     fontSize: number,
     colour: string,
-    x: number,
-    y: number
+    _x: number,
+    _y: number
   ) => void | Promise<void>;
   onClose: () => void;
 };
@@ -27,7 +28,7 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
   const [y, setY] = useState(initial?.y ?? 0);
   const [error, setError] = useState(''); // implement error messages
   
-  const computeSubmit = (e: React.SyntheticEvent) => {
+  const computeSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     setError('');
 
