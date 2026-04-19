@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import type { MouseEvent as ReactMouseEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { CodeElementType, ElementType, ImageElementType, PresentationType, TextElementType, VideoElementType } from "../types";
+import type { CodeElementType, ElementType, ImageElementType, PresentationType, SlideType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
 import { deletePresentationById, getPresentationById, updatePresentation } from "./Helpers";
@@ -153,8 +153,8 @@ function Presentation() {
   const isFirstSlide = currSlideIndex === 0;
   const isLastSlide = currSlideIndex === presentation.slides.length - 1;
 
-  const slideBackground =
-  currentSlide.background ?? presentation.defaultBackground ?? "#ffffff";
+  const getSlideBackground = (slide: SlideType) =>
+  slide.background ?? presentation?.defaultBackground ?? "#ffffff";
 
 
   const savePresentation = async (updated: PresentationType) => {
@@ -647,7 +647,7 @@ function Presentation() {
           alignItems: "center",
           justifyContent: "center",
           marginTop: "20px",
-          background: slideBackground,
+          background: getSlideBackground(currentSlide) || "#ffffff",
         }}>
         {currentSlide.elements.map((el) => {
           switch (el.type) {
