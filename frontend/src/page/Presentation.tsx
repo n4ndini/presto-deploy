@@ -12,6 +12,7 @@ import VideoModal from "./elems/VideoModal";
 import VideoElement from "./elems/VideoElement";
 import CodeModal from "./elems/CodeModal";
 import CodeElement from "./elems/CodeElement";
+import dropper from '../assets/dropper.png';
 
 
 function Presentation() {
@@ -35,6 +36,11 @@ function Presentation() {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [editingElem, setEditingElem] = useState<ElementType | null>(null);
+  
+  const [fontFamAdjustment, setFontFamAdjustment] = useState(false);
+  const [fontFam, setFontFam] = useState('Arial');
+  const [changeBackground, setChangeBackground] = useState(false);
+
 
   const [selectedElemId, setSelectedElemId] = useState<number | null>(null);
   const [dragging, setDragging] = useState<{
@@ -239,6 +245,7 @@ function Presentation() {
     height: number,
     fontSize: number,
     colour: string,
+    fontFamily: string,
     x: number,
     y: number
   ) => {
@@ -254,6 +261,7 @@ function Presentation() {
       height,
       fontSize,
       colour,
+      fontFamily: fontFam,
     };
     const updated = addElement(presentation!, currSlideIndex, newElem);
 
@@ -360,6 +368,27 @@ function Presentation() {
     await savePresentation(updated);
     setShowCodeModal(false);
     setError('');
+  };
+
+  const updateFontFamily = async (newFont: string) => {
+    setFontFam(newFont);
+
+    if(!presentation) return;
+
+    const updated = {
+      ...presentation,
+      slides: presentation.slides.map((slide, index) =>
+        index === currSlideIndex ? {
+          ...slide,
+          elements: slide.elements.map(el => el.type === 'text' ? {
+            ...el,
+            fontFamily: newFont
+          } : el)
+        }
+        :slide
+      ),
+     };
+    await savePresentation(updated);
   };
 
   return (
@@ -471,14 +500,38 @@ function Presentation() {
         <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setEditScreen(p => !p)}>
           {editScreen ? "Close Editor" : "Edit Slide"}
         </button>
+        <button style={{display: 'flex', alignItems: 'center'}} onClick={() => setChangeBackground(p => !p)}>
+          <img src={dropper} alt="dropper" style={{ height: '20px' }} />
+          {changeBackground ? "Close background editor" : "Change Background"}
+        </button>
         {editScreen && (
           <div>
             <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
             <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowImageModal(true)}>+ Add Image</button>
             <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowVideoModal(true)}>+ Add Video</button>
             <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowCodeModal(true)}>+ Add Code block</button>
+            
+            <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setFontFamAdjustment(p => !p)}>
+              {fontFamAdjustment ? "Close Font Options" : "Font Options"}
+            </button>
+            {fontFamAdjustment && (
+              <div>
+                <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => updateFontFamily('Arial')}>Arial</button>
+                <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => updateFontFamily('Times New Roman')}>Times New Roman</button>
+                <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => updateFontFamily('Parchment')}>Parchment</button>
+
+              </div>
+            )}
           </div>
         )}
+        {changeBackground && (
+          <div>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowCurrBackground(true)}>Modify Current Background Style</button>
+            <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowDefaultBackground(true)}>Default Background Style</button>
+
+          </div>
+        )}
+        
       </div>
 
       {showTextModal && (
@@ -500,10 +553,10 @@ function Presentation() {
       {editingElem && editingElem.type === 'text' && (
         <TextModal
           initial={editingElem}
-          onSubmit={(text, width, height, fontSize, colour, x, y) =>
+          onSubmit={(text, width, height, fontSize, colour, fontFam, x, y) =>
             updateExistingElement(editingElem.id, (el) => {
               if (el.type !== 'text') return el;
-              return {...el, content: text, width, height, fontSize, colour, x, y};
+              return {...el, content: text, width, height, fontSize, colour, fontFamily: fontFam, x, y};
             })
           }
           onClose={() => setEditingElem(null)}
