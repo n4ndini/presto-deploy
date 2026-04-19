@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import type { MouseEvent as ReactMouseEvent } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import type { CodeElementType, ElementType, ImageElementType, PresentationType, SlideType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
@@ -16,13 +16,12 @@ import dropper from '../assets/dropper.png';
 import BackgroundModal from "./BackgroundModal";
 
 function Presentation() {
-  const { id } = useParams();
+  const { id, slideIndex } = useParams();
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const [error, setError] = useState('');
 
   const [presentation, setPresentation] = useState<PresentationType | null>(null);
-  const [currSlideIndex, setCurrSlideIndex] = useState(0);
 
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showEditTitleModal, setShowEditTitleModal] = useState(false);
@@ -52,6 +51,10 @@ function Presentation() {
   const [hasDragged, setHasDragged] = useState(false);
   const slideRef = useRef<HTMLDivElement | null>(null);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currSlideIndex = Number(searchParams.get("slide") ?? 0);
+
+
   useEffect(() => {
     if (!token) navigate("/");
   }, [token]);
@@ -72,16 +75,32 @@ function Presentation() {
     fetchPresentation();
   }, [id]);
 
+  // useEffect(() => {
+  //   setCurrSlideIndex(Number(slideIndex ?? 0));
+  // }, [slideIndex]);
+
+  const navigateToSlide = (index: number) => {
+    setSearchParams({ slide: String(index) });
+  };
+
+  useEffect(() => {
+    const index = Number(searchParams.get("slide") ?? 0);
+    navigateToSlide(index);
+  }, [searchParams]);
+  
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!presentation || presentation.slides.length < 2) return;
 
       if (e.key === "ArrowLeft" && currSlideIndex > 0) {
-        setCurrSlideIndex((prev) => prev - 1);
+        // setCurrSlideIndex((prev) => prev - 1);
+        navigateToSlide(currSlideIndex - 1);
       }
 
       if (e.key === "ArrowRight" && currSlideIndex < presentation.slides.length - 1) {
-        setCurrSlideIndex((prev) => prev + 1);
+        // setCurrSlideIndex((prev) => prev + 1);
+        navigateToSlide(currSlideIndex + 1);
       }
     };
 
@@ -206,7 +225,8 @@ function Presentation() {
       };
 
       await savePresentation(updatedPresentation);
-      setCurrSlideIndex(updatedPresentation.slides.length - 1);
+      // setCurrSlideIndex(updatedPresentation.slides.length - 1);
+      navigateToSlide(updatedPresentation.slides.length - 1);
     } catch (err) {
       console.error(err);
       setError("Failed to create slide");
@@ -227,7 +247,8 @@ function Presentation() {
         slides: presentation.slides.filter((_, i) => i !== currSlideIndex),
       };
   
-      setCurrSlideIndex(newIndex);
+      // setCurrSlideIndex(newIndex);
+      navigateToSlide(newIndex);
       await savePresentation(updatedPresentation);
     } catch (err) {
       console.error(err);
@@ -714,7 +735,8 @@ function Presentation() {
         {presentation.slides.length >= 2 && (
           <>
             <button
-              onClick={() => setCurrSlideIndex((prev) => prev - 1)}
+              // onClick={() => setCurrSlideIndex((prev) => prev - 1)}
+              onClick={() => navigateToSlide(currSlideIndex - 1)}
               disabled={isFirstSlide}
               style={{
                 position: "absolute",
@@ -729,7 +751,8 @@ function Presentation() {
             </button>
   
             <button
-              onClick={() => setCurrSlideIndex((prev) => prev + 1)}
+              onClick={() => navigateToSlide(currSlideIndex + 1)}
+              // onClick={() => setCurrSlideIndex((prev) => prev + 1)}
               disabled={isLastSlide}
               style={{
                 position: "absolute",
