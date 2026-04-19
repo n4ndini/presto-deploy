@@ -38,7 +38,6 @@ function Presentation() {
   const [editingElem, setEditingElem] = useState<ElementType | null>(null);
   
   const [fontFamAdjustment, setFontFamAdjustment] = useState(false);
-  const [fontFam, setFontFam] = useState('Arial');
   const [changeBackground, setChangeBackground] = useState(false);
 
   const [selectedElemId, setSelectedElemId] = useState<number | null>(null);
@@ -381,8 +380,6 @@ function Presentation() {
   };
 
   const updateFontFamily = async (newFont: string) => {
-    setFontFam(newFont);
-
     if(!presentation) return;
 
     const updated = {
