@@ -25,6 +25,48 @@ const reorderSlides = (presentation: PresentationType, fromIndex: number, toInde
   };
 };
 
+function ReadOnlySlidePreview({
+  slide,
+  slideNumber,
+  showSlideNumber = true,
+  width = 800,
+  height = 450,
+}: {
+  slide: SlideType;
+  slideNumber?: number;
+  showSlideNumber?: boolean;
+  width?: number;
+  height?: number;
+}) {
+  return (
+    <div
+      style={{
+        width: `${width}px`,
+        height: `${height}px`,
+        position: 'relative',
+        background: slide.background || '#ffffff',
+        overflow: 'hidden',
+        border: 'none',
+      }}
+    >
+      {slide.elements.map((el) => renderPreviewElement(el))}
+      {showSlideNumber && typeof slideNumber === 'number' && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '8px',
+            left: '8px',
+            fontSize: '0.75em',
+            color: '#888',
+          }}
+        >
+          {slideNumber}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Presentation() {
   const { id } = useParams();
   const token = localStorage.getItem('token');
