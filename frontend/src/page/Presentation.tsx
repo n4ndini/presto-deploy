@@ -428,6 +428,18 @@ function Presentation() {
     await savePresentation(updated);
   };
 
+  const openPreview = () => {
+    const previewUrl = `${window.location.origin}/presentation/${presentation.id}/preview`;
+    window.open(previewUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  const handleSlideDragStart = (slideIndex: number) => {
+    setDraggedSlideIndex(slideIndex);
+    setDragOverSlideIndex(slideIndex);
+  }
+
+  const currentSlideId = presentation.slides[currSlideIndex].id;
+
   return (
     <>
       <div style={{ marginBottom: "20px", display: 'flex', gap: '8px', alignItems: 'center' }}>
