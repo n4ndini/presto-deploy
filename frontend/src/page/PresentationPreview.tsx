@@ -85,6 +85,34 @@ const renderPreviewElement = (el: ElementType) => {
     }
 };
 
+function PreviewSlide({slide, slideNumber }: { slide: SlideType; slideNumber: number }) {
+    return (
+        <div
+            style={{
+                width: '100%',
+                height: '100%',
+                position: 'relative',
+                background: slide.background || '#ffffff',
+                overflow: 'hidden',
+                border: 'none',
+            }}
+        >
+            {slide.elements.map((el) => renderPreviewElement(el))}
+            <div
+                style={{
+                    position: 'absolute',
+                    bottom: '12px',
+                    left: '12px',
+                    color: '#888',
+                    fontSize: '0.95rem',
+                }}
+            >
+                {slideNumber}
+            </div>
+        </div>
+    );
+}
+
 function PresentationPreview() {
 
 
