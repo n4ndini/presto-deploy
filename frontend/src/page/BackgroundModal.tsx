@@ -28,6 +28,35 @@ function SlideModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: SlideMo
 
   const [error, setError] = useState(''); // implement error messages
 
+  const setBackground = () => {
+    if (backgroundStyle === 'solid') {
+      if (solidColour.length !== 6) {
+        setError('Not a valid HEXCODE!');
+        return;
+      }
+      return solidColour;
+    }
+
+    if (backgroundStyle === 'gradient') {
+      if (gradientFrom.length !== 6 || gradientTo.length !== 6) {
+        setError('Not a valid HEXCODE!');
+        return;
+      }
+      return `linear-gradient(${gradientFrom}, ${gradientTo})`;
+    }
+
+    if (backgroundStyle === 'image') {
+      const isValidUrl = /^https?:\/\/.+\.(png|jpg|jpeg|gif|tiff)(\?.*)?$/.test(url);
+      if (!isValidUrl) {
+        setError("Image must be png, jpg, gif, tiff image URL");
+        return;
+      }
+      return `url(${imageUrl})`;
+    }
+
+    return 'white';
+  };
+
   return (
     <form onSubmit={computeSubmit}
       style={{
