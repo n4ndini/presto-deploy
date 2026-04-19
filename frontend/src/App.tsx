@@ -1,6 +1,6 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { API_BASE_URL } from './backend';
+// import { API_BASE_URL } from './backend';
 // import styles from './App.module.css'
 import Register from './page/Register';
 import Login from './page/Login';
@@ -10,6 +10,8 @@ import axios from 'axios';
 import Presentation from './page/Presentation';
 
 // useParams for slides
+
+const API_BASE_URL = "http://localhost:5005";
 
 function App() {
   const [token, setToken] = useState<string | null>(null);
