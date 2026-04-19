@@ -897,7 +897,7 @@ function Presentation() {
                       cursor: 'pointer',
                     }}
                   >
-                    <div style={{ marginBottom: '10px', fontWeight: 700 }}>
+                    <div style={{ marginBottom: '10px', fontWeight: 700, color: '##000000' }}>
                       Slide {index + 1}
                     </div>
                     <div
