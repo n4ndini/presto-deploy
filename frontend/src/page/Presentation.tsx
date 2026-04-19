@@ -195,7 +195,14 @@ function Presentation() {
 
       const updatedPresentation = {
         ...presentation,
-        slides: [...presentation.slides, { id: nextSlideId, elements: [] }],
+        slides: [
+          ...presentation.slides,
+          {
+            id: nextSlideId,
+            elements: [],
+            background: presentation.defaultBackground || "#ffffff",
+          },
+        ],
       };
 
       await savePresentation(updatedPresentation);
