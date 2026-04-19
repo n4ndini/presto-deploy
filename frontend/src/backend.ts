@@ -1,1 +1,1 @@
-export const API_BASE_URL = "https://presto-deploy-ptxxa9p22-n4ndinis-projects.vercel.app/";
+export const API_BASE_URL = "https://presto-deploy-ptxxa9p22-n4ndinis-projects.vercel.app";
