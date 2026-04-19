@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState, useEffect } from "react";
 import type { SlideType } from "../types";
 
 type BackgroundModalProps = {
@@ -23,6 +23,34 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
   const [imageUrl, setImageUrl] = useState('');
 
   const [error, setError] = useState(''); // implement error messages
+
+  useEffect(() => {
+    if (!initial?.background) return;
+
+    const bg = initial.background;
+
+    if (bg.startsWith('linear-gradient(')) {
+      const match = bg.match(/linear-gradient\((#[0-9A-Fa-f]{6}),\s*(#[0-9A-Fa-f]{6})\)/);
+      if (match) {
+        setBackgroundStyle('gradient');
+        setGradientFrom(match[1]);
+        setGradientTo(match[2]);
+        return;
+      }
+    }
+
+    if (bg.startsWith('url(')) {
+      const match = bg.match(/url\((.*)\)/);
+      setBackgroundStyle('image');
+      setImageUrl(match?.[1] ?? '');
+      return;
+    }
+
+    if (/^#([0-9A-Fa-f]{6})$/.test(bg)) {
+      setBackgroundStyle('solid');
+      setSolidColour(bg);
+    }
+  }, [initial]);
 
   const setBackground = () => {
     if (backgroundStyle === 'solid') {
