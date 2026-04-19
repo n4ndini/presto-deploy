@@ -25,8 +25,8 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
   const [height, setHeight] = useState(initial?.height ?? 20);
   const [fontSize, setFontSize] = useState(initial?.fontSize ?? 1);
   const [colour, setColour] = useState(initial?.colour ?? '#000000');
-  const [x, setX] = useState(initial?.x ?? 0);
-  const [y, setY] = useState(initial?.y ?? 0);
+  const [x, _setX] = useState(initial?.x ?? 0);
+  const [y, _setY] = useState(initial?.y ?? 0);
   const [fontFamily, setFontFamily] = useState(initial?.fontFamily ?? 'Arial');
   const [error, setError] = useState(''); // implement error messages
   

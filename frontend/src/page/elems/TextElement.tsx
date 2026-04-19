@@ -37,7 +37,7 @@ function TextElement({ elem, onDelete, onEdit, onSelect, onMoveStart, isSelected
         width: `${elem.width}%`,
         height: `${elem.height}%`,
 
-        border: "1px solid lightgrey",
+        border: isSelected ? "2px solid #4a90e2" : "1px solid lightgrey",
         overflow: "auto",
         whiteSpace: "pre",
         textAlign: "left",

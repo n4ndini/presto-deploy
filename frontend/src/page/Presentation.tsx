@@ -38,7 +38,6 @@ function Presentation() {
   const [editingElem, setEditingElem] = useState<ElementType | null>(null);
   
   const [fontFamAdjustment, setFontFamAdjustment] = useState(false);
-  const [fontFam, setFontFam] = useState('Arial');
   const [changeBackground, setChangeBackground] = useState(false);
 
   const [selectedElemId, setSelectedElemId] = useState<number | null>(null);
@@ -265,13 +264,13 @@ function Presentation() {
       id: maxId + 1,
       type: 'text',
       content: text,
-      x: 0,
-      y: 0,
+      x: x,
+      y: y,
       width,
       height,
       fontSize,
       colour,
-      fontFamily: fontFam,
+      fontFamily: fontFamily,
     };
     const updated = addElement(presentation!, currSlideIndex, newElem);
 
@@ -311,8 +310,8 @@ function Presentation() {
       type: 'image',
       url,
       alt,
-      x: 0,
-      y: 0,
+      x: x,
+      y: y,
       width,
       height,
     };
@@ -339,8 +338,8 @@ function Presentation() {
       type: 'video',
       url,
       autoplay,
-      x: 0,
-      y: 0,
+      x: x,
+      y: y,
       width,
       height,
     };
@@ -368,8 +367,8 @@ function Presentation() {
       type: 'code',
       code,
       fontSize,
-      x: 0,
-      y: 0,
+      x: x,
+      y: y,
       width,
       height,
     };
@@ -381,8 +380,6 @@ function Presentation() {
   };
 
   const updateFontFamily = async (newFont: string) => {
-    setFontFam(newFont);
-
     if(!presentation) return;
 
     const updated = {
@@ -561,7 +558,7 @@ function Presentation() {
           </div>
         )}
         {changeBackground && (
-          <BackgroundModal onSubmitCurr={updateCurrentSlideBackground} onSubmitDefault={updateDefaultBackground} onClose={() => setChangeBackground(false)}/>
+          <BackgroundModal initial={currentSlide} onSubmitCurr={updateCurrentSlideBackground} onSubmitDefault={updateDefaultBackground} onClose={() => setChangeBackground(false)}/>
         )}
       </div>
 

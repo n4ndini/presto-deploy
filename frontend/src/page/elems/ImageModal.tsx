@@ -22,8 +22,8 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
   const [alt, setAlt] = useState(initial?.alt ?? '');
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
-  const [x, setX] = useState(initial?.x ?? 0);
-  const [y, setY] = useState(initial?.y ?? 0);
+  const [x, _setX] = useState(initial?.x ?? 0);
+  const [y, _setY] = useState(initial?.y ?? 0);
   const [error, setError] = useState(''); // implement error messages
   
   const computeSubmit = (e: SyntheticEvent) => {
