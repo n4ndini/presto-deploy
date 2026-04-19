@@ -1,1 +1,0 @@
-export const API_BASE_URL = "https://presto-deploy-dmhnme4sh-n4ndinis-projects.vercel.app/docs/";
