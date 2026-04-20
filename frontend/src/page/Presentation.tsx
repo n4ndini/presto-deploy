@@ -235,10 +235,10 @@ function Presentation() {
     setSearchParams({ slide: String(index) });
   };
 
-  useEffect(() => {
-    const index = Number(searchParams.get("slide") ?? 0);
-    navigateToSlide(index);
-  }, [searchParams]);
+  // useEffect(() => {
+  //   const index = Number(searchParams.get("slide") ?? 0);
+  //   navigateToSlide(index);
+  // }, [searchParams]);
   
 
   useEffect(() => {
@@ -282,13 +282,15 @@ function Presentation() {
         const newX = Math.max(0, Math.min(dragging.startX + dxPercent, 100 - elem.width));
         const newY = Math.max(0, Math.min(dragging.startY + dyPercent, 100 - elem.height));
 
-        return updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
+        const updated = updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
           ...el,
           x: newX,
           y: newY,
         }));
+        commitSave(updated);
+        return updated;
       });
-
+      
       setHasDragged(true);
     };
 
@@ -304,16 +306,35 @@ function Presentation() {
       window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [dragging, currSlideIndex]);
+  
+  const commitSave = (() => {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
 
-  useEffect(() => {
-    if (!presentation || dragging || !hasDragged ) return;
+    return (updated: PresentationType) => {
+      if (timeout) clearTimeout(timeout);
 
-    updatePresentation(token!, presentation)
-      .catch(() => setError("Failed to save element position"));
+      timeout = setTimeout(() => {
+        const now = Date.now();
 
-    setHasDragged(false);
-  }, [presentation, dragging, hasDragged, token]);
+        const newHistory = [
+          ...(updated.history || []),
+          {
+            timestamp: now,
+            snapshot: removeHistory(updated),
+          },
+        ];
 
+        const updatedWithHistory = {
+          ...updated,
+          history: newHistory,
+        };
+
+        setPresentation(updatedWithHistory);
+        updatePresentation(token!, updatedWithHistory);
+      }, 1000);
+    };
+  })();
+    
   if (!presentation) {
     return <p>Loading...</p>;
   }
@@ -324,11 +345,32 @@ function Presentation() {
 
   const getSlideBackground = (slide: SlideType) =>
   slide.background ?? presentation?.defaultBackground ?? "#ffffff";
-
+  
+  const removeHistory = (pres: PresentationType): PresentationType => {
+    const { history, ...rest } = pres;
+    return rest as PresentationType;
+  };
 
   const savePresentation = async (updated: PresentationType) => {
-    setPresentation(updated);
-    await updatePresentation(token!, updated);
+    if (!presentation) return;
+   
+    const now = Date.now();
+
+    const newHistory = [
+      ...(updated.history || []),
+      {
+        timestamp: now,
+        snapshot: removeHistory(updated),
+      }
+    ];
+
+    const updatedWithHistory = {
+      ...updated,
+      history: newHistory,
+    };
+    
+    setPresentation(updatedWithHistory);
+    await updatePresentation(token!, updatedWithHistory);
   };
 
   const handleDeletePresentation = async () => {
@@ -651,6 +693,9 @@ function Presentation() {
         <button onClick={() => setShowEditTitleModal(true)}>Edit Title</button>
         <button onClick={() => setShowEditThumbnailModal(true)}>
           Update Thumbnail
+        </button>
+        <button onClick={() => navigate(`/presentation/${id}/history`)}>
+          History
         </button>
       </div>
   
