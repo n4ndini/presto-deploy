@@ -88,6 +88,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/presentation/:id" element={<Presentation />} />
         <Route path="/presentation/:id/preview" element={<PresentationPreview />} />
+        <Route path="/presentation/:id/history" element={<History />} />
 
       </Routes>
     </>
