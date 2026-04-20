@@ -12,7 +12,7 @@ export type PresentationType = {
   history?: HistoryEntry[];
 }
 
-type HistoryEntry = {
+export type HistoryEntry = {
   timestamp: number;
   snapshot: PresentationType;
 }
