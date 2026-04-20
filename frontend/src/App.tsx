@@ -11,12 +11,6 @@ import Presentation from './page/Presentation';
 import PresentationPreview from './page/PresentationPreview';
 import HistoryPage from './page/HistoryPage'
 
-import './styles/theme.css';
-import './styles/app.css';
-import './styles/dashboard.css';
-import './styles/presentation.css';
-import './styles/modals.css';
-
 // useParams for slides
 
 const API_BASE_URL = "http://localhost:5005";
