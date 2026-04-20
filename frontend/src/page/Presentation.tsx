@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import type { MouseEvent as ReactMouseEvent } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import type { CodeElementType, ElementType, ImageElementType, PresentationType, SlideType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
 import TextElement from "./elems/TextElement";
@@ -176,7 +176,6 @@ function Presentation() {
   const [error, setError] = useState('');
 
   const [presentation, setPresentation] = useState<PresentationType | null>(null);
-  const [currSlideIndex, setCurrSlideIndex] = useState(0);
 
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showEditTitleModal, setShowEditTitleModal] = useState(false);
@@ -202,8 +201,10 @@ function Presentation() {
     startX: number;
     startY: number;
   } | null>(null);
-  const [hasDragged, setHasDragged] = useState(false);
   const slideRef = useRef<HTMLDivElement | null>(null);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currSlideIndex = Number(searchParams.get("slide") ?? 0);
 
   const [showSlidePanel, setShowSlidePanel] = useState(false);
   const [draggedSlideIndex, setDraggedSlideIndex] = useState<number | null>(null);
@@ -229,16 +230,20 @@ function Presentation() {
     fetchPresentation();
   }, [id]);
 
+  const navigateToSlide = (index: number) => {
+    setSearchParams({ slide: String(index) });
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!presentation || presentation.slides.length < 2) return;
 
       if (e.key === "ArrowLeft" && currSlideIndex > 0) {
-        setCurrSlideIndex((prev) => prev - 1);
+        navigateToSlide(currSlideIndex - 1);
       }
 
       if (e.key === "ArrowRight" && currSlideIndex < presentation.slides.length - 1) {
-        setCurrSlideIndex((prev) => prev + 1);
+        navigateToSlide(currSlideIndex + 1);
       }
     };
 
@@ -270,14 +275,14 @@ function Presentation() {
         const newX = Math.max(0, Math.min(dragging.startX + dxPercent, 100 - elem.width));
         const newY = Math.max(0, Math.min(dragging.startY + dyPercent, 100 - elem.height));
 
-        return updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
+        const updated = updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
           ...el,
           x: newX,
           y: newY,
         }));
+        commitSave(updated);
+        return updated;
       });
-
-      setHasDragged(true);
     };
 
     const handleMouseUp = () => {
@@ -292,16 +297,35 @@ function Presentation() {
       window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [dragging, currSlideIndex]);
+  
+  const commitSave = (() => {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
 
-  useEffect(() => {
-    if (!presentation || dragging || !hasDragged ) return;
+    return (updated: PresentationType) => {
+      if (timeout) clearTimeout(timeout);
 
-    updatePresentation(token!, presentation)
-      .catch(() => setError("Failed to save element position"));
+      timeout = setTimeout(() => {
+        const now = Date.now();
 
-    setHasDragged(false);
-  }, [presentation, dragging, hasDragged, token]);
+        const newHistory = [
+          ...(updated.history || []),
+          {
+            timestamp: now,
+            snapshot: removeHistory(updated),
+          },
+        ];
 
+        const updatedWithHistory = {
+          ...updated,
+          history: newHistory,
+        };
+
+        setPresentation(updatedWithHistory);
+        updatePresentation(token!, updatedWithHistory);
+      }, 1000);
+    };
+  })();
+    
   if (!presentation) {
     return <p>Loading...</p>;
   }
@@ -312,11 +336,32 @@ function Presentation() {
 
   const getSlideBackground = (slide: SlideType) =>
   slide.background ?? presentation?.defaultBackground ?? "#ffffff";
-
+  
+  const removeHistory = (pres: PresentationType): PresentationType => {
+    const { history, ...rest } = pres;
+    return rest as PresentationType;
+  };
 
   const savePresentation = async (updated: PresentationType) => {
-    setPresentation(updated);
-    await updatePresentation(token!, updated);
+    if (!presentation) return;
+   
+    const now = Date.now();
+
+    const newHistory = [
+      ...(updated.history || []),
+      {
+        timestamp: now,
+        snapshot: removeHistory(updated),
+      }
+    ];
+
+    const updatedWithHistory = {
+      ...updated,
+      history: newHistory,
+    };
+    
+    setPresentation(updatedWithHistory);
+    await updatePresentation(token!, updatedWithHistory);
   };
 
   const handleDeletePresentation = async () => {
@@ -363,7 +408,7 @@ function Presentation() {
       };
 
       await savePresentation(updatedPresentation);
-      setCurrSlideIndex(updatedPresentation.slides.length - 1);
+      navigateToSlide(updatedPresentation.slides.length - 1);
     } catch (err) {
       console.error(err);
       setError("Failed to create slide");
@@ -384,7 +429,7 @@ function Presentation() {
         slides: presentation.slides.filter((_, i) => i !== currSlideIndex),
       };
   
-      setCurrSlideIndex(newIndex);
+      navigateToSlide(newIndex);
       await savePresentation(updatedPresentation);
     } catch (err) {
       console.error(err);
@@ -603,7 +648,7 @@ function Presentation() {
     const updatedPresentation = reorderSlides(presentation, draggedSlideIndex, targetIndex);
     const updatedCurrentSlideIndex = updatedPresentation.slides.findIndex((slide) => slide.id === currentSlideId);
 
-    setCurrSlideIndex(updatedCurrentSlideIndex);
+    navigateToSlide(updatedCurrentSlideIndex);
     setDraggedSlideIndex(null);
     setDragOverSlideIndex(null);
 
@@ -639,6 +684,9 @@ function Presentation() {
         <button onClick={() => setShowEditTitleModal(true)}>Edit Title</button>
         <button onClick={() => setShowEditThumbnailModal(true)}>
           Update Thumbnail
+        </button>
+        <button onClick={() => navigate(`/presentation/${id}/history`)}>
+          History
         </button>
       </div>
   
@@ -822,8 +870,7 @@ function Presentation() {
         />
       )}
 
-      { /* slide control panel */}
-      {showSlidePanel && (
+{showSlidePanel && (
         <div
           style={{
             position: 'fixed',
@@ -885,7 +932,7 @@ function Presentation() {
                       await handleSlideDrop(index);
                     }}
                     onClick={() => {
-                      setCurrSlideIndex(index);
+                      navigateToSlide(index);
                       setShowSlidePanel(false);
                     }}
                     style={{
@@ -1010,7 +1057,7 @@ function Presentation() {
         {presentation.slides.length >= 2 && (
           <>
             <button
-              onClick={() => setCurrSlideIndex((prev) => prev - 1)}
+              onClick={() => navigateToSlide(currSlideIndex - 1)}
               disabled={isFirstSlide}
               style={{
                 position: "absolute",
@@ -1025,7 +1072,7 @@ function Presentation() {
             </button>
   
             <button
-              onClick={() => setCurrSlideIndex((prev) => prev + 1)}
+              onClick={() => navigateToSlide(currSlideIndex + 1)}
               disabled={isLastSlide}
               style={{
                 position: "absolute",

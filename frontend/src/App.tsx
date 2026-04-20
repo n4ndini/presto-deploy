@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Presentation from './page/Presentation';
 import PresentationPreview from './page/PresentationPreview';
+import HistoryPage from './page/HistoryPage'
 
 // useParams for slides
 
@@ -88,6 +89,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/presentation/:id" element={<Presentation />} />
         <Route path="/presentation/:id/preview" element={<PresentationPreview />} />
+        <Route path="/presentation/:id/history" element={<HistoryPage />} />
 
       </Routes>
     </>

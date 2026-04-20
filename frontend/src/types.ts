@@ -3,12 +3,18 @@ export type Store = {
 }
 
 export type PresentationType = {
-  id: number,
-  name: string,
-  desc: string,
-  thumbnail: string,
+  id: number;
+  name: string;
+  desc: string;
+  thumbnail: string;
   slides: SlideType[];
-  defaultBackground: string,
+  defaultBackground: string;
+  history?: HistoryEntry[];
+}
+
+export type HistoryEntry = {
+  timestamp: number;
+  snapshot: PresentationType;
 }
 
 export type SlideType = {
