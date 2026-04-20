@@ -14,160 +14,6 @@ import CodeModal from "./elems/CodeModal";
 import CodeElement from "./elems/CodeElement";
 import dropper from '../assets/dropper.png';
 import BackgroundModal from "./BackgroundModal";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { dark } from "react-syntax-highlighter/dist/esm/styles/hljs";
-
-const reorderSlides = (presentation: PresentationType, fromIndex: number, toIndex: number) => {
-  const slides = [...presentation.slides];
-  const [movedSlide] = slides.splice(fromIndex, 1);
-  slides.splice(toIndex, 0, movedSlide);
-  return {
-    ...presentation,
-    slides,
-  };
-};
-
-const renderPreviewElement = (el: ElementType) => {
-  const commonStyle = {
-    position: "absolute" as const,
-    left: `${el.x}%`,
-    top: `${el.y}%`,
-    width: `${el.width}%`,
-    height: `${el.height}%`,
-    boxSizing: "border-box" as const,
-    overflow: "hidden" as const,
-    border: "none",
-  };
-
-  switch (el.type) {
-    case 'text':
-      return (
-        <div
-          key={el.id}
-          style={{
-            ...commonStyle,
-            whiteSpace: 'pre-wrap',
-            padding: '4px',
-            fontSize: `${el.fontSize}em`,
-            color: el.colour,
-            fontFamily: el.fontFamily,
-          }}
-        >
-          {el.content}
-        </div>
-      );
-
-    case 'image':
-      return (
-        <div
-          key={el.id}
-          style={{
-            ...commonStyle,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'content',
-          }}
-        >
-          <img 
-            src={el.url}
-            alt={el.alt}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              pointerEvents: 'none',
-              border: 'none'
-            }}
-          />
-        </div>
-      );
-
-    case 'video':
-      return (
-        <div
-          key={el.id}
-          style={commonStyle}
-        >
-          <iframe 
-            src={el.url.replace("watch?v=", "embed/")}
-            style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
-            allow="autoplay"
-            title={`preview-video-${el.id}`} 
-          />
-        </div>
-      );
-
-    case 'code':
-      return (
-        <div 
-          key={el.id} 
-          style={commonStyle}
-        >
-          <SyntaxHighlighter
-            language={el.language}
-            style={dark}
-            wrapLongLines={true}
-            customStyle={{
-              margin: 0,
-              border: 'none',
-              background: 'black',
-              fontSize: `${el.fontSize}em`,
-              height: '100%',
-              width: '100%',
-              pointerEvents: 'none',
-            }}
-          >
-            {el.code}
-          </SyntaxHighlighter>
-        </div>
-      );
-
-    default:
-      return null;
-  }
-};
-
-function ReadOnlySlidePreview({
-  slide,
-  slideNumber,
-  showSlideNumber = true,
-  width = 800,
-  height = 450,
-}: {
-  slide: SlideType;
-  slideNumber?: number;
-  showSlideNumber?: boolean;
-  width?: number;
-  height?: number;
-}) {
-  return (
-    <div
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        position: 'relative',
-        background: slide.background || '#ffffff',
-        overflow: 'hidden',
-        border: 'none',
-      }}
-    >
-      {slide.elements.map((el) => renderPreviewElement(el))}
-      {showSlideNumber && typeof slideNumber === 'number' && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '8px',
-            left: '8px',
-            fontSize: '0.75em',
-            color: '#000000',
-          }}
-        >
-          {slideNumber}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function Presentation() {
   const { id, slideIndex } = useParams();
@@ -204,11 +50,12 @@ function Presentation() {
   const [hasDragged, setHasDragged] = useState(false);
   const slideRef = useRef<HTMLDivElement | null>(null);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currSlideIndex = Number(searchParams.get("slide") ?? 0);
+
   const [showSlidePanel, setShowSlidePanel] = useState(false);
   const [draggedSlideIndex, setDraggedSlideIndex] = useState<number | null>(null);
   const [dragOverSlideIndex, setDragOverSlideIndex] = useState<number | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currSlideIndex = Number(searchParams.get("slide") ?? 0);
 
   useEffect(() => {
     if (!token) navigate("/");
@@ -786,12 +633,6 @@ function Presentation() {
         <button style={{display: 'flex', alignItems: 'center'}} onClick={() => setChangeBackground(p => !p)}>
           <img src={dropper} alt="dropper" style={{ height: '20px' }} />
           {changeBackground ? "Close background editor" : "Change Background"}
-        </button>
-        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setShowSlidePanel(true)}>
-          Slide Control Panel
-        </button>
-        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={openPreview}>
-          Preview Presentation
         </button>
         {editScreen && (
           <div>
