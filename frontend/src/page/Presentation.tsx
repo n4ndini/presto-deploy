@@ -563,6 +563,25 @@ function Presentation() {
     });
   };
 
+  const handleStartResize = (e: ReactMouseEvent, elem: ElementType, direction: ResizeDirection) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (e.button !== 0) return;
+
+    setSelectedElemId(elem.id);
+    setDragging(null);
+    setResizing({
+      elemId: elem.id,
+      direction,
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startX: elem.x,
+      startY: elem.y,
+      startWidth: elem.width,
+      startHeight: elem.height,
+    });
+  };
+
   const addNewTextElem = async (
     text: string,
     width: number,
