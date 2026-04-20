@@ -137,22 +137,28 @@ function Dashboard() {
 
       <br />
 
-      <div style={{
-        display: 'grid',
-        // repeat the column def, auto-fit as many as u can in the container
-        // min width 200px, 1 fr = take up free space equally
-        gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
-        gap: '10px',
-        marginTop: '20px',
-      }}>
+      <div 
+      // style={{
+      //   display: 'grid',
+      //   // repeat the column def, auto-fit as many as u can in the container
+      //   // min width 200px, 1 fr = take up free space equally
+      //   gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))',
+      //   gap: '10px',
+      //   marginTop: '20px',
+      // }}
+      >
         {presentations.map(p => (
-          <div key={p.id} onClick={() => navigate(`/presentation/${p.id}?slide=0`)} style={{
-            border: '1px solid black',
-            aspectRatio: '2 / 1',
-            padding: '6px',
-          }}>
+          <div key={p.id} onClick={() => navigate(`/presentation/${p.id}?slide=0`)} 
+          // style={{
+          //   border: '1px solid black',
+          //   aspectRatio: '2 / 1',
+          //   padding: '6px',
+          // }}
+          >
             {p.thumbnail && (
-              <img src={p.thumbnail} alt="thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/>
+              <img src={p.thumbnail} alt="thumbnail" 
+              // style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
             )}
             <h2>{p.name}</h2><br />
             <p>{p.desc}</p><br />
