@@ -5,10 +5,10 @@ import type { ImageElementType } from "../../types";
 type ImageModalProps = {
   initial?: ImageElementType; // if true, we are editing an image
   onSubmit: (
-    url: string,
-    alt: string,
-    width: number,
-    height: number,
+    _url: string,
+    _alt: string,
+    _width: number,
+    _height: number,
     _x: number,
     _y: number
   ) => void | Promise<void>;
@@ -22,8 +22,8 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
   const [alt, setAlt] = useState(initial?.alt ?? '');
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
-  const [x, _setX] = useState(initial?.x ?? 0);
-  const [y, _setY] = useState(initial?.y ?? 0);
+  const x = initial?.x ?? 0;
+  const y = initial?.x ?? 0;
   const [error, setError] = useState(''); // implement error messages
   
   const computeSubmit = (e: SyntheticEvent) => {

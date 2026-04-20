@@ -7,7 +7,16 @@ const lock = new AsyncLock();
 
 const JWT_SECRET = "llamallamaduck";
 const DATABASE_FILE = "./database.json";
-const { KV_REST_API_URL, KV_REST_API_TOKEN, USE_VERCEL_KV } = process.env;
+
+const { KV_REST_API_URL, KV_REST_API_TOKEN, USE_VERCEL_KV, VERCEL } = process.env;
+
+const useKV =
+  USE_VERCEL_KV === "true" &&
+  !!KV_REST_API_URL &&
+  !!KV_REST_API_TOKEN;
+
+const useLocalFile = !VERCEL && !useKV;
+
 /***************************************************************
                        State Management
 ***************************************************************/
@@ -18,8 +27,7 @@ const update = async (admins) =>
   new Promise((resolve, reject) => {
     lock.acquire("saveData", async () => {
       try {
-        if (USE_VERCEL_KV) {
-          // Store to Vercel KV
+        if (useKV) {
           const response = await fetch(`${KV_REST_API_URL}/set/admins`, {
             method: "POST",
             headers: {
@@ -28,11 +36,11 @@ const update = async (admins) =>
             },
             body: JSON.stringify({ admins }),
           });
+
           if (!response.ok) {
-            reject(new Error("Writing to Vercel KV failed"));
+            return reject(new Error("Writing to Vercel KV failed"));
           }
-        } else {
-          // Store to local file system
+        } else if (useLocalFile) {
           fs.writeFileSync(
             DATABASE_FILE,
             JSON.stringify(
@@ -43,44 +51,51 @@ const update = async (admins) =>
               2
             )
           );
+        } else {
+          // Running on Vercel without KV enabled.
+          // Keep data in memory only so the function does not crash.
         }
+
         resolve();
-      } catch(error) {
+      } catch (error) {
         console.log(error);
         reject(new Error("Writing to database failed"));
       }
     });
   });
 
-export const save = () => update(admins);
-export const reset = () => {
-  update({});
+export const save = async () => update(admins);
+
+export const reset = async () => {
   admins = {};
+  await update(admins);
 };
 
 try {
-  if (USE_VERCEL_KV) {
-    // Setup default admin object in KV DB
-    save();
-
-    // Read from Vercel KV
-    fetch(`${KV_REST_API_URL}/get/admins`, {
+  if (useKV) {
+    const response = await fetch(`${KV_REST_API_URL}/get/admins`, {
       headers: {
         Authorization: `Bearer ${KV_REST_API_TOKEN}`,
       },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        admins = JSON.parse(data.result)["admins"];
-      });
+    });
+
+    const data = await response.json();
+
+    if (data?.result) {
+      const parsed = JSON.parse(data.result);
+      admins = parsed.admins || {};
+    } else {
+      admins = {};
+    }
+  } else if (useLocalFile) {
+    const data = JSON.parse(fs.readFileSync(DATABASE_FILE, "utf8"));
+    admins = data.admins || {};
   } else {
-    // Read from local file
-    const data = JSON.parse(fs.readFileSync(DATABASE_FILE));
-    admins = data.admins;
+    admins = {};
   }
-} catch(error) {
-  console.log("WARNING: No database found, create a new one");
-  save();
+} catch (error) {
+  console.log("WARNING: No database found, starting with empty store");
+  admins = {};
 }
 
 /***************************************************************
@@ -104,7 +119,7 @@ export const getEmailFromAuthorization = (authorization) => {
       throw new AccessError("Invalid Token");
     }
     return email;
-  } catch(error) {
+  } catch (error) {
     throw new AccessError("Invalid token");
   }
 };
@@ -113,14 +128,14 @@ export const login = (email, password) =>
   userLock((resolve, reject) => {
     if (email in admins) {
       if (admins[email].password === password) {
-        resolve(jwt.sign({ email }, JWT_SECRET, { algorithm: "HS256" }));
+        return resolve(jwt.sign({ email }, JWT_SECRET, { algorithm: "HS256" }));
       }
     }
     reject(new InputError("Invalid username or password"));
   });
 
 export const logout = (email) =>
-  userLock((resolve, reject) => {
+  userLock((resolve) => {
     admins[email].sessionActive = false;
     resolve();
   });
@@ -144,12 +159,12 @@ export const register = (email, password, name) =>
 ***************************************************************/
 
 export const getStore = (email) =>
-  userLock((resolve, reject) => {
+  userLock((resolve) => {
     resolve(admins[email].store);
   });
 
 export const setStore = (email, store) =>
-  userLock((resolve, reject) => {
+  userLock((resolve) => {
     admins[email].store = store;
     resolve();
   });

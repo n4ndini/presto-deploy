@@ -7,12 +7,12 @@ type ResizeDirection = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 type Props = {
   elem: CodeElementType;
-  onDelete: (id: number) => void;
-  onEdit: (elem: CodeElementType) => void;
+  onDelete: (_id: number) => void;
+  onEdit: (_elem: CodeElementType) => void;
   onSelect: () => void;
-  onMoveStart: (e: MouseEvent, elem: CodeElementType) => void;
-  onResizeStart: (e: MouseEvent, elem: CodeElementType, direction: ResizeDirection) => void;
-  getResizeHandleStyle: (direction: ResizeDirection) => CSSProperties;
+  onMoveStart: (_e: MouseEvent, _elem: CodeElementType) => void;
+  onResizeStart: (_e: MouseEvent, _elem: CodeElementType, _direction: ResizeDirection) => void;
+  getResizeHandleStyle: (_direction: ResizeDirection) => CSSProperties;
   isSelected: boolean;
 };
 
@@ -74,7 +74,7 @@ function CodeElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeSt
             width: "100%",
             pointerEvents: "none",
           }}>
-            {elem.code}
+          {elem.code}
         </SyntaxHighlighter>
       </div>
     </div>

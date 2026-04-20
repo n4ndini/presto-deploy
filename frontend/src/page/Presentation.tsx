@@ -35,24 +35,24 @@ const getResizeHandleStyle = (direction: ResizeDirection): CSSProperties => {
   const offset = "-5px";
 
   switch (direction) {
-    case "n":
-      return { ...resizeHandleBaseStyle, top: offset, left: "50%", transform: "translateX(-50%)", cursor: "ns-resize" };
-    case "s":
-      return { ...resizeHandleBaseStyle, bottom: offset, left: "50%", transform: "translateX(-50%)", cursor: "ns-resize" };
-    case "e":
-      return { ...resizeHandleBaseStyle, right: offset, top: "50%", transform: "translateY(-50%)", cursor: "ew-resize" };
-    case "w":
-      return { ...resizeHandleBaseStyle, left: offset, top: "50%", transform: "translateY(-50%)", cursor: "ew-resize" };
-    case "ne":
-      return { ...resizeHandleBaseStyle, top: offset, right: offset, cursor: "nesw-resize" };
-    case "nw":
-      return { ...resizeHandleBaseStyle, top: offset, left: offset, cursor: "nwse-resize" };
-    case "se":
-      return { ...resizeHandleBaseStyle, bottom: offset, right: offset, cursor: "nwse-resize" };
-    case "sw":
-      return { ...resizeHandleBaseStyle, bottom: offset, left: offset, cursor: "nesw-resize" };
-    default:
-      return resizeHandleBaseStyle;
+  case "n":
+    return { ...resizeHandleBaseStyle, top: offset, left: "50%", transform: "translateX(-50%)", cursor: "ns-resize" };
+  case "s":
+    return { ...resizeHandleBaseStyle, bottom: offset, left: "50%", transform: "translateX(-50%)", cursor: "ns-resize" };
+  case "e":
+    return { ...resizeHandleBaseStyle, right: offset, top: "50%", transform: "translateY(-50%)", cursor: "ew-resize" };
+  case "w":
+    return { ...resizeHandleBaseStyle, left: offset, top: "50%", transform: "translateY(-50%)", cursor: "ew-resize" };
+  case "ne":
+    return { ...resizeHandleBaseStyle, top: offset, right: offset, cursor: "nesw-resize" };
+  case "nw":
+    return { ...resizeHandleBaseStyle, top: offset, left: offset, cursor: "nwse-resize" };
+  case "se":
+    return { ...resizeHandleBaseStyle, bottom: offset, right: offset, cursor: "nwse-resize" };
+  case "sw":
+    return { ...resizeHandleBaseStyle, bottom: offset, left: offset, cursor: "nesw-resize" };
+  default:
+    return resizeHandleBaseStyle;
   }
 };
 
@@ -79,90 +79,90 @@ const renderPreviewElement = (el: ElementType) => {
   };
 
   switch (el.type) {
-    case 'text':
-      return (
-        <div
-          key={el.id}
+  case 'text':
+    return (
+      <div
+        key={el.id}
+        style={{
+          ...commonStyle,
+          whiteSpace: 'pre-wrap',
+          padding: '4px',
+          fontSize: `${el.fontSize}em`,
+          color: el.colour,
+          fontFamily: el.fontFamily,
+        }}
+      >
+        {el.content}
+      </div>
+    );
+
+  case 'image':
+    return (
+      <div
+        key={el.id}
+        style={{
+          ...commonStyle,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'content',
+        }}
+      >
+        <img 
+          src={el.url}
+          alt={el.alt}
           style={{
-            ...commonStyle,
-            whiteSpace: 'pre-wrap',
-            padding: '4px',
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            pointerEvents: 'none',
+            border: 'none'
+          }}
+        />
+      </div>
+    );
+
+  case 'video':
+    return (
+      <div
+        key={el.id}
+        style={commonStyle}
+      >
+        <iframe 
+          src={el.url.replace("watch?v=", "embed/")}
+          style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
+          allow="autoplay"
+          title={`preview-video-${el.id}`} 
+        />
+      </div>
+    );
+
+  case 'code':
+    return (
+      <div 
+        key={el.id} 
+        style={commonStyle}
+      >
+        <SyntaxHighlighter
+          language={el.language}
+          style={dark}
+          wrapLongLines={true}
+          customStyle={{
+            margin: 0,
+            border: 'none',
+            background: 'black',
             fontSize: `${el.fontSize}em`,
-            color: el.colour,
-            fontFamily: el.fontFamily,
+            height: '100%',
+            width: '100%',
+            pointerEvents: 'none',
           }}
         >
-          {el.content}
-        </div>
-      );
+          {el.code}
+        </SyntaxHighlighter>
+      </div>
+    );
 
-    case 'image':
-      return (
-        <div
-          key={el.id}
-          style={{
-            ...commonStyle,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'content',
-          }}
-        >
-          <img 
-            src={el.url}
-            alt={el.alt}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              pointerEvents: 'none',
-              border: 'none'
-            }}
-          />
-        </div>
-      );
-
-    case 'video':
-      return (
-        <div
-          key={el.id}
-          style={commonStyle}
-        >
-          <iframe 
-            src={el.url.replace("watch?v=", "embed/")}
-            style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
-            allow="autoplay"
-            title={`preview-video-${el.id}`} 
-          />
-        </div>
-      );
-
-    case 'code':
-      return (
-        <div 
-          key={el.id} 
-          style={commonStyle}
-        >
-          <SyntaxHighlighter
-            language={el.language}
-            style={dark}
-            wrapLongLines={true}
-            customStyle={{
-              margin: 0,
-              border: 'none',
-              background: 'black',
-              fontSize: `${el.fontSize}em`,
-              height: '100%',
-              width: '100%',
-              pointerEvents: 'none',
-            }}
-          >
-            {el.code}
-          </SyntaxHighlighter>
-        </div>
-      );
-
-    default:
-      return null;
+  default:
+    return null;
   }
 };
 
@@ -447,7 +447,7 @@ function Presentation() {
   const isLastSlide = currSlideIndex === presentation.slides.length - 1;
 
   const getSlideBackground = (slide: SlideType) =>
-  slide.background ?? presentation?.defaultBackground ?? "#ffffff";
+    slide.background ?? presentation?.defaultBackground ?? "#ffffff";
   
   const removeHistory = (pres: PresentationType): PresentationType => {
     const { history, ...rest } = pres;
@@ -621,7 +621,7 @@ function Presentation() {
 
   const updateExistingElement = async (
     elemId: number,
-    updater: (el: ElementType) => ElementType
+    updater: (_el: ElementType) => ElementType
   ) => {
     const updated = updateElement(presentation!, currSlideIndex, elemId, updater);
 
@@ -726,7 +726,7 @@ function Presentation() {
             fontFamily: newFont
           } : el)
         }
-        :slide
+          :slide
       ),
     };
     await savePresentation(updated);
@@ -1001,7 +1001,7 @@ function Presentation() {
         />
       )}
 
-{showSlidePanel && (
+      {showSlidePanel && (
         <div
           style={{
             position: 'fixed',
