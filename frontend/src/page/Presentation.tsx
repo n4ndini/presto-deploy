@@ -686,6 +686,9 @@ function Presentation() {
         <button onClick={() => setShowEditThumbnailModal(true)}>
           Update Thumbnail
         </button>
+        <button onClick={() => navigate(`/presentation/${id}/history`)}>
+          History
+        </button>
       </div>
   
       {presentation.thumbnail && (
