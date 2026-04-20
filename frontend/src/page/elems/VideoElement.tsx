@@ -1,18 +1,22 @@
-import type { MouseEvent } from "react";
+import type { CSSProperties, MouseEvent } from "react";
 import type { VideoElementType } from "../../types";
+
+type ResizeDirection = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 type Props = {
   elem: VideoElementType;
   onDelete: (id: number) => void;
   onEdit: (elem: VideoElementType) => void;
   onSelect: () => void; 
-  onMoveStart: (e: MouseEvent, elem: VideoElementType) => void; 
+  onMoveStart: (e: MouseEvent, elem: VideoElementType) => void;
+  onResizeStart: (e: MouseEvent, elem: VideoElementType, direction: ResizeDirection) => void;
+  getResizeHandleStyle: (direction: ResizeDirection) => CSSProperties; 
   isSelected: boolean;
 };
 
 // handles behaviour and appearance of Text Element
 // renders text box, handles right click delete, double click edit and styling
-function VideoElement({ elem, onDelete, onEdit, onSelect, onMoveStart, isSelected }: Props) {
+function VideoElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeStart, getResizeHandleStyle, isSelected }: Props) {
   return (
     <div
       onClick={(e) => { 
@@ -47,6 +51,16 @@ function VideoElement({ elem, onDelete, onEdit, onSelect, onMoveStart, isSelecte
 
       }}
     >
+      {isSelected && (["nw", "n", "ne", "e", "se", "s", "sw", "w"] as ResizeDirection[]).map((direction) => (
+        <button
+          key={direction}
+          type="button"
+          aria-label={`Resize ${direction}`}
+          onMouseDown={(e) => onResizeStart(e, elem, direction)}
+          onClick={(e) => e.stopPropagation()}
+          style={getResizeHandleStyle(direction)}
+        />
+      ))}
       <div style={{border: "2px solid lightgrey"}}>
         <iframe
           src={elem.url.replace("watch?v=", "embed/")}
