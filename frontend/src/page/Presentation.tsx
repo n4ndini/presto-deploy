@@ -330,8 +330,35 @@ function Presentation() {
   const getSlideBackground = (slide: SlideType) =>
   slide.background ?? presentation?.defaultBackground ?? "#ffffff";
 
+  const removeHistory = (pres: PresentationType): PresentationType => {
+    const { history, ...rest } = pres;
+    return rest as PresentationType;
+  };
 
   const savePresentation = async (updated: PresentationType) => {
+    if (!presentation) return;
+   
+    const now = Date.now();
+    const lastHisTime = presentation.history?.[presentation.history.length - 1]?.timestamp ?? 0;
+    
+    let newHistory = presentation.history || [];
+
+    // if save happened over 1 min ago
+    if (now - lastHisTime >= 60000) {
+      newHistory = [
+        ...newHistory,
+        {
+          timestamp: now,
+          snapshot: removeHistory(presentation),
+        }
+      ]
+    }
+
+    const updatedWithHistory = {
+      ...updated,
+      history: newHistory,
+    }
+    
     setPresentation(updated);
     await updatePresentation(token!, updated);
   };
