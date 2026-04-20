@@ -1134,7 +1134,9 @@ function Presentation() {
                 onEdit={setEditingElem}
                 isSelected={selectedElemId === el.id}
                 onSelect={() => setSelectedElemId(el.id)}
-                onMoveStart={handleStartMove} 
+                onMoveStart={handleStartMove}
+                onResizeStart={handleStartResize}
+                getResizeHandleStyle={getResizeHandleStyle} 
               />
             );
 
@@ -1148,6 +1150,8 @@ function Presentation() {
                 isSelected={selectedElemId === el.id}
                 onSelect={() => setSelectedElemId(el.id)}
                 onMoveStart={handleStartMove}
+                onResizeStart={handleStartResize}
+                getResizeHandleStyle={getResizeHandleStyle} 
               />
             );
           case "video":
@@ -1160,6 +1164,8 @@ function Presentation() {
                 isSelected={selectedElemId === el.id}
                 onSelect={() => setSelectedElemId(el.id)}
                 onMoveStart={handleStartMove}
+                onResizeStart={handleStartResize}
+                getResizeHandleStyle={getResizeHandleStyle} 
               />
             );
           case "code":
@@ -1172,6 +1178,8 @@ function Presentation() {
                 isSelected={selectedElemId === el.id}
                 onSelect={() => setSelectedElemId(el.id)}
                 onMoveStart={handleStartMove}
+                onResizeStart={handleStartResize}
+                getResizeHandleStyle={getResizeHandleStyle} 
               />
             );
           default:
