@@ -8,10 +8,9 @@ import axios from 'axios';
 import Presentation from './page/Presentation';
 import PresentationPreview from './page/PresentationPreview';
 import HistoryPage from './page/HistoryPage'
+import { API_BASE_URL } from './backend';
 
 // useParams for slides
-
-const API_BASE_URL = "https://z5593045-presto-backend.vercel.app/docs";
 
 function App() {
   const [token, setToken] = useState<string | null>(null);

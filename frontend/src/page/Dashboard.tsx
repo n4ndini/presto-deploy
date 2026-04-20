@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import type { SyntheticEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import type { PresentationType, Store } from "../types";
-
-const API_BASE_URL = "https://z5593045-presto-backend.vercel.app/docs";
+import { API_BASE_URL } from '../backend';
 
 
 function Dashboard() {

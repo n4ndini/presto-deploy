@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import type { SyntheticEvent } from 'react';
-
-const API_BASE_URL = "https://z5593045-presto-backend.vercel.app/docs";
+import { API_BASE_URL } from '../backend';
 
 type RegisterProps = {
   successCallback : (_token: string) => void;
