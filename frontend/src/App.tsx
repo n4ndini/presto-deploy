@@ -12,6 +12,7 @@ import { API_BASE_URL } from './backend';
 
 // useParams for slides
 
+
 function App() {
   const [token, setToken] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -56,24 +57,24 @@ function App() {
       <div>
         {token ? (
           <>
-            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/dashboard" data-cy="nav-dashboard">Dashboard</Link>
             &nbsp; |&nbsp;
-            <span onClick={logout} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+            <span onClick={logout} data-cy="logout-button" style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
               Logout
             </span>
           </>
         ) : (
           <>
-            <Link to="/register">Register</Link>
+            <Link to="/register" data-cy="nav-register">Register</Link>
             &nbsp; |&nbsp;
-            <Link to="/login">Login</Link>
+            <Link to="/login" data-cy="nav-login">Login</Link>
           </>
         )}
       </div>
       <div>
         NavBar
         <br></br>
-        <Link to="/">Home</Link>
+        <Link to="/" data-cy="nav-home">Home</Link>
         <br></br>
         {/* <Link to="/register">Register</Link> | <Link to="/login">Login</Link> */}
       </div>

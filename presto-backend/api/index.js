@@ -18,7 +18,30 @@ const { PROD_BACKEND_PORT } = process.env;
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://z5593045-presto.vercel.app',
+  'https://presto-frontend-ayymjs8zw-n4ndinis-projects.vercel.app',
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // allow non-browser requests and same-origin/server requests
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: "50mb" }));
 

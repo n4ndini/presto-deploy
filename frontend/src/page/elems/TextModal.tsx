@@ -75,10 +75,10 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
       )}
       <h3 style={{ margin: 0 }}>{initial ? "Edit Text" : "Add Text"}</h3><br />
 
-      Text:<input value={text} onChange={e => setText(e.target.value)} /><br />
+      Text:<input data-cy="text-input-field" value={text} onChange={e => setText(e.target.value)} /><br />
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
-        <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
-        <span>Width (%):<input style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
+        <span>Height (%):<input data-cy="text-height-input" style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
+        <span>Width (%):<input data-cy="text-width-input" style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
       </div>
       Font Size (em):<input type="number" step="0.1" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /><br />
       Colour (hex):<input value={colour} onChange={e => setColour(e.target.value)} /><br />
@@ -93,7 +93,7 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
         gap: "10px",
         marginTop: "10px",
       }}>
-        <button type="submit">{initial ? "Save" : "Add"}</button>
+        <button data-cy="text-submit-btn" type="submit">{initial ? "Save" : "Add"}</button>
         <button type="button" onClick={onClose}>Cancel</button>
       </div>
     </form>
