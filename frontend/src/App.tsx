@@ -1,7 +1,5 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-// import { API_BASE_URL } from './backend';
-// import styles from './App.module.css'
 import Register from './page/Register';
 import Login from './page/Login';
 import Dashboard from './page/Dashboard';
@@ -13,7 +11,7 @@ import HistoryPage from './page/HistoryPage'
 
 // useParams for slides
 
-const API_BASE_URL = "http://localhost:5005";
+const API_BASE_URL = "https://z5593045-presto-backend.vercel.app/docs";
 
 function App() {
   const [token, setToken] = useState<string | null>(null);

@@ -1,9 +1,8 @@
 // Helpers.ts
 import axios from "axios";
 import type { PresentationType, Store } from "../types";
-// import { API_BASE_URL } from "../backend";
 
-const API_BASE_URL = "http://localhost:5005";
+const API_BASE_URL = "https://z5593045-presto-backend.vercel.app/docs";
 
 const getHeaders = (token: string) => ({
   Authorization: `Bearer ${token}`,
