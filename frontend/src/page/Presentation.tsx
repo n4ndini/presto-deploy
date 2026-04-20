@@ -664,7 +664,7 @@ function Presentation() {
     const updatedPresentation = reorderSlides(presentation, draggedSlideIndex, targetIndex);
     const updatedCurrentSlideIndex = updatedPresentation.slides.findIndex((slide) => slide.id === currentSlideId);
 
-    setCurrSlideIndex(updatedCurrentSlideIndex);
+    navigateToSlide(updatedCurrentSlideIndex);
     setDraggedSlideIndex(null);
     setDragOverSlideIndex(null);
 
@@ -949,7 +949,7 @@ function Presentation() {
                       await handleSlideDrop(index);
                     }}
                     onClick={() => {
-                      setCurrSlideIndex(index);
+                      navigateToSlide(index)
                       setShowSlidePanel(false);
                     }}
                     style={{
