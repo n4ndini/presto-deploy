@@ -240,6 +240,16 @@ function Presentation() {
     startX: number;
     startY: number;
   } | null>(null);
+  const [resizing, setResizing] = useState<{
+    elemId: number;
+    direction: ResizeDirection;
+    startMouseX: number;
+    startMouseY: number;
+    startX: number;
+    startY: number;
+    startWidth: number;
+    startHeight: number;
+  } | null>(null);
   const slideRef = useRef<HTMLDivElement | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
