@@ -58,7 +58,7 @@ function VideoElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeS
           aria-label={`Resize ${direction}`}
           onMouseDown={(e) => onResizeStart(e, elem, direction)}
           onClick={(e) => e.stopPropagation()}
-          // style={getResizeHandleStyle(direction)}
+          style={getResizeHandleStyle(direction)}
         />
       ))}
       <div 

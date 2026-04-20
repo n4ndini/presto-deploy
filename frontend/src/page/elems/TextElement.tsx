@@ -62,7 +62,7 @@ function TextElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeSt
           aria-label={`Resize ${direction}`}
           onMouseDown={(e) => onResizeStart(e, elem, direction)}
           onClick={(e) => e.stopPropagation()}
-          // style={getResizeHandleStyle(direction)}
+          style={getResizeHandleStyle(direction)}
         />
       ))}
       {elem.content}
