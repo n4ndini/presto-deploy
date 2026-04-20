@@ -146,6 +146,7 @@ function ReadOnlySlidePreview({
     <div
       key={slide.id}
       className={styles.slideFade}
+      data-cy="slide-preview-container"
       style={{
         width: `${width}px`,
         height: `${height}px`,
@@ -770,10 +771,10 @@ function Presentation() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', marginBottom: '6px' }}>
         <button data-cy="new-slide-btn" style={{ fontSize: '1em', padding: '4px 12px' }} onClick={createNewSlide}>New Slide</button>
         <button data-cy="delete-slide-btn" style={{ fontSize: '1em', padding: '4px 12px' }} onClick={deleteCurrentSlide}>Delete Slide</button>
-        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setEditScreen(p => !p)}>
+        <button data-cy="edit-slide-btn" style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setEditScreen(p => !p)}>
           {editScreen ? "Close Editor" : "Edit Slide"}
         </button>
-        <button style={{display: 'flex', alignItems: 'center'}} onClick={() => setChangeBackground(p => !p)}>
+        <button data-cy="change-bg-btn" style={{display: 'flex', alignItems: 'center'}} onClick={() => setChangeBackground(p => !p)}>
           <img src={dropper} alt="dropper" style={{ height: '20px' }} />
           {changeBackground ? "Close background editor" : "Change Background"}
         </button>
