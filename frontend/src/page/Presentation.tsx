@@ -843,6 +843,112 @@ function Presentation() {
         />
       )}
 
+{showSlidePanel && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.55)',
+            zIndex: 1100,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px',
+          }}
+        >
+          <div
+            style={{
+              background: 'white',
+              width: 'min(1200px, 95vw)',
+              maxHeight: '85vh',
+              borderRadius: '12px',
+              padding: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 style={{ margin: 0, color: '#000000' }}>Slide Control Panel</h2>
+              <button onClick={() => setShowSlidePanel(false)}>Close</button>
+            </div>
+
+            <div
+              style={{
+                overflowY: 'auto',
+                paddingRight: '8px',
+              }}
+            >
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                  gap: '16px',
+                  alignItems: 'start',
+                }}
+              >
+                {presentation.slides.map((slide, index) => (
+                  <div
+                    key={slide.id}
+                    draggable
+                    onDragStart={() => handleSlideDragStart(index)}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setDragOverSlideIndex(index);
+                    }}
+                    onDragEnd={() => {
+                      setDraggedSlideIndex(null);
+                      setDragOverSlideIndex(null);
+                    }}
+                    onDrop={async (e) => {
+                      e.preventDefault();
+                      await handleSlideDrop(index);
+                    }}
+                    onClick={() => {
+                      setCurrSlideIndex(index);
+                      setShowSlidePanel(false);
+                    }}
+                    style={{
+                      border: currSlideIndex === index ? '2px solid #2563eb' : '1px solid #cbd5e1',
+                      boxShadow: dragOverSlideIndex === index ? '0 0 0 3px rgba(37,99,235,0.25)' : 'none',
+                      borderRadius: '12px',
+                      padding: '12px',
+                      background: '#f8fafc',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <div style={{ marginBottom: '10px', fontWeight: 700, color: '#000000'}}>
+                      Slide {index + 1}
+                    </div>
+                    <div
+                      style={{
+                        width: '100%',
+                        aspectRatio: '16 / 9',
+                        overflow: 'hidden',
+                        borderRadius: '8px',
+                        background: '#e2e8f0',
+                        border: '1px solid #d1d5db',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '800px',
+                          height: '450px',
+                          transform: 'scale(0.28)',
+                          transformOrigin: 'top left',
+                        }}
+                      >
+                        <ReadOnlySlidePreview slide={slide} slideNumber={index + 1} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* side canvas */}
       <div
         ref={slideRef}
