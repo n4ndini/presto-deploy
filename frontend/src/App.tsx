@@ -8,8 +8,10 @@ import axios from 'axios';
 import Presentation from './page/Presentation';
 import PresentationPreview from './page/PresentationPreview';
 import HistoryPage from './page/HistoryPage'
+import { API_BASE_URL } from './backend';
 
-const API_BASE_URL = "http://localhost:5005";
+// useParams for slides
+
 
 function App() {
   const [token, setToken] = useState<string | null>(null);

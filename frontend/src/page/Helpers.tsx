@@ -1,8 +1,7 @@
 // Helpers.ts
 import axios from "axios";
 import type { PresentationType, Store } from "../types";
-
-const API_BASE_URL = "http://localhost:5005";
+import { API_BASE_URL } from '../backend';
 
 const getHeaders = (token: string) => ({
   Authorization: `Bearer ${token}`,

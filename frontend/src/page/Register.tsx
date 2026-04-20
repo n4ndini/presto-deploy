@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import type { SyntheticEvent } from 'react';
-
-const API_BASE_URL = "http://localhost:5005";
+import { API_BASE_URL } from '../backend';
 
 type RegisterProps = {
   successCallback : (_token: string) => void;
