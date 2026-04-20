@@ -16,6 +16,7 @@ import dropper from '../assets/dropper.png';
 import BackgroundModal from "./BackgroundModal";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import styles from "./Slide.module.css";
 
 const reorderSlides = (presentation: PresentationType, fromIndex: number, toIndex: number) => {
   const slides = [...presentation.slides];
@@ -36,6 +37,7 @@ const renderPreviewElement = (el: ElementType) => {
     height: `${el.height}%`,
     boxSizing: "border-box" as const,
     overflow: "hidden" as const,
+    
     border: "none",
   };
 
@@ -142,6 +144,8 @@ function ReadOnlySlidePreview({
 }) {
   return (
     <div
+      key={slide.id}
+      className={styles.slideFade}
       style={{
         width: `${width}px`,
         height: `${height}px`,
@@ -979,6 +983,8 @@ function Presentation() {
       {/* side canvas */}
       <div
         ref={slideRef}
+        key={currSlideIndex} // re trigger animation
+        className={styles.slideFade}
         onClick={() => setSelectedElemId(null)}
         style={{
           width: "800px",
@@ -991,6 +997,7 @@ function Presentation() {
           justifyContent: "center",
           marginTop: "20px",
           background: getSlideBackground(currentSlide) || "#ffffff",
+          overflow: "hidden",
         }}>
         {currentSlide.elements.map((el) => {
           switch (el.type) {
