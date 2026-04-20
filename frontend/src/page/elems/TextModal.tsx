@@ -5,14 +5,14 @@ import type { TextElementType } from "../../types";
 type TextModalProps = {
   initial?: TextElementType; // if true, we are editing a textbox
   onSubmit: (
-    text: string,
-    width: number,
-    height: number,
-    fontSize: number,
-    colour: string,
-    fontFamily: string,
-    x: number,
-    y: number
+    _text: string,
+    _width: number,
+    _height: number,
+    _fontSize: number,
+    _colour: string,
+    _fontFamily: string,
+    _x: number,
+    _y: number
   ) => void | Promise<void>;
   onClose: () => void;
 };
@@ -25,8 +25,8 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
   const [height, setHeight] = useState(initial?.height ?? 20);
   const [fontSize, setFontSize] = useState(initial?.fontSize ?? 1);
   const [colour, setColour] = useState(initial?.colour ?? '#000000');
-  const [x, _setX] = useState(initial?.x ?? 0);
-  const [y, _setY] = useState(initial?.y ?? 0);
+  const x = initial?.x ?? 0;
+  const y = initial?.x ?? 0;
   const [fontFamily, setFontFamily] = useState(initial?.fontFamily ?? 'Arial');
   const [error, setError] = useState(''); // implement error messages
   

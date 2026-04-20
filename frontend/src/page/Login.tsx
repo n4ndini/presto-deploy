@@ -1,12 +1,11 @@
 import axios from 'axios';
 import { useState } from 'react';
 import type { SyntheticEvent } from 'react';
-// import { API_BASE_URL } from '../backend';
 
 const API_BASE_URL = "http://localhost:5005";
 
 type LoginProps = {
-  successCallback : (token: string) => void;
+  successCallback : (_token: string) => void;
 }
 
 function Login({ successCallback }: LoginProps) {

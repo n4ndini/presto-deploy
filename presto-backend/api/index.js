@@ -1,7 +1,6 @@
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
-import fs from "fs";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../swagger.json" with { type: "json" };
 import { AccessError, InputError } from "./error.js";
@@ -14,7 +13,8 @@ import {
   save,
   setStore,
 } from "./service.js";
-const { PROD_BACKEND_PORT, USE_VERCEL_KV } = process.env;
+
+const { PROD_BACKEND_PORT } = process.env;
 
 const app = express();
 
@@ -25,7 +25,7 @@ app.use(bodyParser.json({ limit: "50mb" }));
 const catchErrors = (fn) => async (req, res) => {
   try {
     await fn(req, res);
-    save();
+    await save();
   } catch (err) {
     if (err instanceof InputError) {
       res.status(400).send({ error: err.message });
@@ -107,12 +107,10 @@ app.get("/", (req, res) => res.redirect("/docs"));
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-const port = USE_VERCEL_KV
-  ? PROD_BACKEND_PORT
-  : JSON.parse(fs.readFileSync("../frontend/backend.config.json")).BACKEND_PORT;
+const port = Number(PROD_BACKEND_PORT) || 3000;
 
 let server;
-if (port) {
+if (process.env.VERCEL !== "1") {
   server = app.listen(port, () => {
     console.log(`For API docs, navigate to http://localhost:${port}`);
   });

@@ -5,11 +5,11 @@ import type { CodeElementType } from "../../types";
 type CodeModalProps = {
   initial?: CodeElementType; // if true, we are editing an image
   onSubmit: (
-    language: 'python' | 'c' | 'javascript',
-    code: string,
-    fontSize: number,
-    width: number,
-    height: number,
+    _language: 'python' | 'c' | 'javascript',
+    _code: string,
+    _fontSize: number,
+    _width: number,
+    _height: number,
     _x: number,
     _y: number
   ) => void | Promise<void>;
@@ -26,8 +26,8 @@ function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
   const [fontSize, setFontSize] = useState(initial?.fontSize ?? 1);
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
-  const [x, _setX] = useState(initial?.x ?? 0);
-  const [y, _setY] = useState(initial?.y ?? 0);
+  const x = initial?.x ?? 0;
+  const y = initial?.x ?? 0;
   const [error, setError] = useState(''); // implement error messages
   
   const computeSubmit = (e: SyntheticEvent) => {

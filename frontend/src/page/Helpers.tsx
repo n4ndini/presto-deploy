@@ -1,7 +1,6 @@
 // Helpers.ts
 import axios from "axios";
 import type { PresentationType, Store } from "../types";
-// import { API_BASE_URL } from "../backend";
 
 const API_BASE_URL = "http://localhost:5005";
 

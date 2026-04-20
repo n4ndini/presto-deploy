@@ -4,10 +4,10 @@ import type { SlideType } from "../types";
 type BackgroundModalProps = {
   initial?: SlideType; // if true, we are editing a textbox
   onSubmitCurr: (
-    background: string,
+    _background: string,
   ) => void | Promise<void>;
   onSubmitDefault: (
-    background: string,
+    _background: string,
   ) => void | Promise<void>;
   onClose: () => void;
 };
