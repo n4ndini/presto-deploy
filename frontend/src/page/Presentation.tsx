@@ -176,6 +176,7 @@ function Presentation() {
   const [error, setError] = useState('');
 
   const [presentation, setPresentation] = useState<PresentationType | null>(null);
+  const [currSlideIndex, setCurrSlideIndex] = useState(0);
 
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showEditTitleModal, setShowEditTitleModal] = useState(false);
