@@ -5,10 +5,10 @@ import type { VideoElementType } from "../../types";
 type VideoModalProps = {
   initial?: VideoElementType; // if true, we are editing an image
   onSubmit: (
-    url: string,
-    autoplay: boolean,
-    width: number,
-    height: number,
+    _url: string,
+    _autoplay: boolean,
+    _width: number,
+    _height: number,
     _x: number,
     _y: number
   ) => void | Promise<void>;
@@ -22,8 +22,8 @@ function VideoModal({ initial, onSubmit, onClose }: VideoModalProps) {
   const [autoplay, setAutoplay] = useState(initial?.autoplay ?? false);
   const [width, setWidth] = useState(initial?.width ?? 50);
   const [height, setHeight] = useState(initial?.height ?? 20);
-  const [x, _setX] = useState(initial?.x ?? 0);
-  const [y, _setY] = useState(initial?.y ?? 0);
+  const x = initial?.y ?? 0;
+  const y = initial?.y ?? 0;
   const [error, setError] = useState(''); // implement error messages
   
   const computeSubmit = (e: SyntheticEvent) => {

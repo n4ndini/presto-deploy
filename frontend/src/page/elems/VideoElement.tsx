@@ -5,12 +5,12 @@ type ResizeDirection = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 type Props = {
   elem: VideoElementType;
-  onDelete: (id: number) => void;
-  onEdit: (elem: VideoElementType) => void;
+  onDelete: (_id: number) => void;
+  onEdit: (_elem: VideoElementType) => void;
   onSelect: () => void; 
-  onMoveStart: (e: MouseEvent, elem: VideoElementType) => void;
-  onResizeStart: (e: MouseEvent, elem: VideoElementType, direction: ResizeDirection) => void;
-  getResizeHandleStyle: (direction: ResizeDirection) => CSSProperties; 
+  onMoveStart: (_e: MouseEvent, _elem: VideoElementType) => void;
+  onResizeStart: (_e: MouseEvent, _elem: VideoElementType, _direction: ResizeDirection) => void;
+  getResizeHandleStyle: (_direction: ResizeDirection) => CSSProperties; 
   isSelected: boolean;
 };
 

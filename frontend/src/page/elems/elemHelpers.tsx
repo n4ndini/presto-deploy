@@ -3,7 +3,7 @@ import type { ElementType, PresentationType } from "../../types";
 const updateSlide = (
   presentation: PresentationType,
   slideIndex: number,
-  updater: (elements: ElementType[]) => ElementType[]
+  updater: (_elements: ElementType[]) => ElementType[]
 ): PresentationType => {
   return {
     ...presentation,
@@ -40,7 +40,7 @@ export const updateElement = (
   presentation: PresentationType,
   slideIndex: number,
   elemId: number,
-  updater: (el: ElementType) => ElementType
+  updater: (_el: ElementType) => ElementType
 ): PresentationType => {
   return updateSlide(presentation, slideIndex, (elements) =>
     elements.map((el) => (el.id === elemId ? updater(el) : el))
