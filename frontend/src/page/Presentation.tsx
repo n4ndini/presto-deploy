@@ -205,7 +205,6 @@ function Presentation() {
     startX: number;
     startY: number;
   } | null>(null);
-  const [hasDragged, setHasDragged] = useState(false);
   const slideRef = useRef<HTMLDivElement | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -288,8 +287,6 @@ function Presentation() {
         commitSave(updated);
         return updated;
       });
-      
-      setHasDragged(true);
     };
 
     const handleMouseUp = () => {
