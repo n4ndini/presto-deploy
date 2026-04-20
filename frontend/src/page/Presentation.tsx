@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import type { MouseEvent as ReactMouseEvent } from "react";
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import type { CodeElementType, ElementType, ImageElementType, PresentationType, SlideType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
@@ -16,6 +16,45 @@ import dropper from '../assets/dropper.png';
 import BackgroundModal from "./BackgroundModal";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+
+type ResizeDirection = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
+
+const MIN_ELEMENT_SIZE = 5;
+
+const resizeHandleBaseStyle: CSSProperties = {
+  position: "absolute",
+  width: "10px",
+  height: "10px",
+  background: "#ffffff",
+  border: "1px solid #2563eb",
+  borderRadius: "999px",
+  zIndex: 30,
+};
+
+const getResizeHandleStyle = (direction: ResizeDirection): CSSProperties => {
+  const offset = "-5px";
+
+  switch (direction) {
+    case "n":
+      return { ...resizeHandleBaseStyle, top: offset, left: "50%", transform: "translateX(-50%)", cursor: "ns-resize" };
+    case "s":
+      return { ...resizeHandleBaseStyle, bottom: offset, left: "50%", transform: "translateX(-50%)", cursor: "ns-resize" };
+    case "e":
+      return { ...resizeHandleBaseStyle, right: offset, top: "50%", transform: "translateY(-50%)", cursor: "ew-resize" };
+    case "w":
+      return { ...resizeHandleBaseStyle, left: offset, top: "50%", transform: "translateY(-50%)", cursor: "ew-resize" };
+    case "ne":
+      return { ...resizeHandleBaseStyle, top: offset, right: offset, cursor: "nesw-resize" };
+    case "nw":
+      return { ...resizeHandleBaseStyle, top: offset, left: offset, cursor: "nwse-resize" };
+    case "se":
+      return { ...resizeHandleBaseStyle, bottom: offset, right: offset, cursor: "nwse-resize" };
+    case "sw":
+      return { ...resizeHandleBaseStyle, bottom: offset, left: offset, cursor: "nesw-resize" };
+    default:
+      return resizeHandleBaseStyle;
+  }
+};
 
 const reorderSlides = (presentation: PresentationType, fromIndex: number, toIndex: number) => {
   const slides = [...presentation.slides];
@@ -201,6 +240,16 @@ function Presentation() {
     startX: number;
     startY: number;
   } | null>(null);
+  const [resizing, setResizing] = useState<{
+    elemId: number;
+    direction: ResizeDirection;
+    startMouseX: number;
+    startMouseY: number;
+    startX: number;
+    startY: number;
+    startWidth: number;
+    startHeight: number;
+  } | null>(null);
   const slideRef = useRef<HTMLDivElement | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -252,41 +301,104 @@ function Presentation() {
   }, [presentation, currSlideIndex]);
 
   useEffect(() => {
-    if (!dragging || !slideRef.current) return;
+    if ((!dragging && !resizing) || !slideRef.current) return;
 
     const handleMouseMove = (e: globalThis.MouseEvent) => {
       if (!slideRef.current) return;
 
       const rect = slideRef.current.getBoundingClientRect();
-      const dxPx = e.clientX - dragging.startMouseX;
-      const dyPx = e.clientY - dragging.startMouseY;
 
-      const dxPercent = (dxPx / rect.width) * 100;
-      const dyPercent = (dyPx / rect.height) * 100;
+      if (dragging) {
+        const dxPx = e.clientX - dragging.startMouseX;
+        const dyPx = e.clientY - dragging.startMouseY;
 
-      setPresentation((prev) => {
-        if (!prev) { return prev; }
+        const dxPercent = (dxPx / rect.width) * 100;
+        const dyPercent = (dyPx / rect.height) * 100;
 
-        const elem = prev.slides[currSlideIndex].elements.find(
-          (el) => el.id === dragging.elemId
-        );
-        if (!elem) { return prev; }
+        setPresentation((prev) => {
+          if (!prev) { return prev; }
 
-        const newX = Math.max(0, Math.min(dragging.startX + dxPercent, 100 - elem.width));
-        const newY = Math.max(0, Math.min(dragging.startY + dyPercent, 100 - elem.height));
+          const elem = prev.slides[currSlideIndex].elements.find(
+            (el) => el.id === dragging.elemId
+          );
+          if (!elem) { return prev; }
 
-        const updated = updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
-          ...el,
-          x: newX,
-          y: newY,
-        }));
-        commitSave(updated);
-        return updated;
-      });
+          const newX = Math.max(0, Math.min(dragging.startX + dxPercent, 100 - elem.width));
+          const newY = Math.max(0, Math.min(dragging.startY + dyPercent, 100 - elem.height));
+
+          const updated = updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
+            ...el,
+            x: newX,
+            y: newY,
+          }));
+          commitSave(updated);
+          return updated;
+        });
+      }
+
+      if (resizing) {
+        const dxPx = e.clientX - resizing.startMouseX;
+        const dyPx = e.clientY - resizing.startMouseY;
+
+        const dxPercent = (dxPx / rect.width) * 100;
+        const dyPercent = (dyPx / rect.height) * 100;
+
+        setPresentation((prev) => {
+          if (!prev) { return prev; }
+
+          const elem = prev.slides[currSlideIndex].elements.find(
+            (el) => el.id === resizing.elemId
+          );
+          if (!elem) { return prev; }
+
+          let newX = resizing.startX;
+          let newY = resizing.startY;
+          let newWidth = resizing.startWidth;
+          let newHeight = resizing.startHeight;
+
+          if (resizing.direction.includes("e")) {
+            newWidth = Math.max(
+              MIN_ELEMENT_SIZE,
+              Math.min(resizing.startWidth + dxPercent, 100 - resizing.startX)
+            );
+          }
+
+          if (resizing.direction.includes("s")) {
+            newHeight = Math.max(
+              MIN_ELEMENT_SIZE,
+              Math.min(resizing.startHeight + dyPercent, 100 - resizing.startY)
+            );
+          }
+
+          if (resizing.direction.includes("w")) {
+            const rightEdge = resizing.startX + resizing.startWidth;
+            newX = Math.max(0, Math.min(resizing.startX + dxPercent, rightEdge - MIN_ELEMENT_SIZE));
+            newWidth = rightEdge - newX;
+          }
+
+          if (resizing.direction.includes("n")) {
+            const bottomEdge = resizing.startY + resizing.startHeight;
+            newY = Math.max(0, Math.min(resizing.startY + dyPercent, bottomEdge - MIN_ELEMENT_SIZE));
+            newHeight = bottomEdge - newY;
+          }
+
+          const updated = updateElement(prev, currSlideIndex, resizing.elemId, (el) => ({
+            ...el,
+            x: newX,
+            y: newY,
+            width: newWidth,
+            height: newHeight,
+          }));
+
+          commitSave(updated);
+          return updated;
+        });
+      }
     };
 
     const handleMouseUp = () => {
       setDragging(null);
+      setResizing(null);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -296,7 +408,7 @@ function Presentation() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [dragging, currSlideIndex]);
+  }, [dragging, resizing, currSlideIndex]);
   
   const commitSave = (() => {
     let timeout: ReturnType<typeof setTimeout> | null = null;
@@ -448,6 +560,25 @@ function Presentation() {
       startMouseY: e.clientY,
       startX: elem.x,
       startY: elem.y,
+    });
+  };
+
+  const handleStartResize = (e: ReactMouseEvent, elem: ElementType, direction: ResizeDirection) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (e.button !== 0) return;
+
+    setSelectedElemId(elem.id);
+    setDragging(null);
+    setResizing({
+      elemId: elem.id,
+      direction,
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startX: elem.x,
+      startY: elem.y,
+      startWidth: elem.width,
+      startHeight: elem.height,
     });
   };
 
@@ -1003,7 +1134,9 @@ function Presentation() {
                 onEdit={setEditingElem}
                 isSelected={selectedElemId === el.id}
                 onSelect={() => setSelectedElemId(el.id)}
-                onMoveStart={handleStartMove} 
+                onMoveStart={handleStartMove}
+                onResizeStart={handleStartResize}
+                getResizeHandleStyle={getResizeHandleStyle} 
               />
             );
 
@@ -1017,6 +1150,8 @@ function Presentation() {
                 isSelected={selectedElemId === el.id}
                 onSelect={() => setSelectedElemId(el.id)}
                 onMoveStart={handleStartMove}
+                onResizeStart={handleStartResize}
+                getResizeHandleStyle={getResizeHandleStyle} 
               />
             );
           case "video":
@@ -1029,6 +1164,8 @@ function Presentation() {
                 isSelected={selectedElemId === el.id}
                 onSelect={() => setSelectedElemId(el.id)}
                 onMoveStart={handleStartMove}
+                onResizeStart={handleStartResize}
+                getResizeHandleStyle={getResizeHandleStyle} 
               />
             );
           case "code":
@@ -1041,6 +1178,8 @@ function Presentation() {
                 isSelected={selectedElemId === el.id}
                 onSelect={() => setSelectedElemId(el.id)}
                 onMoveStart={handleStartMove}
+                onResizeStart={handleStartResize}
+                getResizeHandleStyle={getResizeHandleStyle} 
               />
             );
           default:
