@@ -4,6 +4,7 @@ import type { ElementType, PresentationType, SlideType } from "../types";
 import { getPresentationById } from "./Helpers";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import styles from "./Slide.module.css";
 
 const renderPreviewElement = (el: ElementType) => {
   const commonStyle = {
@@ -113,6 +114,8 @@ function PreviewSlide({
 }) {
   return (
     <div
+      key={slide.id}
+      className={styles.slideFade}
       style={{
         width: "100%",
         height: "100%",
