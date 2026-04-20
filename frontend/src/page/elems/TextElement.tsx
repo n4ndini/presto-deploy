@@ -5,12 +5,12 @@ type ResizeDirection = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 type Props = {
   elem: TextElementType;
-  onDelete: (id: number) => void;
-  onEdit: (elem: TextElementType) => void;
+  onDelete: (_id: number) => void;
+  onEdit: (_elem: TextElementType) => void;
   onSelect: () => void;
-  onMoveStart: (e: MouseEvent, elem: TextElementType) => void;
-  onResizeStart: (e: MouseEvent, elem: TextElementType, direction: ResizeDirection) => void;
-  getResizeHandleStyle: (direction: ResizeDirection) => CSSProperties;
+  onMoveStart: (_e: MouseEvent, _elem: TextElementType) => void;
+  onResizeStart: (_e: MouseEvent, _elem: TextElementType, _direction: ResizeDirection) => void;
+  getResizeHandleStyle: (_direction: ResizeDirection) => CSSProperties;
   isSelected: boolean;
 };
 
