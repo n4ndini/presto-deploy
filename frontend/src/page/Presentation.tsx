@@ -85,10 +85,10 @@ function Presentation() {
     setSearchParams({ slide: String(index) });
   };
 
-  useEffect(() => {
-    const index = Number(searchParams.get("slide") ?? 0);
-    navigateToSlide(index);
-  }, [searchParams]);
+  // useEffect(() => {
+  //   const index = Number(searchParams.get("slide") ?? 0);
+  //   navigateToSlide(index);
+  // }, [searchParams]);
   
 
   useEffect(() => {
