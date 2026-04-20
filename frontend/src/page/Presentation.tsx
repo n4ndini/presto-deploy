@@ -744,6 +744,12 @@ function Presentation() {
           <img src={dropper} alt="dropper" style={{ height: '20px' }} />
           {changeBackground ? "Close background editor" : "Change Background"}
         </button>
+        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setShowSlidePanel(true)}>
+          Slide Control Panel
+        </button>
+        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={openPreview}>
+          Preview Presentation
+        </button>
         {editScreen && (
           <div>
             <button style={{ fontSize: '0.9rem', padding: '2px 8px' }} onClick={() => setShowTextModal(true)}>+ Add Text</button>
