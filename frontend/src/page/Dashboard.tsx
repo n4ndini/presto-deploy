@@ -112,8 +112,8 @@ function Dashboard() {
 
   return (
     <>
-      <h1>Dashboard</h1>
-      <button onClick={() => setShowCreatePres(true)}>New Presentation</button>
+      <h1 data-cy="dashboard-title">Dashboard</h1>
+      <button data-cy="new-presentation" onClick={() => setShowCreatePres(true)}>New Presentation</button>
 
       {error && (
         <div>
@@ -125,11 +125,11 @@ function Dashboard() {
       {showCreatePres && (
         <div>
           <form onSubmit={createPresentation}>
-            Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
-            Description: <input type="text" value={desc} onChange={e => setDesc(e.target.value)} /><br />
-            Thumbnail URL: <input type="text" value={thumbnail} onChange={e => setThumbnail(e.target.value)} /><br />
+            Name: <input type="text" data-cy="pres-name" value={name} onChange={e => setName(e.target.value)} /><br />
+            Description: <input type="text" data-cy="pres-desc" value={desc} onChange={e => setDesc(e.target.value)} /><br />
+            Thumbnail URL: <input type="text" data-cy="pres-thumbnail" value={thumbnail} onChange={e => setThumbnail(e.target.value)} /><br />
             
-            <button type="submit">Create</button>
+            <button type="submit" data-cy="pres-submit" >Create</button>
             <button type="button" onClick={() => setShowCreatePres(false)}>Cancel</button>
           </form>
         </div>
@@ -146,7 +146,7 @@ function Dashboard() {
         marginTop: '20px',
       }}>
         {presentations.map(p => (
-          <div key={p.id} onClick={() => navigate(`/presentation/${p.id}?slide=0`)} style={{
+          <div key={p.id} data-cy={`presentation-${p.id}`} onClick={() => navigate(`/presentation/${p.id}?slide=0`)} style={{
             border: '1px solid black',
             aspectRatio: '2 / 1',
             padding: '6px',
