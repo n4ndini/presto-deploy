@@ -8,6 +8,7 @@ import Dashboard from './page/Dashboard';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Presentation from './page/Presentation';
+import PresentationPreview from './page/PresentationPreview';
 
 // useParams for slides
 
@@ -86,6 +87,7 @@ function App() {
         <Route path="/login" element={<Login successCallback={loginSuccessCallback}/>} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/presentation/:id" element={<Presentation />} />
+        <Route path="/presentation/:id/preview" element={<PresentationPreview />} />
 
       </Routes>
     </>

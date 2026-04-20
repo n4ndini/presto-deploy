@@ -4,5 +4,5 @@
 *.idea
 *dist
 *package-lock.json
-.DS_store
 presto-backend/
+.DS_store
