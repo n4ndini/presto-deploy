@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import type { MouseEvent as ReactMouseEvent } from "react";
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import type { CodeElementType, ElementType, ImageElementType, PresentationType, SlideType, TextElementType, VideoElementType } from "../types";
 import TextModal from "./elems/TextModal";
@@ -16,6 +16,45 @@ import dropper from '../assets/dropper.png';
 import BackgroundModal from "./BackgroundModal";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+
+type ResizeDirection = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
+
+const MIN_ELEMENT_SIZE = 5;
+
+const resizeHandleBaseStyle: CSSProperties = {
+  position: "absolute",
+  width: "10px",
+  height: "10px",
+  background: "#ffffff",
+  border: "1px solid #2563eb",
+  borderRadius: "999px",
+  zIndex: 30,
+};
+
+const getResizeHandleStyle = (direction: ResizeDirection): CSSProperties => {
+  const offset = "-5px";
+
+  switch (direction) {
+    case "n":
+      return { ...resizeHandleBaseStyle, top: offset, left: "50%", transform: "translateX(-50%)", cursor: "ns-resize" };
+    case "s":
+      return { ...resizeHandleBaseStyle, bottom: offset, left: "50%", transform: "translateX(-50%)", cursor: "ns-resize" };
+    case "e":
+      return { ...resizeHandleBaseStyle, right: offset, top: "50%", transform: "translateY(-50%)", cursor: "ew-resize" };
+    case "w":
+      return { ...resizeHandleBaseStyle, left: offset, top: "50%", transform: "translateY(-50%)", cursor: "ew-resize" };
+    case "ne":
+      return { ...resizeHandleBaseStyle, top: offset, right: offset, cursor: "nesw-resize" };
+    case "nw":
+      return { ...resizeHandleBaseStyle, top: offset, left: offset, cursor: "nwse-resize" };
+    case "se":
+      return { ...resizeHandleBaseStyle, bottom: offset, right: offset, cursor: "nwse-resize" };
+    case "sw":
+      return { ...resizeHandleBaseStyle, bottom: offset, left: offset, cursor: "nesw-resize" };
+    default:
+      return resizeHandleBaseStyle;
+  }
+};
 
 const reorderSlides = (presentation: PresentationType, fromIndex: number, toIndex: number) => {
   const slides = [...presentation.slides];
