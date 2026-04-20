@@ -54,24 +54,23 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
   
   return (
     <form onSubmit={computeSubmit}
-      // style={{
-      //   display: "flex",
-      //   flexDirection: "column",
-      //   gap: "12px",
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
 
-      //   position: "fixed",
-      //   top: "50%",
-      //   left: "50%",
-      //   transform: "translate(-50%, -50%)",
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
 
-      //   backgroundColor: "#d4bff7",
-      //   padding: "24px",
-      //   borderRadius: "12px",
-      //   boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-      //   zIndex: 1000,
-      //   minWidth: "320px",
-      // }}
-      >
+        backgroundColor: "#d4bff7",
+        padding: "24px",
+        borderRadius: "12px",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+        zIndex: 1000,
+        minWidth: "320px",
+      }}>
       {error && (
         <div style={{ backgroundColor: "#ffe5e5", border: "1px solid red", borderRadius: "6px", padding: "10px", marginBottom: "10px" }}>
           {error}
@@ -85,22 +84,16 @@ function ImageModal({ initial, onSubmit, onClose }: ImageModalProps) {
       URL/Base 64 Encoding:<input value={url} onChange={e => setUrl(e.target.value)} /><br />
       Description of image:<input value={alt} onChange={e => setAlt(e.target.value)} /><br />
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
-        <span>Height (%):<input 
-        // style={{ width: "100%", height: "50%" }} 
-        type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
-        <span>Width (%):<input 
-        // style={{ width: "100%", height: "50%" }} 
-        type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
+        <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
+        <span>Width (%):<input style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
       </div>
 
-      <div 
-      // style={{
-      //   display: "flex",
-      //   justifyContent: "flex-end",
-      //   gap: "10px",
-      //   marginTop: "10px",
-      // }}
-      >
+      <div style={{
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: "10px",
+        marginTop: "10px",
+      }}>
         <button type="submit">{initial ? "Save" : "Add"}</button>
         <button type="button" onClick={onClose}>Cancel</button>
       </div>

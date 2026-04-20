@@ -34,22 +34,22 @@ function ImageElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeS
       onDoubleClick={() => {
         onEdit(elem)
       }}
-      // style={{
-      //   position: "absolute",
-      //   left: `${elem.x}%`,
-      //   top: `${elem.y}%`,
-      //   width: `${elem.width}%`,
-      //   height: `${elem.height}%`,
+      style={{
+        position: "absolute",
+        left: `${elem.x}%`,
+        top: `${elem.y}%`,
+        width: `${elem.width}%`,
+        height: `${elem.height}%`,
 
-      //   border: isSelected ? "2px solid #4a90e2" : "1px solid lightgrey",
-      //   overflow: "hidden",
-      //   display: "flex",
-      //   alignItems: "center",
-      //   justifyContent: "center",
-      //   cursor: "move",
-      //   boxSizing: "border-box",
+        border: isSelected ? "2px solid #4a90e2" : "1px solid lightgrey",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "move",
+        boxSizing: "border-box",
 
-      // }}
+      }}
     >
       {isSelected && (["nw", "n", "ne", "e", "se", "s", "sw", "w"] as ResizeDirection[]).map((direction) => (
         <button
@@ -64,12 +64,12 @@ function ImageElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeS
       <img 
         src={elem.url}
         alt={elem.alt}
-        // style={{
-        //   width: "100%",
-        //   height:"100%",
-        //   objectFit: "contain",
-        //   pointerEvents: "none",
-        // }}
+        style={{
+          width: "100%",
+          height:"100%",
+          objectFit: "contain",
+          pointerEvents: "none",
+        }}
       />
 
     </div>
