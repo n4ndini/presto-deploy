@@ -301,41 +301,104 @@ function Presentation() {
   }, [presentation, currSlideIndex]);
 
   useEffect(() => {
-    if (!dragging || !slideRef.current) return;
+    if ((!dragging && !resizing) || !slideRef.current) return;
 
     const handleMouseMove = (e: globalThis.MouseEvent) => {
       if (!slideRef.current) return;
 
       const rect = slideRef.current.getBoundingClientRect();
-      const dxPx = e.clientX - dragging.startMouseX;
-      const dyPx = e.clientY - dragging.startMouseY;
 
-      const dxPercent = (dxPx / rect.width) * 100;
-      const dyPercent = (dyPx / rect.height) * 100;
+      if (dragging) {
+        const dxPx = e.clientX - dragging.startMouseX;
+        const dyPx = e.clientY - dragging.startMouseY;
 
-      setPresentation((prev) => {
-        if (!prev) { return prev; }
+        const dxPercent = (dxPx / rect.width) * 100;
+        const dyPercent = (dyPx / rect.height) * 100;
 
-        const elem = prev.slides[currSlideIndex].elements.find(
-          (el) => el.id === dragging.elemId
-        );
-        if (!elem) { return prev; }
+        setPresentation((prev) => {
+          if (!prev) { return prev; }
 
-        const newX = Math.max(0, Math.min(dragging.startX + dxPercent, 100 - elem.width));
-        const newY = Math.max(0, Math.min(dragging.startY + dyPercent, 100 - elem.height));
+          const elem = prev.slides[currSlideIndex].elements.find(
+            (el) => el.id === dragging.elemId
+          );
+          if (!elem) { return prev; }
 
-        const updated = updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
-          ...el,
-          x: newX,
-          y: newY,
-        }));
-        commitSave(updated);
-        return updated;
-      });
+          const newX = Math.max(0, Math.min(dragging.startX + dxPercent, 100 - elem.width));
+          const newY = Math.max(0, Math.min(dragging.startY + dyPercent, 100 - elem.height));
+
+          const updated = updateElement(prev, currSlideIndex, dragging.elemId, (el) => ({
+            ...el,
+            x: newX,
+            y: newY,
+          }));
+          commitSave(updated);
+          return updated;
+        });
+      }
+
+      if (resizing) {
+        const dxPx = e.clientX - resizing.startMouseX;
+        const dyPx = e.clientY - resizing.startMouseY;
+
+        const dxPercent = (dxPx / rect.width) * 100;
+        const dyPercent = (dyPx / rect.height) * 100;
+
+        setPresentation((prev) => {
+          if (!prev) { return prev; }
+
+          const elem = prev.slides[currSlideIndex].elements.find(
+            (el) => el.id === resizing.elemId
+          );
+          if (!elem) { return prev; }
+
+          let newX = resizing.startX;
+          let newY = resizing.startY;
+          let newWidth = resizing.startWidth;
+          let newHeight = resizing.startHeight;
+
+          if (resizing.direction.includes("e")) {
+            newWidth = Math.max(
+              MIN_ELEMENT_SIZE,
+              Math.min(resizing.startWidth + dxPercent, 100 - resizing.startX)
+            );
+          }
+
+          if (resizing.direction.includes("s")) {
+            newHeight = Math.max(
+              MIN_ELEMENT_SIZE,
+              Math.min(resizing.startHeight + dyPercent, 100 - resizing.startY)
+            );
+          }
+
+          if (resizing.direction.includes("w")) {
+            const rightEdge = resizing.startX + resizing.startWidth;
+            newX = Math.max(0, Math.min(resizing.startX + dxPercent, rightEdge - MIN_ELEMENT_SIZE));
+            newWidth = rightEdge - newX;
+          }
+
+          if (resizing.direction.includes("n")) {
+            const bottomEdge = resizing.startY + resizing.startHeight;
+            newY = Math.max(0, Math.min(resizing.startY + dyPercent, bottomEdge - MIN_ELEMENT_SIZE));
+            newHeight = bottomEdge - newY;
+          }
+
+          const updated = updateElement(prev, currSlideIndex, resizing.elemId, (el) => ({
+            ...el,
+            x: newX,
+            y: newY,
+            width: newWidth,
+            height: newHeight,
+          }));
+
+          commitSave(updated);
+          return updated;
+        });
+      }
     };
 
     const handleMouseUp = () => {
       setDragging(null);
+      setResizing(null);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -345,7 +408,7 @@ function Presentation() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [dragging, currSlideIndex]);
+  }, [dragging, resizing, currSlideIndex]);
   
   const commitSave = (() => {
     let timeout: ReturnType<typeof setTimeout> | null = null;
