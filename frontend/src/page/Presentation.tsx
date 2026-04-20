@@ -201,7 +201,6 @@ function Presentation() {
     startX: number;
     startY: number;
   } | null>(null);
-  const [hasDragged, setHasDragged] = useState(false);
   const slideRef = useRef<HTMLDivElement | null>(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -234,12 +233,6 @@ function Presentation() {
   const navigateToSlide = (index: number) => {
     setSearchParams({ slide: String(index) });
   };
-
-  // useEffect(() => {
-  //   const index = Number(searchParams.get("slide") ?? 0);
-  //   navigateToSlide(index);
-  // }, [searchParams]);
-  
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -290,8 +283,6 @@ function Presentation() {
         commitSave(updated);
         return updated;
       });
-      
-      setHasDragged(true);
     };
 
     const handleMouseUp = () => {
