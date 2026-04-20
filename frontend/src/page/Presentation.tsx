@@ -603,6 +603,34 @@ function Presentation() {
     await savePresentation(updated);
   };
 
+  const openPreview = () => {
+    const previewUrl = `${window.location.origin}/presentation/${presentation.id}/preview`;
+    window.open(previewUrl, '_blank', 'noopener,noreferrer');
+  }
+
+  const handleSlideDragStart = (slideIndex: number) => {
+    setDraggedSlideIndex(slideIndex);
+    setDragOverSlideIndex(slideIndex);
+  }
+
+  const handleSlideDrop = async (targetIndex: number) => {
+    if (draggedSlideIndex === null || draggedSlideIndex === targetIndex) {
+      setDraggedSlideIndex(null);
+      setDragOverSlideIndex(null);
+      return;
+    }
+
+    const currentSlideId = presentation.slides[currSlideIndex].id;
+    const updatedPresentation = reorderSlides(presentation, draggedSlideIndex, targetIndex);
+    const updatedCurrentSlideIndex = updatedPresentation.slides.findIndex((slide) => slide.id === currentSlideId);
+
+    setCurrSlideIndex(updatedCurrentSlideIndex);
+    setDraggedSlideIndex(null);
+    setDragOverSlideIndex(null);
+
+    await savePresentation(updatedPresentation);
+  };
+
   return (
     <>
       <div style={{ marginBottom: "20px", display: 'flex', gap: '8px', alignItems: 'center' }}>
