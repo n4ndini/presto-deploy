@@ -36,19 +36,19 @@ function CodeElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeSt
       onDoubleClick={() => {
         onEdit(elem)
       }}
-      style={{
-        position: "absolute",
-        left: `${elem.x}%`,
-        top: `${elem.y}%`,
-        width: `${elem.width}%`,
-        height: `${elem.height}%`,
+      // style={{
+      //   position: "absolute",
+      //   left: `${elem.x}%`,
+      //   top: `${elem.y}%`,
+      //   width: `${elem.width}%`,
+      //   height: `${elem.height}%`,
 
-        border: isSelected ? "2px solid #4a90e2" : "1px solid lightgrey",
-        overflow: "hidden",
-        display: "flex", 
-        cursor: "move",
-        boxSizing: "border-box",
-      }}
+      //   border: isSelected ? "2px solid #4a90e2" : "1px solid lightgrey",
+      //   overflow: "hidden",
+      //   display: "flex", 
+      //   cursor: "move",
+      //   boxSizing: "border-box",
+      // }}
     >
       {isSelected && (["nw", "n", "ne", "e", "se", "s", "sw", "w"] as ResizeDirection[]).map((direction) => (
         <button
@@ -65,15 +65,16 @@ function CodeElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeSt
           language={elem.language}
           style={dark}
           wrapLongLines={true}
-          customStyle={{
-            margin: 0,
-            border: 'none',
-            background: 'black',
-            fontSize: `${elem.fontSize}em`,
-            height: "100%",
-            width: "100%",
-            pointerEvents: "none",
-          }}>
+          // customStyle={{
+          //   margin: 0,
+          //   border: 'none',
+          //   background: 'black',
+          //   fontSize: `${elem.fontSize}em`,
+          //   height: "100%",
+          //   width: "100%",
+          //   pointerEvents: "none",
+          // }}
+          >
           {elem.code}
         </SyntaxHighlighter>
       </div>

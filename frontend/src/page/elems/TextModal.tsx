@@ -77,8 +77,12 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
 
       Text:<input value={text} onChange={e => setText(e.target.value)} /><br />
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
-        <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
-        <span>Width (%):<input style={{ width: "100%", height: "50%" }} type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
+        <span>Height (%):<input 
+        // style={{ width: "100%", height: "50%" }} 
+        type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
+        <span>Width (%):<input 
+        // style={{ width: "100%", height: "50%" }} 
+        type="number" value={width} onChange={e => setWidth(Number(e.target.value))} /><br /></span>
       </div>
       Font Size (em):<input type="number" step="0.1" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /><br />
       Colour (hex):<input value={colour} onChange={e => setColour(e.target.value)} /><br />
@@ -87,12 +91,14 @@ function TextModal({ initial, onSubmit, onClose }: TextModalProps) {
         <option value="Times New Roman">Times New Roman</option>
         <option value="Parchment">Parchment</option>
       </select>
-      <div style={{
-        display: "flex",
-        justifyContent: "flex-end",
-        gap: "10px",
-        marginTop: "10px",
-      }}>
+      <div 
+      // style={{
+      //   display: "flex",
+      //   justifyContent: "flex-end",
+      //   gap: "10px",
+      //   marginTop: "10px",
+      // }}
+      >
         <button type="submit">{initial ? "Save" : "Add"}</button>
         <button type="button" onClick={onClose}>Cancel</button>
       </div>

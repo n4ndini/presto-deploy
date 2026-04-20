@@ -34,22 +34,22 @@ function VideoElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeS
       onDoubleClick={() => {
         onEdit(elem)
       }}
-      style={{
-        position: "absolute",
-        left: `${elem.x}%`,
-        top: `${elem.y}%`,
-        width: `${elem.width}%`,
-        height: `${elem.height}%`,
+      // style={{
+      //   position: "absolute",
+      //   left: `${elem.x}%`,
+      //   top: `${elem.y}%`,
+      //   width: `${elem.width}%`,
+      //   height: `${elem.height}%`,
 
-        border: isSelected ? "2px solid #4a90e2" : "1px solid lightgrey",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "move",
-        boxSizing: "border-box",
+      //   border: isSelected ? "2px solid #4a90e2" : "1px solid lightgrey",
+      //   overflow: "hidden",
+      //   display: "flex",
+      //   alignItems: "center",
+      //   justifyContent: "center",
+      //   cursor: "move",
+      //   boxSizing: "border-box",
 
-      }}
+      // }}
     >
       {isSelected && (["nw", "n", "ne", "e", "se", "s", "sw", "w"] as ResizeDirection[]).map((direction) => (
         <button
@@ -58,18 +58,20 @@ function VideoElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeS
           aria-label={`Resize ${direction}`}
           onMouseDown={(e) => onResizeStart(e, elem, direction)}
           onClick={(e) => e.stopPropagation()}
-          style={getResizeHandleStyle(direction)}
+          // style={getResizeHandleStyle(direction)}
         />
       ))}
-      <div style={{border: "2px solid lightgrey"}}>
+      <div 
+      // style={{border: "2px solid lightgrey"}}
+      >
         <iframe
           src={elem.url.replace("watch?v=", "embed/")}
-          style={{
-            width: "100%",
-            height: "100%",
-            border: "none",
-            pointerEvents: "none",
-          }}
+          // style={{
+          //   width: "100%",
+          //   height: "100%",
+          //   border: "none",
+          //   pointerEvents: "none",
+          // }}
           allow="autoplay"
           title={`video-${elem.id}`}
         />

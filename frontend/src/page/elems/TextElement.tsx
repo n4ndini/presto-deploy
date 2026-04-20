@@ -34,26 +34,26 @@ function TextElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeSt
       onDoubleClick={() => {
         onEdit(elem)
       }}
-      style={{
-        position: "absolute",
-        left: `${elem.x}%`,
-        top: `${elem.y}%`,
-        width: `${elem.width}%`,
-        height: `${elem.height}%`,
+      // style={{
+      //   position: "absolute",
+      //   left: `${elem.x}%`,
+      //   top: `${elem.y}%`,
+      //   width: `${elem.width}%`,
+      //   height: `${elem.height}%`,
 
-        border: isSelected ? "2px solid #4a90e2" : "1px solid lightgrey",
-        overflow: "auto",
-        whiteSpace: "pre",
-        textAlign: "left",
+      //   border: isSelected ? "2px solid #4a90e2" : "1px solid lightgrey",
+      //   overflow: "auto",
+      //   whiteSpace: "pre",
+      //   textAlign: "left",
 
-        fontSize: `${elem.fontSize}em`,
-        color: elem.colour,
-        fontFamily: elem.fontFamily,
+      //   fontSize: `${elem.fontSize}em`,
+      //   color: elem.colour,
+      //   fontFamily: elem.fontFamily,
 
-        padding: "4px",
-        cursor: "move",
-        boxSizing: "border-box", 
-      }}
+      //   padding: "4px",
+      //   cursor: "move",
+      //   boxSizing: "border-box", 
+      // }}
     >
       {isSelected && (["nw", "n", "ne", "e", "se", "s", "sw", "w"] as ResizeDirection[]).map((direction) => (
         <button
@@ -62,7 +62,7 @@ function TextElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeSt
           aria-label={`Resize ${direction}`}
           onMouseDown={(e) => onResizeStart(e, elem, direction)}
           onClick={(e) => e.stopPropagation()}
-          style={getResizeHandleStyle(direction)}
+          // style={getResizeHandleStyle(direction)}
         />
       ))}
       {elem.content}
