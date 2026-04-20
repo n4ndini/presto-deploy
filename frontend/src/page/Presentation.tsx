@@ -621,7 +621,7 @@ function Presentation() {
 
   const updateExistingElement = async (
     elemId: number,
-    updater: (el: ElementType) => ElementType
+    updater: (_el: ElementType) => ElementType
   ) => {
     const updated = updateElement(presentation!, currSlideIndex, elemId, updater);
 
