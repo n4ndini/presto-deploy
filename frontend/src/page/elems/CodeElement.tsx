@@ -74,7 +74,7 @@ function CodeElement({ elem, onDelete, onEdit, onSelect, onMoveStart, onResizeSt
             width: "100%",
             pointerEvents: "none",
           }}>
-            {elem.code}
+          {elem.code}
         </SyntaxHighlighter>
       </div>
     </div>
