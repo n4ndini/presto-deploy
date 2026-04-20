@@ -170,13 +170,12 @@ function ReadOnlySlidePreview({
 }
 
 function Presentation() {
-  const { id, slideIndex } = useParams();
+  const { id } = useParams();
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const [error, setError] = useState('');
 
   const [presentation, setPresentation] = useState<PresentationType | null>(null);
-  const [currSlideIndex, setCurrSlideIndex] = useState(0);
 
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [showEditTitleModal, setShowEditTitleModal] = useState(false);
@@ -232,10 +231,6 @@ function Presentation() {
     fetchPresentation();
   }, [id]);
 
-  // useEffect(() => {
-  //   setCurrSlideIndex(Number(slideIndex ?? 0));
-  // }, [slideIndex]);
-
   const navigateToSlide = (index: number) => {
     setSearchParams({ slide: String(index) });
   };
@@ -251,12 +246,10 @@ function Presentation() {
       if (!presentation || presentation.slides.length < 2) return;
 
       if (e.key === "ArrowLeft" && currSlideIndex > 0) {
-        // setCurrSlideIndex((prev) => prev - 1);
         navigateToSlide(currSlideIndex - 1);
       }
 
       if (e.key === "ArrowRight" && currSlideIndex < presentation.slides.length - 1) {
-        // setCurrSlideIndex((prev) => prev + 1);
         navigateToSlide(currSlideIndex + 1);
       }
     };
@@ -382,7 +375,6 @@ function Presentation() {
       };
 
       await savePresentation(updatedPresentation);
-      // setCurrSlideIndex(updatedPresentation.slides.length - 1);
       navigateToSlide(updatedPresentation.slides.length - 1);
     } catch (err) {
       console.error(err);
@@ -404,7 +396,6 @@ function Presentation() {
         slides: presentation.slides.filter((_, i) => i !== currSlideIndex),
       };
   
-      // setCurrSlideIndex(newIndex);
       navigateToSlide(newIndex);
       await savePresentation(updatedPresentation);
     } catch (err) {
@@ -624,7 +615,7 @@ function Presentation() {
     const updatedPresentation = reorderSlides(presentation, draggedSlideIndex, targetIndex);
     const updatedCurrentSlideIndex = updatedPresentation.slides.findIndex((slide) => slide.id === currentSlideId);
 
-    setCurrSlideIndex(updatedCurrentSlideIndex);
+    navigateToSlide(updatedCurrentSlideIndex);
     setDraggedSlideIndex(null);
     setDragOverSlideIndex(null);
 
@@ -905,7 +896,7 @@ function Presentation() {
                       await handleSlideDrop(index);
                     }}
                     onClick={() => {
-                      setCurrSlideIndex(index);
+                      navigateToSlide(index);
                       setShowSlidePanel(false);
                     }}
                     style={{
@@ -1030,7 +1021,6 @@ function Presentation() {
         {presentation.slides.length >= 2 && (
           <>
             <button
-              // onClick={() => setCurrSlideIndex((prev) => prev - 1)}
               onClick={() => navigateToSlide(currSlideIndex - 1)}
               disabled={isFirstSlide}
               style={{
@@ -1047,7 +1037,6 @@ function Presentation() {
   
             <button
               onClick={() => navigateToSlide(currSlideIndex + 1)}
-              // onClick={() => setCurrSlideIndex((prev) => prev + 1)}
               disabled={isLastSlide}
               style={{
                 position: "absolute",
