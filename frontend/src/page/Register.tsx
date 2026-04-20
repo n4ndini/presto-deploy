@@ -68,12 +68,12 @@ function Register({ successCallback }: RegisterProps) {
         </div>
       )}
 
-      Name: <input type="text" value={name} onChange={e => setName(e.target.value)} /><br />
-      Email: <input type="text" value={email} onChange={e => setEmail(e.target.value)} /><br />
-      Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} /><br />
-      Confirm Password: <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} /><br />
+      Name: <input data-cy="rego-name" type="text" value={name} onChange={e => setName(e.target.value)} /><br />
+      Email: <input data-cy="rego-email" type="text" value={email} onChange={e => setEmail(e.target.value)} /><br />
+      Password: <input data-cy="rego-pass" type="password" value={password} onChange={e => setPassword(e.target.value)} /><br />
+      Confirm Password: <input data-cy="rego-pass-confirm" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} /><br />
 
-      <button type="submit">Register</button>
+      <button type="submit" data-cy="rego-submit">Register</button>
 
     </form>
   )

@@ -60,10 +60,10 @@ function Login({ successCallback }: LoginProps) {
         </div>
       )}
 
-      Email: <input type="text" value={email} onChange={e => setEmail(e.target.value)} /><br />
-      Password: <input type="password" value={password} onChange={e => setPassword(e.target.value)} /><br />
+      Email: <input data-cy="login-email" type="text" value={email} onChange={e => setEmail(e.target.value)} /><br />
+      Password: <input data-cy="login-pass" type="password" value={password} onChange={e => setPassword(e.target.value)} /><br />
 
-      <button type="submit">Login</button>
+      <button data-cy="login-submit" type="submit">Login</button>
 
     </form>
   )

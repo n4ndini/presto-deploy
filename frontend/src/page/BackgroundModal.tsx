@@ -128,7 +128,7 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
 
       Choose Background Style:
       <label>
-        <input type="radio" value="solid" checked={backgroundStyle === 'solid'} onChange={() => setBackgroundStyle('solid')}
+        <input type="radio" data-cy="radio-solid" value="solid" checked={backgroundStyle === 'solid'} onChange={() => setBackgroundStyle('solid')}
         />
         Solid Colour
       </label>
@@ -136,6 +136,7 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
       {backgroundStyle === 'solid' && (
         <input
           type="text"
+          data-cy="bg-color-input"
           value={solidColour}
           onChange={(e) => setSolidColour(e.target.value)}
           placeholder="#ffffff"
@@ -194,7 +195,7 @@ function BackgroundModal({ initial, onSubmitCurr, onSubmitDefault, onClose }: Ba
         gap: "10px",
         marginTop: "10px",
       }}>
-        <button type="button" onClick={handleSubmitCurr}>
+        <button type="button" data-cy="apply-bg-curr" onClick={handleSubmitCurr}>
           Save for Current Slide
         </button>
         <button type="button" onClick={handleSubmitDefault}>
