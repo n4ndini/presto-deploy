@@ -146,6 +146,7 @@ function ReadOnlySlidePreview({
     <div
       key={slide.id}
       className={styles.slideFade}
+      data-cy="slide-preview-container"
       style={{
         width: `${width}px`,
         height: `${height}px`,
@@ -663,7 +664,7 @@ function Presentation() {
     <>
       <div style={{ marginBottom: "20px", display: 'flex', gap: '8px', alignItems: 'center' }}>
         <button onClick={() => navigate("/dashboard")}>Back</button>
-        <button onClick={() => setShowDeletePopup(true)}>
+        <button data-cy="delete-pres-btn" onClick={() => setShowDeletePopup(true)}>
           Delete Presentation
         </button>
       </div>
@@ -685,8 +686,8 @@ function Presentation() {
         }}
       >
         <h1 style={{ margin: 0 }}>{presentation.name}</h1>
-        <button onClick={() => setShowEditTitleModal(true)}>Edit Title</button>
-        <button onClick={() => setShowEditThumbnailModal(true)}>
+        <button onClick={() => setShowEditTitleModal(true)} data-cy="pres-edit-title">Edit Title</button>
+        <button onClick={() => setShowEditThumbnailModal(true)} data-cy="pres-edit-thumbnail">
           Update Thumbnail
         </button>
         <button onClick={() => navigate(`/presentation/${id}/history`)}>
@@ -713,14 +714,15 @@ function Presentation() {
             backgroundColor: "white",
           }}
         >
-          <h2>Edit Title</h2>
+          <h2 data-cy="edit-title-title">Edit Title</h2>
           <input
             type="text"
+            data-cy="edit-title-here"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
           />
           <div style={{ marginTop: "10px" }}>
-            <button onClick={saveTitle}>Save</button>
+            <button data-cy="save-title-btn" onClick={saveTitle}>Save</button>
             <button onClick={() => setShowEditTitleModal(false)}>Cancel</button>
           </div>
         </div>
@@ -735,16 +737,17 @@ function Presentation() {
             backgroundColor: "white",
           }}
         >
-          <h2>Update Thumbnail</h2>
+          <h2 data-cy="edit-thumb-title">Update Thumbnail</h2>
           <input
             type="text"
+            data-cy="edit-thumb-here"
             placeholder="Enter thumbnail URL"
             value={newThumbnail}
             onChange={(e) => setNewThumbnail(e.target.value)}
             style={{ width: "300px" }}
           />
           <div style={{ marginTop: "10px" }}>
-            <button onClick={saveThumbnail}>Save</button>
+            <button data-cy="save-thumb-btn" onClick={saveThumbnail}>Save</button>
             <button onClick={() => setShowEditThumbnailModal(false)}>Cancel</button>
           </div>
         </div>
@@ -760,18 +763,18 @@ function Presentation() {
           }}
         >
           <p>Are you sure you want to delete this presentation?</p>
-          <button onClick={handleDeletePresentation}>Yes</button>
+          <button data-cy="confirm-delete-btn" onClick={handleDeletePresentation}>Yes</button>
           <button onClick={() => setShowDeletePopup(false)}>No</button>
         </div>
       )}
       
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', marginBottom: '6px' }}>
-        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={createNewSlide}>New Slide</button>
-        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={deleteCurrentSlide}>Delete Slide</button>
-        <button style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setEditScreen(p => !p)}>
+        <button data-cy="new-slide-btn" style={{ fontSize: '1em', padding: '4px 12px' }} onClick={createNewSlide}>New Slide</button>
+        <button data-cy="delete-slide-btn" style={{ fontSize: '1em', padding: '4px 12px' }} onClick={deleteCurrentSlide}>Delete Slide</button>
+        <button data-cy="edit-slide-btn" style={{ fontSize: '1em', padding: '4px 12px' }} onClick={() => setEditScreen(p => !p)}>
           {editScreen ? "Close Editor" : "Edit Slide"}
         </button>
-        <button style={{display: 'flex', alignItems: 'center'}} onClick={() => setChangeBackground(p => !p)}>
+        <button data-cy="change-bg-btn" style={{display: 'flex', alignItems: 'center'}} onClick={() => setChangeBackground(p => !p)}>
           <img src={dropper} alt="dropper" style={{ height: '20px' }} />
           {changeBackground ? "Close background editor" : "Change Background"}
         </button>
@@ -1056,7 +1059,7 @@ function Presentation() {
         })}
 
         {/* Slide number */}
-        <div style={{ position: 'absolute', bottom: '8px', left: '8px', fontSize: '0.75em', color: '#888' }}>
+        <div data-cy="slide-number-indicator" style={{ position: 'absolute', bottom: '8px', left: '8px', fontSize: '0.75em', color: '#888' }}>
           {currSlideIndex + 1}
         </div>
 

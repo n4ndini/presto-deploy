@@ -115,6 +115,7 @@ function PreviewSlide({
   return (
     <div
       key={slide.id}
+      data-cy="slide-preview-container"
       className={styles.slideFade}
       style={{
         width: "100%",

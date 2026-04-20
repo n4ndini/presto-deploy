@@ -87,7 +87,7 @@ function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
         <option value="python">Python</option>
         <option value="javascript">JavaScript</option>
       </select>
-      Code:<textarea style={{width: "100%", height: "50%"}} value={code} onChange={e => setCode(e.target.value)} /><br />
+      Code:<textarea  data-cy="code-input-field" style={{width: "100%", height: "50%"}} value={code} onChange={e => setCode(e.target.value)} /><br />
       Font Size (em):<input type="number" step="0.1" value={fontSize} onChange={e => setFontSize(Number(e.target.value))} /><br />
       Size of TextBox:<div style={{ display: "flex", gap: "10px" }}>
         <span>Height (%):<input style={{ width: "100%", height: "50%" }} type="number" value={height} onChange={e => setHeight(Number(e.target.value))} /><br /></span>
@@ -100,7 +100,7 @@ function CodeModal({ initial, onSubmit, onClose }: CodeModalProps) {
         gap: "10px",
         marginTop: "10px",
       }}>
-        <button type="submit">{initial ? "Save" : "Add"}</button>
+        <button data-cy="code-submit-btn" type="submit">{initial ? "Save" : "Add"}</button>
         <button type="button" onClick={onClose}>Cancel</button>
       </div>
     </form>
